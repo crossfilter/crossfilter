@@ -158,7 +158,7 @@ aside {
 
 <h2>Fast Multidimensional Filtering for Coordinated Views</h2>
 
-<p><b>Crossfilter</b> is a <a href="https://github.com/square/crossfilter">JavaScript library</a> for exploring large multivariate datasets in the browser. Crossfilter supports extremely fast (&lt;30ms) interaction with coordinated views, even with datasets containing a million or more records.
+<p><b>Crossfilter</b> is a <a href="https://github.com/crossfilter/crossfilter">JavaScript library</a> for exploring large multivariate datasets in the browser. Crossfilter supports extremely fast (&lt;30ms) interaction with coordinated views, even with datasets containing a million or more records. This version of Crossfilter is a community fork of the <a href="https://github.com/square/crossfilter">original Crossfilter project</a> developed by Square, Inc.
 
 <p>Since most interactions only involve a single dimension, and then only small adjustments are made to the filter values, incremental filtering and reducing is significantly faster than starting from scratch. Crossfilter uses sorted indexes (and a few bit-twiddling hacks) to make this possible, dramatically increasing the perfor&shy;mance of live histograms and top-<i>K</i> lists. For more details on how Crossfilter works, see the <a href="https://github.com/crossfilter/crossfilter/wiki/API-Reference">API reference</a>.
 
