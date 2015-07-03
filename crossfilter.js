@@ -1,5 +1,5 @@
 (function(exports){
-crossfilter.version = "1.3.7";
+crossfilter.version = "1.3.11";
 function crossfilter_identity(d) {
   return d;
 }
@@ -853,7 +853,7 @@ function crossfilter() {
           removed = [];
 
       for (i = 0; i < n; ++i) {
-        if (!(filters[k = index[i]] & one) ^ (x = f(values[i], i))) {
+        if (!(filters[k = index[i]] & one) ^ !!(x = f(values[i], i))) {
           if (x) filters[k] &= zero, added.push(k);
           else filters[k] |= one, removed.push(k);
         }
@@ -926,7 +926,8 @@ function crossfilter() {
           reduceInitial,
           update = crossfilter_null,
           reset = crossfilter_null,
-          resetNeeded = true;
+          resetNeeded = true,
+          groupAll = key === crossfilter_null;
 
       if (arguments.length < 1) key = crossfilter_identity;
 
@@ -1027,6 +1028,10 @@ function crossfilter() {
           update = updateMany;
           reset = resetMany;
         } else {
+          if (!k && groupAll) {
+            k = 1;
+            groups = [{key: null, value: initial()}];
+          }
           if (k === 1) {
             update = updateOne;
             reset = resetOne;
@@ -1095,6 +1100,7 @@ function crossfilter() {
               : k === 1 ? (reset = resetOne, update = updateOne)
               : reset = update = crossfilter_null;
         } else if (k === 1) {
+          if (groupAll) return;
           if(f) {
             for (var i = 0; i < n; ++i) if (f(data[i])) return;
           } else {
@@ -1280,9 +1286,8 @@ function crossfilter() {
       if (i >= 0) dataListeners.splice(i, 1);
       i = removeDataListeners.indexOf(removeData);
       if (i >= 0) removeDataListeners.splice(i, 1);
-      for (i = 0; i < n; ++i) filters[i] &= zero;
       m &= zero;
-      return dimension;
+      return filterAll();
     }
 
     return dimension;

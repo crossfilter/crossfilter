@@ -83,6 +83,100 @@ suite.addBatch({
       }
     },
 
+    "empty data": {
+      topic: function() {
+        var data = crossfilter();
+        try {
+          data.quantity = data.dimension(function(d) { return d.quantity; });
+        } catch (e) {
+          console.log(e.stack);
+        }
+        return data;
+      },
+
+      "groupAll": {
+        topic: function(data) {
+          data.all = data.groupAll();
+          return data;
+        },
+        "value": function(data) {
+          assert.equal(data.all.value(), 0);
+        },
+        "value after removing all data": function(data) {
+          try {
+            data.add([{quantity: 2, total: 190}]);
+            assert.equal(data.all.value(), 1);
+          } finally {
+            data.remove();
+            assert.equal(data.all.value(), 0);
+          }
+        }
+      },
+
+      "dimension": {
+
+        "groupAll (count, the default)": {
+          topic: function(data) {
+            data.quantity.count = data.quantity.groupAll();
+            return data;
+          },
+          "value": function(data) {
+            assert.equal(data.quantity.count.value(), 0);
+          },
+          "value after removing all data": function(data) {
+            try {
+              data.add([{quantity: 2, total: 190}]);
+              assert.equal(data.quantity.count.value(), 1);
+            } finally {
+              data.remove();
+              assert.equal(data.quantity.count.value(), 0);
+            }
+          }
+        },
+
+        "groupAll (sum of total)": {
+          topic: function(data) {
+            data.quantity.total = data.quantity.groupAll().reduceSum(function(d) { return d.total; });
+            return data;
+          },
+          "value": function(data) {
+            assert.equal(data.quantity.total.value(), 0);
+          },
+          "value after removing all data": function(data) {
+            try {
+              data.add([{quantity: 2, total: 190}]);
+              assert.equal(data.quantity.total.value(), 190);
+            } finally {
+              data.remove();
+              assert.equal(data.quantity.total.value(), 0);
+            }
+          }
+        },
+
+        "groupAll (custom reduce)": {
+          topic: function(data) {
+            data.quantity.custom = data.quantity.groupAll().reduce(add, remove, initial);
+            function add(p, v) { return p + 1; }
+            function remove(p, v) { return p - 1; }
+            function initial() { return 1; }
+            return data;
+          },
+          "value": function(data) {
+            assert.equal(data.quantity.custom.value(), 1);
+          },
+          "value after removing all data": function(data) {
+            try {
+              data.add([{quantity: 2, total: 190}]);
+              assert.equal(data.quantity.custom.value(), 2);
+            } finally {
+              data.remove();
+              assert.equal(data.quantity.custom.value(), 1);
+            }
+          }
+        }
+      }
+    },
+
     "dimension": {
 
       "top": {
@@ -325,6 +419,29 @@ suite.addBatch({
           try {
             data.total.filterFunction(function(d) { return d % 2; });
             assert.isTrue(data.date.top(Infinity).every(function(d) { return d.total % 2; }));
+          } finally {
+            data.total.filterAll();
+          }
+        },
+        "respects truthy values": function(data) {
+          try {
+            var group = data.quantity.groupAll().reduceCount();
+            data.total.filterRange([200, Infinity]);
+            data.total.filterFunction(function(d) { return "0"; });
+            assert.equal(group.value(), 43);
+            data.total.filterFunction(function(d) { return ""; });
+            assert.equal(group.value(), 0);
+          } finally {
+            data.total.filterAll();
+          }
+        },
+        "groups on the first dimension are updated correctly": function(data) {
+          try {
+            var group = data.date.groupAll().reduceCount();
+            data.total.filterFunction(function(d) { return d === 90; });
+            assert.equal(group.value(), 13);
+            data.total.filterFunction(function(d) { return d === 91; });
+            assert.equal(group.value(), 1);
           } finally {
             data.total.filterAll();
           }
@@ -707,6 +824,16 @@ suite.addBatch({
           dimension.dispose();
           data.add([3, 4, 5]);
           assert.isFalse(callback);
+        },
+        "clears dimension filters from groups": function() {
+          var data = crossfilter([0, 0, 2, 2]),
+              d1 = data.dimension(function(d) { return -d; }),
+              d2 = data.dimension(function(d) { return +d; }),
+              g2 = d2.group(function(d) { return Math.round( d / 2 ) * 2; }),
+              all = g2.all();
+          d1.filterRange([-1, 1]); // a filter is present when the dimension is disposed
+          d1.dispose();
+          assert.deepEqual(g2.all(), [{key: 0, value: 2}, {key: 2, value: 2}]);
         }
       }
     },
