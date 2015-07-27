@@ -534,7 +534,8 @@ function crossfilter() {
     remove: removeData,
     dimension: dimension,
     groupAll: groupAll,
-    size: size
+    size: size,
+    all: all,
   };
 
   var data = [], // the records
@@ -1370,6 +1371,11 @@ function crossfilter() {
   // Returns the number of records in this crossfilter, irrespective of any filters.
   function size() {
     return n;
+  }
+
+  // Returns the raw row data contained in this crossfilter
+  function all(){
+    return data;
   }
 
   return arguments.length
