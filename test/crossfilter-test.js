@@ -918,6 +918,20 @@ suite.addBatch({
       }
     },
 
+    "all": {
+      "returns the full data array": function(data) {
+        assert.equal(data.all().length, 43);
+      },
+      "is not affected by any dimension filters": function(data) {
+        try {
+          data.quantity.filterExact(4);
+          assert.equal(data.all().length, 43);
+        } finally {
+          data.quantity.filterAll();
+        }
+      }
+    },
+
     "add": {
       "increases the size of the crossfilter": function() {
         var data = crossfilter([]);
