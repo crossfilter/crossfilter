@@ -565,25 +565,43 @@ function crossfilter() {
   }
 
   // Removes all records that match the current filters.
-  function removeData() {
+  function removeData(f) {
     var newIndex = crossfilter_index(n, n),
         removed = [];
-    for (var i = 0, j = 0; i < n; ++i) {
-      if (filters[i]) newIndex[i] = j++;
-      else removed.push(i);
+
+    if(f) {
+      for (var i = 0, j = 0; i < n; ++i) {
+        if (f(data[i])) newIndex[i] = j++;
+        else removed.push(i);
+      }
+    } else {
+      for (var i = 0, j = 0; i < n; ++i) {
+        if (filters[i]) newIndex[i] = j++;
+        else removed.push(i);
+      }
     }
 
     // Remove all matching records from groups.
     filterListeners.forEach(function(l) { l(0, [], removed); });
 
     // Update indexes.
-    removeDataListeners.forEach(function(l) { l(newIndex); });
+    removeDataListeners.forEach(function(l) { l(newIndex, f); });
 
     // Remove old filters and data by overwriting.
-    for (var i = 0, j = 0, k; i < n; ++i) {
-      if (k = filters[i]) {
-        if (i !== j) filters[j] = k, data[j] = data[i];
-        ++j;
+    if(f) {
+      for (var i = 0, j = 0, k; i < n; ++i) {
+        if (f(data[i])) {
+          if (k = filters[i] && i !== j) filters[j] = k;
+          if (i !== j) data[j] = data[i];
+          ++j;
+        }
+      }
+    } else {
+      for (var i = 0, j = 0, k; i < n; ++i) {
+        if (k = filters[i]) {
+          if (i !== j) filters[j] = k, data[j] = data[i];
+          ++j;
+        }
       }
     }
     data.length = j;
@@ -709,12 +727,22 @@ function crossfilter() {
       newValues = newIndex = null;
     }
 
-    function removeData(reIndex) {
-      for (var i = 0, j = 0, k; i < n; ++i) {
-        if (filters[k = index[i]]) {
-          if (i !== j) values[j] = values[i];
-          index[j] = reIndex[k];
-          ++j;
+    function removeData(reIndex, f) {
+      if(f) {
+        for (var i = 0, j = 0, k; i < n; ++i) {
+          if (f(data[k = index[i]])) {
+            if (i !== j) values[j] = values[i];
+            index[j] = reIndex[k];
+            ++j;
+          }
+        }
+      } else {
+        for (var i = 0, j = 0, k; i < n; ++i) {
+          if (filters[k = index[i]]) {
+            if (i !== j) values[j] = values[i];
+            index[j] = reIndex[k];
+            ++j;
+          }
         }
       }
       values.length = j;
@@ -1026,7 +1054,7 @@ function crossfilter() {
         }
       }
 
-      function removeData() {
+      function removeData(reIndex, f) {
         if (k > 1) {
           var oldK = k,
               oldGroups = groups,
@@ -1034,10 +1062,19 @@ function crossfilter() {
 
           // Filter out non-matches by copying matching group index entries to
           // the beginning of the array.
-          for (var i = 0, j = 0; i < n; ++i) {
-            if (filters[i]) {
-              seenGroups[groupIndex[j] = groupIndex[i]] = 1;
-              ++j;
+          if(f) {
+            for (var i = 0, j = 0; i < n; ++i) {
+              if (f(data[i])) {
+                seenGroups[groupIndex[j] = groupIndex[i]] = 1;
+                ++j;
+              }
+            }
+          } else {
+            for (var i = 0, j = 0; i < n; ++i) {
+              if (filters[i]) {
+                seenGroups[groupIndex[j] = groupIndex[i]] = 1;
+                ++j;
+              }
             }
           }
 
@@ -1064,7 +1101,11 @@ function crossfilter() {
               : reset = update = crossfilter_null;
         } else if (k === 1) {
           if (groupAll) return;
-          for (var i = 0; i < n; ++i) if (filters[i]) return;
+          if(f) {
+            for (var i = 0; i < n; ++i) if (f(data[i])) return;
+          } else {
+            for (var i = 0; i < n; ++i) if (filters[i]) return;
+          }
           groups = [], k = 0;
           filterListeners[filterListeners.indexOf(update)] =
           update = reset = crossfilter_null;

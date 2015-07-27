@@ -30,7 +30,7 @@
     "url": "http://github.com/square/crossfilter.git"
   },
   "devDependencies": {
-    "d3": "3.3",
+    "d3": "3.5",
     "vows": "0.7.0",
     "uglify-js": "2.4.0"
   },
