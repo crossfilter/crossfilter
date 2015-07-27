@@ -1125,6 +1125,32 @@ suite.addBatch({
         assert.deepEqual(data.foo.top(Infinity), []);
         assert.deepEqual(data.foo.div2.all(), []);
       },
+      "removing records with a filter in place updates group": function(data) {
+        data.add([{foo: 1}, {foo: 2}, {foo: 3}]);
+        assert.deepEqual(data.foo.top(Infinity), [{foo: 3}, {foo: 2}, {foo: 1}]);
+        assert.deepEqual(data.foo.div2.all(), [{key: 0, value: 1}, {key: 1, value: 2}]);
+        data.foo.filter(3);
+        data.remove(function(d) { return d.foo === 3; }); 
+        data.foo.filterAll();
+        assert.deepEqual(data.foo.top(Infinity), [{foo: 3}]);
+        assert.deepEqual(data.foo.div2.all(), [{key: 1, value: 1}]);
+        data.remove(function(d) { return false; });
+        assert.deepEqual(data.foo.top(Infinity), []);
+        assert.deepEqual(data.foo.div2.all(), []);
+      },
+      "removing records with a range filter in place updates group": function(data) {
+        data.add([{foo: 1}, {foo: 2}, {foo: 3}]);
+        assert.deepEqual(data.foo.top(Infinity), [{foo: 3}, {foo: 2}, {foo: 1}]);
+        assert.deepEqual(data.foo.div2.all(), [{key: 0, value: 1}, {key: 1, value: 2}]);
+        data.foo.filter([2,4]);
+        data.remove(function(d) { return d.foo === 3; }); 
+        data.foo.filterAll();
+        assert.deepEqual(data.foo.top(Infinity), [{foo: 3}]);
+        assert.deepEqual(data.foo.div2.all(), [{key: 1, value: 1}]);
+        data.remove(function(d) { return false; });
+        assert.deepEqual(data.foo.top(Infinity), []);
+        assert.deepEqual(data.foo.div2.all(), []);
+      },
       "filtering works correctly after removing a record": function(data) {
         data.add([{foo: 1}, {foo: 2}, {foo: 3}]);
         data.remove(function(d) { return d.foo !== 2; });
