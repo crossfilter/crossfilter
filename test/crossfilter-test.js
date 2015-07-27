@@ -96,19 +96,19 @@ suite.addBatch({
 
       "groupAll": {
         topic: function(data) {
-          data.all = data.groupAll();
+          data.allGrouped = data.groupAll();
           return data;
         },
         "value": function(data) {
-          assert.equal(data.all.value(), 0);
+          assert.equal(data.allGrouped.value(), 0);
         },
         "value after removing all data": function(data) {
           try {
             data.add([{quantity: 2, total: 190}]);
-            assert.equal(data.all.value(), 1);
+            assert.equal(data.allGrouped.value(), 1);
           } finally {
             data.remove();
-            assert.equal(data.all.value(), 0);
+            assert.equal(data.allGrouped.value(), 0);
           }
         }
       },
@@ -840,38 +840,38 @@ suite.addBatch({
 
     "groupAll": {
       topic: function(data) {
-        data.all = data.groupAll().reduceSum(function(d) { return d.total; });
+        data.allGrouped = data.groupAll().reduceSum(function(d) { return d.total; });
         return data;
       },
 
       "does not have top and order methods": function(data) {
-        assert.isFalse("top" in data.all);
-        assert.isFalse("order" in data.all);
+        assert.isFalse("top" in data.allGrouped);
+        assert.isFalse("order" in data.allGrouped);
       },
 
       "reduce": {
         "determines the computed reduce value": function(data) {
           try {
-            data.all.reduceCount();
-            assert.strictEqual(data.all.value(), 43);
+            data.allGrouped.reduceCount();
+            assert.strictEqual(data.allGrouped.value(), 43);
           } finally {
-            data.all.reduceSum(function(d) { return d.total; });
+            data.allGrouped.reduceSum(function(d) { return d.total; });
           }
         }
       },
 
       "value": {
         "returns the sum total of matching records": function(data) {
-          assert.strictEqual(data.all.value(), 6660);
+          assert.strictEqual(data.allGrouped.value(), 6660);
         },
         "observes all dimension's filters": function(data) {
           try {
             data.type.filterExact("tab");
-            assert.strictEqual(data.all.value(), 4760);
+            assert.strictEqual(data.allGrouped.value(), 4760);
             data.type.filterExact("visa");
-            assert.strictEqual(data.all.value(), 1400);
+            assert.strictEqual(data.allGrouped.value(), 1400);
             data.tip.filterExact(100);
-            assert.strictEqual(data.all.value(), 1000);
+            assert.strictEqual(data.allGrouped.value(), 1000);
           } finally {
             data.type.filterAll();
             data.tip.filterAll();
@@ -912,6 +912,22 @@ suite.addBatch({
         try {
           data.quantity.filterExact(4);
           assert.equal(data.size(), 43);
+        } finally {
+          data.quantity.filterAll();
+        }
+      }
+    },
+
+    "all": {
+      "returns the full data array": function(data) {
+        var raw = data.all();
+        assert.equal(raw.length, 43);
+      },
+      "is not affected by any dimension filters": function(data) {
+        try {
+          data.quantity.filterExact(4);
+          var raw = data.all();
+          assert.equal(raw.length, 43);
         } finally {
           data.quantity.filterAll();
         }
