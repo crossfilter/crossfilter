@@ -54,6 +54,8 @@ suite.addBatch({
         {date: "2011-11-14T23:28:54Z", quantity: 2, total: 190, tip: 100, type: "tab"}
       ]);
 
+      var firstRecord = data[0];
+
       // be sure you don't clobber a built-in method if you do this!
       try {
         data.date = data.dimension(function(d) { return new Date(d.date); });
@@ -920,12 +922,16 @@ suite.addBatch({
 
     "all": {
       "returns the full data array": function(data) {
-        assert.equal(data.all().length, 43);
+        var raw = data.all();
+        assert.equal(raw.length, 43);
+        assert.equal(firstRecord, raw[0]);
       },
       "is not affected by any dimension filters": function(data) {
         try {
           data.quantity.filterExact(4);
-          assert.equal(data.all().length, 43);
+          var raw = data.all();
+          assert.equal(raw.length, 43);
+          assert.equal(firstRecord, raw[0]);
         } finally {
           data.quantity.filterAll();
         }
