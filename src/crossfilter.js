@@ -7,7 +7,7 @@ function crossfilter() {
     dimension: dimension,
     groupAll: groupAll,
     size: size,
-    all: all,
+    all: allData,
   };
 
   var data = [], // the records
@@ -845,7 +845,7 @@ function crossfilter() {
     return n;
   }
 
-  function all(){
+  function allData(){
     return data;
   }
 
