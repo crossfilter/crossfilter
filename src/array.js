@@ -58,7 +58,8 @@ function crossfilter_bitarray(n) {
 };
 
 crossfilter_bitarray.prototype.lengthen = function(n) {
-  for (var i = 0; i < this.subarrays; i++) {
+  var i, len;
+  for (i = 0, len = this.subarrays; i < len; ++i) {
     this[i] = crossfilter_arrayLengthen(this[i], n);
   }
   this.length = n;
@@ -66,9 +67,9 @@ crossfilter_bitarray.prototype.lengthen = function(n) {
 
 // Reserve a new bit index in the array, returns {offset, one}
 crossfilter_bitarray.prototype.add = function() {
-  var m, w, one;
+  var m, w, one, i, len;
 
-  for (var i = 0; i < this.subarrays; i++) {
+  for (i = 0, len = this.subarrays; i < len; ++i) {
     m = this.masks[i];
     w = this.width - (32 * i);
     one = ~m & -~m;
@@ -103,14 +104,16 @@ crossfilter_bitarray.prototype.add = function() {
 
 // Copy record from index src to index dest
 crossfilter_bitarray.prototype.copy = function(dest, src) {
-  for (var i = 0; i < this.subarrays; i++) {
+  var i, len;
+  for (i = 0, len = this.subarrays; i < len; ++i) {
     this[i][dest] = this[i][src];
   }
 };
 
 // Truncate the array to the given length
 crossfilter_bitarray.prototype.truncate = function(n) {
-  for (var i = 0; i < this.subarrays; i++) {
+  var i, len;
+  for (i = 0, len = this.subarrays; i < len; ++i) {
     for (var j = this.length - 1; j >= n; j--) {
       this[i][j] = 0;
     }
@@ -121,7 +124,8 @@ crossfilter_bitarray.prototype.truncate = function(n) {
 
 // Checks that all bits for the given index are 0
 crossfilter_bitarray.prototype.zero = function(n) {
-  for (var i = 0; i < this.subarrays; i++) {
+  var i, len;
+  for (i = 0, len = this.subarrays; i < len; ++i) {
     if (this[i][n]) {
       return false;
     }
@@ -131,7 +135,8 @@ crossfilter_bitarray.prototype.zero = function(n) {
 
 // Checks that all bits for the given index are 0 except for possibly one
 crossfilter_bitarray.prototype.zeroExcept = function(n, offset, zero) {
-  for (var i = 0; i < this.subarrays; i++) {
+  var i, len;
+  for (i = 0, len = this.subarrays; i < len; ++i) {
     if (i === offset ? this[i][n] & zero : this[i][n]) {
       return false;
     }
@@ -141,7 +146,8 @@ crossfilter_bitarray.prototype.zeroExcept = function(n, offset, zero) {
 
 // Checks that only the specified bit is set for the given index
 crossfilter_bitarray.prototype.only = function(n, offset, one) {
-  for (var i = 0; i < this.subarrays; i++) {
+  var i, len;
+  for (i = 0, len = this.subarrays; i < len; ++i) {
     if (this[i][n] != (i === offset ? one : 0)) {
       return false;
     }
@@ -152,7 +158,8 @@ crossfilter_bitarray.prototype.only = function(n, offset, one) {
 // Checks that only the specified bit is set for the given index except for possibly one other
 crossfilter_bitarray.prototype.onlyExcept = function(n, offset, zero, onlyOffset, onlyOne) {
   var mask;
-  for (var i = 0; i < this.subarrays; i++) {
+  var i, len;
+  for (i = 0, len = this.subarrays; i < len; ++i) {
     mask = this[i][n];
     if (i === offset)
       mask &= zero;
