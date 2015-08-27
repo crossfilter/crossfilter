@@ -1,6 +1,6 @@
 {
   "name": "crossfilter2",
-  "version": "2.0.0-alpha.01",
+  "version": "2.0.0-alpha.02",
   "description": "Fast multidimensional filtering for coordinated views.",
   "keywords": [
     "analytics",
