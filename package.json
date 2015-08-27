@@ -1,11 +1,11 @@
 {
-  "name": "crossfilter",
-  "version": "1.3.13",
+  "name": "crossfilter2",
+  "version": "2.0.0-alpha.01",
   "description": "Fast multidimensional filtering for coordinated views.",
   "keywords": [
-    "square",
     "analytics",
-    "visualization"
+    "visualization",
+    "crossfilter"
   ],
   "author": {
     "name": "Mike Bostock",
@@ -19,15 +19,21 @@
   ],
   "maintainers": [
     {
-      "name": "Tom Carden",
-      "url": "http://github.com/RandomEtc"
+      "name": "Gordon Woodhull",
+      "url": "https://github.com/gordonwoodhull"
+    }, {
+      "name": "Tanner Linsley",
+      "url": "https://github.com/tannerlinsley"
+    }, {
+      "name": "Ethan Jewett",
+      "url": "https://github.com/esjewett"
     }
   ],
-  "homepage": "http://square.github.com/crossfilter/",
+  "homepage": "http://crossfilter.github.com/crossfilter/",
   "main": "./index.js",
   "repository": {
     "type": "git",
-    "url": "http://github.com/square/crossfilter.git"
+    "url": "http://github.com/crossfilter/crossfilter.git"
   },
   "devDependencies": {
     "d3": "3.5",

@@ -1,5 +1,5 @@
 (function(exports){
-crossfilter.version = "1.3.13";
+crossfilter.version = "2.0.0-alpha.01";
 function crossfilter_identity(d) {
   return d;
 }
