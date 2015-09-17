@@ -1262,11 +1262,18 @@ function crossfilter() {
           groups[i].value = reduceInitial();
         }
 
-        // Add any selected records.
+        // We add all records and then remove filtered records so that reducers
+        // can build an 'unfiltered' view even if there are already filters in
+        // place on other dimensions.
         for (i = 0; i < n; ++i) {
-          if (filters.zeroExcept(i, offset, zero)) {
+          g = groups[groupIndex[i]];
+          g.value = reduceAdd(g.value, data[i]);
+        }
+
+        for (i = 0; i < n; ++i) {
+          if (!filters.zeroExcept(i, offset, zero)) {
             g = groups[groupIndex[i]];
-            g.value = reduceAdd(g.value, data[i]);
+            g.value = reduceRemove(g.value, data[i]);
           }
         }
       }
@@ -1280,10 +1287,16 @@ function crossfilter() {
         // Reset the singleton group values.
         g.value = reduceInitial();
 
-        // Add any selected records.
+         // We add all records and then remove filtered records so that reducers
+        // can build an 'unfiltered' view even if there are already filters in
+        // place on other dimensions.
         for (i = 0; i < n; ++i) {
-          if (filters.zeroExcept(i, offset, zero)) {
-            g.value = reduceAdd(g.value, data[i]);
+          g.value = reduceAdd(g.value, data[i]);
+        }
+
+        for (i = 0; i < n; ++i) {
+          if (!filters.zeroExcept(i, offset, zero)) {
+            g.value = reduceRemove(g.value, data[i]);
           }
         }
       }
