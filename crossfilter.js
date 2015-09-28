@@ -1100,6 +1100,7 @@ function crossfilter() {
             groupIndex[j = newIndex[i1] + n0] = k;
 
             // Always add new values to groups. Only remove when not in filter.
+            // This gives groups full information on data life-cycle.
             g.value = add(g.value, data[j], true);
             if (!filters.zeroExcept(j, offset, zero)) g.value = remove(g.value, data[j], false);
             if (++i1 >= n1) break;
@@ -1206,6 +1207,7 @@ function crossfilter() {
 
       // Reduces the specified selected or deselected records.
       // This function is only used when the cardinality is greater than 1.
+      // notFilter indicates a crossfilter.add/remove operation.
       function updateMany(filterOne, filterOffset, added, removed, notFilter) {
         if ((filterOne === one && filterOffset === offset) || resetNeeded) return;
 
@@ -1233,6 +1235,7 @@ function crossfilter() {
 
       // Reduces the specified selected or deselected records.
       // This function is only used when the cardinality is 1.
+      // notFilter indicates a crossfilter.add/remove operation.
       function updateOne(filterOne, filterOffset, added, removed, notFilter) {
         if ((filterOne === one && filterOffset === offset) || resetNeeded) return;
 
@@ -1292,7 +1295,7 @@ function crossfilter() {
         // Reset the singleton group values.
         g.value = reduceInitial();
 
-         // We add all records and then remove filtered records so that reducers
+        // We add all records and then remove filtered records so that reducers
         // can build an 'unfiltered' view even if there are already filters in
         // place on other dimensions.
         for (i = 0; i < n; ++i) {
