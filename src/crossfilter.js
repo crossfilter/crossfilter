@@ -781,16 +781,21 @@ function crossfilter() {
 
       if (resetNeeded) return;
 
-      // Add the added values.
+      // Cycle through all the values.
       for (i = n0; i < n; ++i) {
-        if (filters.zero(i)) {
-          reduceValue = reduceAdd(reduceValue, data[i]);
+
+        // Add all values all the time.
+        reduceValue = reduceAdd(reduceValue, data[i], true);
+
+        // Remove the value if filtered.
+        if (!filters.zero(i)) {
+          reduceValue = reduceRemove(reduceValue, data[i], false);
         }
       }
     }
 
     // Reduces the specified selected or deselected records.
-    function update(filterOne, filterOffset, added, removed) {
+    function update(filterOne, filterOffset, added, removed, notFilter) {
       var i,
           k,
           n;
@@ -800,14 +805,14 @@ function crossfilter() {
       // Add the added values.
       for (i = 0, n = added.length; i < n; ++i) {
         if (filters.zero(k = added[i])) {
-          reduceValue = reduceAdd(reduceValue, data[k]);
+          reduceValue = reduceAdd(reduceValue, data[k], notFilter);
         }
       }
 
       // Remove the removed values.
       for (i = 0, n = removed.length; i < n; ++i) {
         if (filters.only(k = removed[i], filterOffset, filterOne)) {
-          reduceValue = reduceRemove(reduceValue, data[k]);
+          reduceValue = reduceRemove(reduceValue, data[k], notFilter);
         }
       }
     }
@@ -818,9 +823,15 @@ function crossfilter() {
 
       reduceValue = reduceInitial();
 
+      // Cycle through all the values.
       for (i = 0; i < n; ++i) {
-        if (filters.zero(i)) {
-          reduceValue = reduceAdd(reduceValue, data[i]);
+
+        // Add all values all the time.
+        reduceValue = reduceAdd(reduceValue, data[i], true);
+
+        // Remove the value if it is filtered.
+        if (!filters.zero(i)) {
+          reduceValue = reduceRemove(reduceValue, data[i], false);
         }
       }
     }

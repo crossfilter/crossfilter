@@ -172,6 +172,61 @@ suite.addBatch({
               assert.equal(data.quantity.custom.value(), 1);
             }
           }
+        },
+
+        "groupAll (custom reduce information lifecycle)": {
+          "topic": function() {
+            var data = crossfilter();
+            data.add([{foo: 1, val: 2}, {foo: 2, val: 2}, {foo: 3, val: 2}, {foo: 3, val: 2}]);
+            data.foo = data.dimension(function(d) { return d.foo; });
+            data.bar = data.dimension(function(d) { return d.foo; });
+            data.val = data.dimension(function(d) { return d.val; });
+            data.groupMax = data.bar.groupAll().reduce(function(p,v,n){
+              if(n) {
+                p += v.val;
+              }
+              return p;
+            }, function(p,v,n) {
+              if(n) {
+                p -= v.val;
+              }
+              return p;
+            }, function() {
+              return 0;
+            });
+            data.groupSum = data.bar.groupAll().reduceSum(function(d) { return d.val; });
+
+            return data;
+          },
+          "on group creation": function(data) {
+            assert.deepEqual(data.groupMax.value(), data.groupSum.value());
+          },
+          "on filtering": function(data) {
+            data.foo.filterRange([1, 3]);
+            assert.deepEqual(data.groupMax.value(), 8);
+            assert.deepEqual(data.groupSum.value(), 4);
+            data.foo.filterAll();
+          },
+          "on adding data after group creation": function(data) {
+            data.add([{foo: 1, val: 2}]);
+            assert.deepEqual(data.groupMax.value(), data.groupSum.value());
+          },
+          "on adding data when a filter is in place": function(data) {
+            data.foo.filterRange([1,3]);
+            data.add([{foo: 3, val: 1}]);
+            assert.deepEqual(data.groupMax.value(), 11);
+            assert.deepEqual(data.groupSum.value(), 6);
+            data.foo.filterAll();
+          },
+          "on removing data after group creation": function(data) {
+            data.val.filter(1);
+            data.remove();
+            assert.deepEqual(data.groupMax.value(), 10);
+            assert.deepEqual(data.groupSum.value(), 0);
+
+            data.val.filterAll();
+            assert.deepEqual(data.groupMax.value(), data.groupSum.value());
+          }
         }
       }
     },
@@ -981,7 +1036,7 @@ suite.addBatch({
             data.foo = data.dimension(function(d) { return d.foo; });
             data.bar = data.dimension(function(d) { return d.foo; });
             data.val = data.dimension(function(d) { return d.val; });
-            data.groupMax = data.bar.groupAll().reduce(function(p,v,n){
+            data.groupMax = data.groupAll().reduce(function(p,v,n){
               if(n) {
                 p += v.val;
               }
@@ -994,7 +1049,7 @@ suite.addBatch({
             }, function() {
               return 0;
             });
-            data.groupSum = data.bar.groupAll().reduceSum(function(d) { return d.val; });
+            data.groupSum = data.groupAll().reduceSum(function(d) { return d.val; });
 
             return data;
           },
