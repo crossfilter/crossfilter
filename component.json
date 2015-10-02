@@ -1,8 +1,8 @@
 {
   "name": "crossfilter",
-  "repo": "square/crossfilter",
+  "repo": "crossfilter/crossfilter",
   "description": "Fast n-dimensional filtering and grouping of records.",
-  "version": "1.3.11",
+  "version": "2.0.0-alpha.03",
   "keywords": [],
   "main": "crossfilter.js",
   "scripts": [
