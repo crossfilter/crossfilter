@@ -47,7 +47,7 @@ function crossfilter() {
     }
 
     // Remove all matching records from groups.
-    filterListeners.forEach(function(l) { l(-1, -1, [], removed); });
+    filterListeners.forEach(function(l) { l(-1, -1, [], removed, true); });
 
     // Update indexes.
     removeDataListeners.forEach(function(l) { l(newIndex); });
@@ -394,6 +394,7 @@ function crossfilter() {
         var oldGroups = groups,
             reIndex = crossfilter_index(k, groupCapacity),
             add = reduceAdd,
+            remove = reduceRemove,
             initial = reduceInitial,
             k0 = k, // old cardinality
             i0 = 0, // index of old group
@@ -407,6 +408,7 @@ function crossfilter() {
 
         // If a reset is needed, we don't need to update the reduce values.
         if (resetNeeded) add = initial = crossfilter_null;
+        if (resetNeeded) remove = initial = crossfilter_null;
 
         // Reset the new groups (k is a lower bound).
         // Also, make sure that groupIndex exists and is long enough.
@@ -443,7 +445,11 @@ function crossfilter() {
           // advancing the new key and populating the associated group index.
           while (!(x1 > x)) {
             groupIndex[j = newIndex[i1] + n0] = k;
-            if (filters.zeroExcept(j, offset, zero)) g.value = add(g.value, data[j]);
+
+            // Always add new values to groups. Only remove when not in filter.
+            // This gives groups full information on data life-cycle.
+            g.value = add(g.value, data[j], true);
+            if (!filters.zeroExcept(j, offset, zero)) g.value = remove(g.value, data[j], false);
             if (++i1 >= n1) break;
             x1 = key(newValues[i1]);
           }
@@ -548,7 +554,8 @@ function crossfilter() {
 
       // Reduces the specified selected or deselected records.
       // This function is only used when the cardinality is greater than 1.
-      function updateMany(filterOne, filterOffset, added, removed) {
+      // notFilter indicates a crossfilter.add/remove operation.
+      function updateMany(filterOne, filterOffset, added, removed, notFilter) {
         if ((filterOne === one && filterOffset === offset) || resetNeeded) return;
 
         var i,
@@ -568,14 +575,15 @@ function crossfilter() {
         for (i = 0, n = removed.length; i < n; ++i) {
           if (filters.onlyExcept(k = removed[i], offset, zero, filterOffset, filterOne)) {
             g = groups[groupIndex[k]];
-            g.value = reduceRemove(g.value, data[k]);
+            g.value = reduceRemove(g.value, data[k], notFilter);
           }
         }
       }
 
       // Reduces the specified selected or deselected records.
       // This function is only used when the cardinality is 1.
-      function updateOne(filterOne, filterOffset, added, removed) {
+      // notFilter indicates a crossfilter.add/remove operation.
+      function updateOne(filterOne, filterOffset, added, removed, notFilter) {
         if ((filterOne === one && filterOffset === offset) || resetNeeded) return;
 
         var i,
@@ -593,7 +601,7 @@ function crossfilter() {
         // Remove the removed values.
         for (i = 0, n = removed.length; i < n; ++i) {
           if (filters.onlyExcept(k = removed[i], offset, zero, filterOffset, filterOne)) {
-            g.value = reduceRemove(g.value, data[k]);
+            g.value = reduceRemove(g.value, data[k], notFilter);
           }
         }
       }
@@ -609,11 +617,18 @@ function crossfilter() {
           groups[i].value = reduceInitial();
         }
 
-        // Add any selected records.
+        // We add all records and then remove filtered records so that reducers
+        // can build an 'unfiltered' view even if there are already filters in
+        // place on other dimensions.
         for (i = 0; i < n; ++i) {
-          if (filters.zeroExcept(i, offset, zero)) {
+          g = groups[groupIndex[i]];
+          g.value = reduceAdd(g.value, data[i], true);
+        }
+
+        for (i = 0; i < n; ++i) {
+          if (!filters.zeroExcept(i, offset, zero)) {
             g = groups[groupIndex[i]];
-            g.value = reduceAdd(g.value, data[i]);
+            g.value = reduceRemove(g.value, data[i], false);
           }
         }
       }
@@ -627,10 +642,16 @@ function crossfilter() {
         // Reset the singleton group values.
         g.value = reduceInitial();
 
-        // Add any selected records.
+        // We add all records and then remove filtered records so that reducers
+        // can build an 'unfiltered' view even if there are already filters in
+        // place on other dimensions.
         for (i = 0; i < n; ++i) {
-          if (filters.zeroExcept(i, offset, zero)) {
-            g.value = reduceAdd(g.value, data[i]);
+          g.value = reduceAdd(g.value, data[i], true);
+        }
+
+        for (i = 0; i < n; ++i) {
+          if (!filters.zeroExcept(i, offset, zero)) {
+            g.value = reduceRemove(g.value, data[i], false);
           }
         }
       }
@@ -760,16 +781,21 @@ function crossfilter() {
 
       if (resetNeeded) return;
 
-      // Add the added values.
+      // Cycle through all the values.
       for (i = n0; i < n; ++i) {
-        if (filters.zero(i)) {
-          reduceValue = reduceAdd(reduceValue, data[i]);
+
+        // Add all values all the time.
+        reduceValue = reduceAdd(reduceValue, data[i], true);
+
+        // Remove the value if filtered.
+        if (!filters.zero(i)) {
+          reduceValue = reduceRemove(reduceValue, data[i], false);
         }
       }
     }
 
     // Reduces the specified selected or deselected records.
-    function update(filterOne, filterOffset, added, removed) {
+    function update(filterOne, filterOffset, added, removed, notFilter) {
       var i,
           k,
           n;
@@ -779,14 +805,14 @@ function crossfilter() {
       // Add the added values.
       for (i = 0, n = added.length; i < n; ++i) {
         if (filters.zero(k = added[i])) {
-          reduceValue = reduceAdd(reduceValue, data[k]);
+          reduceValue = reduceAdd(reduceValue, data[k], notFilter);
         }
       }
 
       // Remove the removed values.
       for (i = 0, n = removed.length; i < n; ++i) {
         if (filters.only(k = removed[i], filterOffset, filterOne)) {
-          reduceValue = reduceRemove(reduceValue, data[k]);
+          reduceValue = reduceRemove(reduceValue, data[k], notFilter);
         }
       }
     }
@@ -797,9 +823,15 @@ function crossfilter() {
 
       reduceValue = reduceInitial();
 
+      // Cycle through all the values.
       for (i = 0; i < n; ++i) {
-        if (filters.zero(i)) {
-          reduceValue = reduceAdd(reduceValue, data[i]);
+
+        // Add all values all the time.
+        reduceValue = reduceAdd(reduceValue, data[i], true);
+
+        // Remove the value if it is filtered.
+        if (!filters.zero(i)) {
+          reduceValue = reduceRemove(reduceValue, data[i], false);
         }
       }
     }
