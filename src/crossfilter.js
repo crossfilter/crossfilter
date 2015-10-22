@@ -8,6 +8,7 @@ function crossfilter() {
     groupAll: groupAll,
     size: size,
     all: all,
+    onChange: onChange,
   };
 
   var data = [], // the records
@@ -15,7 +16,8 @@ function crossfilter() {
       filters, // 1 is filtered out
       filterListeners = [], // when the filters change
       dataListeners = [], // when data is added
-      removeDataListeners = []; // when data is removed
+      removeDataListeners = [], // when data is removed
+      callbacks = [];
 
   filters = new crossfilter_bitarray(0);
 
@@ -32,6 +34,7 @@ function crossfilter() {
       data = data.concat(newData);
       filters.lengthen(n += n1);
       dataListeners.forEach(function(l) { l(newData, n0, n1); });
+      triggerOnChange();
     }
 
     return crossfilter;
@@ -62,6 +65,7 @@ function crossfilter() {
 
     data.length = n = j;
     filters.truncate(j);
+    triggerOnChange();
   }
 
   // Adds a new dimension with the specified value accessor function.
@@ -249,6 +253,7 @@ function crossfilter() {
       lo0 = lo1;
       hi0 = hi1;
       filterListeners.forEach(function(l) { l(one, offset, added, removed); });
+      triggerOnChange();
       return dimension;
     }
 
@@ -306,6 +311,7 @@ function crossfilter() {
         }
       }
       filterListeners.forEach(function(l) { l(one, offset, added, removed); });
+      triggerOnChange();
     }
 
     // Returns the top K selected records based on this dimension's order.
@@ -882,6 +888,23 @@ function crossfilter() {
   // Returns the raw row data contained in this crossfilter
   function all(){
     return data;
+  }
+
+  function onChange(cb){
+    if(typeof cb !== 'function'){
+      console.warn('onChange callback parameter must be a function!');
+      return;
+    }
+    callbacks.push(cb);
+    return function(){
+      callbacks.splice(callbacks.indexOf(cb), 1);
+    };
+  }
+
+  function triggerOnChange(){
+    for (var i = 0; i < callbacks.length; i++) {
+      callbacks[i]();
+    }
   }
 
   return arguments.length
