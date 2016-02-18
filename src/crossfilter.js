@@ -96,7 +96,7 @@ function crossfilter() {
         iterableIndex, // temporary array storing the newly-added iterable index
         sort = iterable ?
           // For iterables, we need to sort by a few extra fields, so we convert the sortable fields of the index to a dash delimited string
-          quicksort_by(function(i) { return iterableValues[i].slice(0, 3).join('-') }) :
+          quicksort_by(function(i) { return iterableValues[i][0] }) :
           quicksort_by(function(i) { return newValues[i]; }),
         refilter = crossfilter_filterAll, // for recomputing filter
         refilterFunction, // the custom filter function in use
@@ -133,7 +133,7 @@ function crossfilter() {
         for (i = 0; i < newData.length; i++) {
           var k = value(newData[i])
           for (j = 0; j < k.length; j++) {
-            iterableValues.push([k[j], j, k.length, i])
+            iterableValues.push([k[j], i])
           }
         }
 
@@ -143,13 +143,12 @@ function crossfilter() {
         sortedIterableValues = permute(iterableValues, iterableIndex);
         // Pluck the index column into the newIndex
         newIndex = sortedIterableValues.map(function(val, i){
-          return val[3]
+          return val[1]
         })
-        // Pluck the values using the
+        // Pluck the values into newValues
         newValues = sortedIterableValues.map(function(val, i){
           return val[0]
         })
-
 
         // newIndex === sortedIndex, dataIndex
 
@@ -288,10 +287,9 @@ function crossfilter() {
       }
 
       if(iterable){
-        // For iterables, we only need to add each index once, so let's remove the duplicate entries, if any exist
+        // For iterables, we only need to add or remove each index once, so let's remove any duplicate indices
         added = dedupe(added)
         removed = dedupe(removed)
-        console.log(added, removed)
       }
 
       function dedupe(a){
