@@ -69,7 +69,7 @@ function crossfilter() {
   }
 
   // Adds a new dimension with the specified value accessor function.
-  function dimension(value) {
+  function dimension(value, iterable) {
     var dimension = {
       filter: filter,
       filterExact: filterExact,
@@ -91,7 +91,13 @@ function crossfilter() {
         index, // value rank ↦ object id
         newValues, // temporary array storing newly-added values
         newIndex, // temporary array storing newly-added index
-        sort = quicksort_by(function(i) { return newValues[i]; }),
+        iterableValues, // temporary array storing the newly-added iterable index
+        sortedIterableValues, // temporary array storing the newly-added iterable index
+        iterableIndex, // temporary array storing the newly-added iterable index
+        sort = iterable ?
+          // For iterables, we need to sort by a few extra fields, so we convert the sortable fields of the index to a dash delimited string
+          quicksort_by(function(i) { return iterableValues[i].slice(0, 3).join('-') }) :
+          quicksort_by(function(i) { return newValues[i]; }),
         refilter = crossfilter_filterAll, // for recomputing filter
         refilterFunction, // the custom filter function in use
         indexListeners = [], // when data is added
@@ -120,10 +126,39 @@ function crossfilter() {
     // This function is responsible for updating filters, values, and index.
     function preAdd(newData, n0, n1) {
 
-      // Permute new values into natural order using a sorted index.
-      newValues = newData.map(value);
-      newIndex = sort(crossfilter_range(n1), 0, n1);
-      newValues = permute(newValues, newIndex);
+      if (iterable){
+
+        // For iterables, we store different kind of values == [value, iterableIndex, iterableLength, index]
+        iterableValues = []
+        for (i = 0; i < newData.length; i++) {
+          var k = value(newData[i])
+          for (j = 0; j < k.length; j++) {
+            iterableValues.push([k[j], j, k.length, i])
+          }
+        }
+
+        // Sort the newValues on the first 3 sub-keys
+        iterableIndex = sort(crossfilter_range(n1), 0, n1);
+        // Sort the data based on the iterable index
+        sortedIterableValues = permute(iterableValues, iterableIndex);
+        // Pluck the index column into the newIndex
+        newIndex = sortedIterableValues.map(function(val, i){
+          return val[3]
+        })
+        // Pluck the values using the
+        newValues = sortedIterableValues.map(function(val, i){
+          return val[0]
+        })
+
+
+        // newIndex === sortedIndex, dataIndex
+
+      } else{
+        // Permute new values into natural order using a standard sorted index.
+        newValues = newData.map(value);
+        newIndex = sort(crossfilter_range(n1), 0, n1);
+        newValues = permute(newValues, newIndex);
+      }
 
       // Bisect newValues to determine which new records are selected.
       var bounds = refilter(newValues), lo1 = bounds[0], hi1 = bounds[1], i;
@@ -145,6 +180,7 @@ function crossfilter() {
         hi0 = hi1;
         return;
       }
+
 
       var oldValues = values,
           oldIndex = index,
@@ -320,6 +356,17 @@ function crossfilter() {
       var array = [],
           i = hi0,
           j;
+
+      if(iterable){
+        while (--i >= lo0 && k > 0) {
+          if (filters.zero(j = index[i])) {
+            array.push(data[j]);
+            --k;
+          }
+        }
+
+        return array;
+      }
 
       while (--i >= lo0 && k > 0) {
         if (filters.zero(j = index[i])) {
