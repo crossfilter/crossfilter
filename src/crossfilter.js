@@ -243,6 +243,7 @@ function crossfilter() {
     // Updates the selected values based on the specified bounds [lo, hi].
     // This implementation is used by all the public filter methods.
     function filterIndexBounds(bounds) {
+
       var lo1 = bounds[0],
           hi1 = bounds[1];
 
@@ -284,6 +285,20 @@ function crossfilter() {
           filters[offset][k = index[i]] ^= one;
           removed.push(k);
         }
+      }
+
+      if(iterable){
+        // For iterables, we only need to add each index once, so let's remove the duplicate entries, if any exist
+        added = dedupe(added)
+        removed = dedupe(removed)
+        console.log(added, removed)
+      }
+
+      function dedupe(a){
+        var s = {};
+        return a.filter(function(i) {
+          return s.hasOwnProperty(i) ? false : (s[i] = true);
+        });
       }
 
       lo0 = lo1;

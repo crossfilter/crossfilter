@@ -63,6 +63,7 @@ suite.addBatch({
         data.tip = data.dimension(function(d) { return d.tip; });
         data.total = data.dimension(function(d) { return d.total; });
         data.type = data.dimension(function(d) { return d.type; });
+        data.tags = data.dimension(function(d) { return d.tags; }, true);
       } catch (e) {
         console.log(e.stack);
       }
@@ -1418,14 +1419,76 @@ suite.addBatch({
       },
     },
     "iterableDimension": {
-      "topic": function(){
-        var data = crossfilter(testData);
-        return data;
-      },
-      "can create iterable dimension": function(data) {
-        var dTags = data.dimension(function(d) { return d.tags; }, true);
-        var top = dTags.top(Infinity)
-        assert.deepEqual(top[0],{ date: '2011-11-14T16:28:54Z', quantity: 1, total: 300, tip: 200, type: 'visa', tags: [ 2, 4, 5 ]});
+      "top":{
+        "returns the top k records by value, in descending order": function(data) {
+          var top = data.tags.top(3)
+          assert.equal(top.length, 3)
+          assert.deepEqual(top[0],{ date: '2011-11-14T16:28:54Z', quantity: 1, total: 300, tip: 200, type: 'visa', tags: [2,4,5]});
+        },
+        "returns bottom results": function(data) {
+          var bottom = data.tags.bottom(Infinity)
+          assert.deepEqual(bottom[0],{ date: '2011-11-14T16:20:19Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [1,3]});
+        },
+        "observes the associated dimension's filters": function(data) {
+          try {
+            data.tags.filterExact(1);
+            assert.deepEqual(data.total.top(Infinity), [
+              {date: '2011-11-14T17:33:46Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [1, 2, 3]},
+              {date: '2011-11-14T17:07:21Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [1, 2, 3]},
+              {date: '2011-11-14T16:17:54Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [1, 2, 3]},
+              {date: '2011-11-14T16:48:46Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [1, 2, 3]}
+            ]);
+          } finally {
+            data.tags.filterAll();
+          }
+        },
+        "observes other dimensions' filters": function(data) {
+          try {
+            data.quantity.filterExact(4);
+            assert.deepEqual(data.tags.top(1), [
+              {date: '2011-11-14T21:18:48Z', quantity: 4, total: 270, tip: 0, type: 'tab', tags: [1,2,3]}
+            ]);
+            data.type.filterExact("visa");
+            assert.deepEqual(data.tags.top(1), [
+              {date: "2011-11-14T16:28:54Z", quantity: 1, total: 300, tip: 200, type: "visa", tags: [2,4,5]}
+            ]);
+            data.quantity.filterExact(2);
+            assert.deepEqual(data.tags.top(1), [
+              {date: "2011-11-14T17:38:40Z", quantity: 2, total: 200, tip: 100, type: "visa", tags: [2,4,5]}
+            ]);
+          } finally {
+            data.type.filterAll();
+            data.quantity.filterAll();
+          }
+          // try {
+          //   data.type.filterExact("tab");
+          //   assert.deepEqual(data.date.top(2), [
+          //     {date: "2011-11-14T23:28:54Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]},
+          //     {date: "2011-11-14T23:23:29Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]}
+          //   ]);
+          //   data.type.filterExact("visa");
+          //   assert.deepEqual(data.date.top(1), [
+          //     {date: "2011-11-14T23:16:09Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [2,4,5]}
+          //   ]);
+          //   data.quantity.filterExact(2);
+          //   assert.deepEqual(data.date.top(1), [
+          //     {date: "2011-11-14T22:58:54Z", quantity: 2, total: 100, tip: 0, type: "visa", tags: [2,3,4]}
+          //   ]);
+          // } finally {
+          //   data.type.filterAll();
+          //   data.quantity.filterAll();
+          // }
+        },
+        // "negative or zero k returns an empty array": function(data) {
+        //   assert.deepEqual(data.quantity.top(0), []);
+        //   assert.deepEqual(data.quantity.top(-1), []);
+        //   assert.deepEqual(data.quantity.top(NaN), []);
+        //   assert.deepEqual(data.quantity.top(-Infinity), []);
+        //   assert.deepEqual(data.date.top(0), []);
+        //   assert.deepEqual(data.date.top(-1), []);
+        //   assert.deepEqual(data.date.top(NaN), []);
+        //   assert.deepEqual(data.date.top(-Infinity), []);
+        // }
       }
     }
   }
