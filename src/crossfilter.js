@@ -94,10 +94,7 @@ function crossfilter() {
         iterableValues, // temporary array storing the newly-added iterable index
         sortedIterableValues, // temporary array storing the newly-added iterable index
         iterableIndex, // temporary array storing the newly-added iterable index
-        sort = iterable ?
-          // For iterables, we need to sort by a few extra fields, so we convert the sortable fields of the index to a dash delimited string
-          quicksort_by(function(i) { return iterableValues[i][0] }) :
-          quicksort_by(function(i) { return newValues[i]; }),
+        sort = quicksort_by(function(i) { return newValues[i]; }),
         refilter = crossfilter_filterAll, // for recomputing filter
         refilterFunction, // the custom filter function in use
         indexListeners = [], // when data is added
@@ -128,29 +125,43 @@ function crossfilter() {
 
       if (iterable){
 
-        // For iterables, we store different kind of values == [value, iterableIndex, iterableLength, index]
-        iterableValues = []
+
+        // Count all the values
+        t = 0;
+        j = 0;
+        k = [];
+
         for (i = 0; i < newData.length; i++) {
-          var k = value(newData[i])
-          for (j = 0; j < k.length; j++) {
-            iterableValues.push([k[j], i])
+          for(k = value(newData[i]), j = 0; j < k.length; j++) {
+            t++;
           }
         }
 
-        // Sort the newValues on the first 3 sub-keys
-        iterableIndex = sort(crossfilter_range(n1), 0, n1);
-        // Sort the data based on the iterable index
-        sortedIterableValues = permute(iterableValues, iterableIndex);
-        // Pluck the index column into the newIndex
-        newIndex = sortedIterableValues.map(function(val, i){
-          return val[1]
-        })
-        // Pluck the values into newValues
-        newValues = sortedIterableValues.map(function(val, i){
-          return val[0]
-        })
+        newValues = [];
+        var unsortedIndex = crossfilter_range(t);
 
-        // newIndex === sortedIndex, dataIndex
+        for (l = 0, i = 0; i < newData.length; i++) {
+          k = value(newData[i])
+          for (j = 0; j < k.length; j++) {
+            newValues.push(k[j]);
+            unsortedIndex[l] = i;
+            l++;
+          }
+        }
+
+        // Create the Sort map used to sort both the values and the valueToData indices
+        var sortMap = sort(crossfilter_range(t), 0, t);
+
+        // Use the sortMap to sort the newValues
+        newValues = permute(newValues, sortMap);
+
+        // Use the sortMap to sort the unsortedIndex map
+        newIndex = permute(unsortedIndex, sortMap)
+        // newIndex should now be a map from sortedValue -> crossfilterData
+
+        // console.log('newData', newData)
+        // console.log('newIndex', newIndex)
+        // console.log('newValues', newValues)
 
       } else{
         // Permute new values into natural order using a standard sorted index.
@@ -160,7 +171,7 @@ function crossfilter() {
       }
 
       // Bisect newValues to determine which new records are selected.
-      var bounds = refilter(newValues), lo1 = bounds[0], hi1 = bounds[1], i;
+      var bounds = refilter(newValues), lo1 = bounds[0], hi1 = bounds[1];
       if (refilterFunction) {
         for (i = 0; i < n1; ++i) {
           if (!refilterFunction(newValues[i], i)) filters[offset][newIndex[i] + n0] |= one;
