@@ -493,7 +493,7 @@ function crossfilter_bitarray(n) {
   }
 
   this[0] = crossfilter_array8(n);
-};
+}
 
 crossfilter_bitarray.prototype.lengthen = function(n) {
   var i, len;
@@ -661,6 +661,7 @@ function crossfilter() {
     groupAll: groupAll,
     size: size,
     all: all,
+    onChange: onChange,
   };
 
   var data = [], // the records
@@ -668,7 +669,8 @@ function crossfilter() {
       filters, // 1 is filtered out
       filterListeners = [], // when the filters change
       dataListeners = [], // when data is added
-      removeDataListeners = []; // when data is removed
+      removeDataListeners = [], // when data is removed
+      callbacks = [];
 
   filters = new crossfilter_bitarray(0);
 
@@ -685,6 +687,7 @@ function crossfilter() {
       data = data.concat(newData);
       filters.lengthen(n += n1);
       dataListeners.forEach(function(l) { l(newData, n0, n1); });
+      triggerOnChange();
     }
 
     return crossfilter;
@@ -715,10 +718,11 @@ function crossfilter() {
 
     data.length = n = j;
     filters.truncate(j);
+    triggerOnChange();
   }
 
   // Adds a new dimension with the specified value accessor function.
-  function dimension(value) {
+  function dimension(value, iterable) {
     var dimension = {
       filter: filter,
       filterExact: filterExact,
@@ -740,6 +744,7 @@ function crossfilter() {
         index, // value rank ↦ object id
         newValues, // temporary array storing newly-added values
         newIndex, // temporary array storing newly-added index
+        iterablesIndexCount,
         sort = quicksort_by(function(i) { return newValues[i]; }),
         refilter = crossfilter_filterAll, // for recomputing filter
         refilterFunction, // the custom filter function in use
@@ -769,13 +774,57 @@ function crossfilter() {
     // This function is responsible for updating filters, values, and index.
     function preAdd(newData, n0, n1) {
 
-      // Permute new values into natural order using a sorted index.
-      newValues = newData.map(value);
-      newIndex = sort(crossfilter_range(n1), 0, n1);
-      newValues = permute(newValues, newIndex);
+      if (iterable){
+
+
+        // Count all the values
+        t = 0;
+        j = 0;
+        k = [];
+
+        for (i = 0; i < newData.length; i++) {
+          for(k = value(newData[i]), j = 0; j < k.length; j++) {
+            t++;
+          }
+        }
+
+        newValues = [];
+        iterablesIndexCount = crossfilter_range(n);
+        var unsortedIndex = crossfilter_range(t);
+
+        for (l = 0, i = 0; i < newData.length; i++) {
+          k = value(newData[i])
+          iterablesIndexCount[i] = k.length
+          for (j = 0; j < k.length; j++) {
+            newValues.push(k[j]);
+            unsortedIndex[l] = i;
+            l++;
+          }
+        }
+
+        // Create the Sort map used to sort both the values and the valueToData indices
+        var sortMap = sort(crossfilter_range(t), 0, t);
+
+        // Use the sortMap to sort the newValues
+        newValues = permute(newValues, sortMap);
+
+        // Use the sortMap to sort the unsortedIndex map
+        // newIndex should be a map of sortedValue -> crossfilterData
+        newIndex = permute(unsortedIndex, sortMap)
+
+        console.log('newValues', newValues)
+        console.log('newIndex', newIndex)
+        console.log('iterablesIndexCount', iterablesIndexCount)
+
+      } else{
+        // Permute new values into natural order using a standard sorted index.
+        newValues = newData.map(value);
+        newIndex = sort(crossfilter_range(n1), 0, n1);
+        newValues = permute(newValues, newIndex);
+      }
 
       // Bisect newValues to determine which new records are selected.
-      var bounds = refilter(newValues), lo1 = bounds[0], hi1 = bounds[1], i;
+      var bounds = refilter(newValues), lo1 = bounds[0], hi1 = bounds[1];
       if (refilterFunction) {
         for (i = 0; i < n1; ++i) {
           if (!refilterFunction(newValues[i], i)) filters[offset][newIndex[i] + n0] |= one;
@@ -794,6 +843,7 @@ function crossfilter() {
         hi0 = hi1;
         return;
       }
+
 
       var oldValues = values,
           oldIndex = index,
@@ -856,6 +906,7 @@ function crossfilter() {
     // Updates the selected values based on the specified bounds [lo, hi].
     // This implementation is used by all the public filter methods.
     function filterIndexBounds(bounds) {
+
       var lo1 = bounds[0],
           hi1 = bounds[1];
 
@@ -872,6 +923,7 @@ function crossfilter() {
           k,
           added = [],
           removed = [];
+
 
       // Fast incremental update based on previous lo index.
       if (lo1 < lo0) {
@@ -899,9 +951,37 @@ function crossfilter() {
         }
       }
 
+      if(iterable){
+        // For iterables, we need to figure out if the row has been completely removed vs partially included
+
+        // We can do this by looking up if
+
+        var addedTotals = {}
+        for (i = 0; i < added.length; i++) {
+          addedTotals[added[i]] = addedTotals[added[i]] || 0
+          addedTotals[added[i]]++
+        }
+
+        var removedTotals = {}
+        for (i = 0; i < removed.length; i++) {
+          removedTotals[removed[i]] = removedTotals[removed[i]] || 0
+          removedTotals[removed[i]]++
+        }
+
+        for (i = 0; i < iterablesIndexCount.length; i++) {
+          addedTotals[i] = iterablesIndexCount[i] - addedTotals[i]
+          removedTotals[i] = iterablesIndexCount[i] - removedTotals[i]
+        }
+
+        console.log('addedTotals', addedTotals)
+        console.log('removedTotals', removedTotals)
+
+      }
+
       lo0 = lo1;
       hi0 = hi1;
       filterListeners.forEach(function(l) { l(one, offset, added, removed); });
+      triggerOnChange();
       return dimension;
     }
 
@@ -959,6 +1039,7 @@ function crossfilter() {
         }
       }
       filterListeners.forEach(function(l) { l(one, offset, added, removed); });
+      triggerOnChange();
     }
 
     // Returns the top K selected records based on this dimension's order.
@@ -967,6 +1048,17 @@ function crossfilter() {
       var array = [],
           i = hi0,
           j;
+
+      if(iterable){
+        while (--i >= lo0 && k > 0) {
+          if (filters.zero(j = index[i])) {
+            array.push(data[j]);
+            --k;
+          }
+        }
+
+        return array;
+      }
 
       while (--i >= lo0 && k > 0) {
         if (filters.zero(j = index[i])) {
@@ -1535,6 +1627,23 @@ function crossfilter() {
   // Returns the raw row data contained in this crossfilter
   function all(){
     return data;
+  }
+
+  function onChange(cb){
+    if(typeof cb !== 'function'){
+      console.warn('onChange callback parameter must be a function!');
+      return;
+    }
+    callbacks.push(cb);
+    return function(){
+      callbacks.splice(callbacks.indexOf(cb), 1);
+    };
+  }
+
+  function triggerOnChange(){
+    for (var i = 0; i < callbacks.length; i++) {
+      callbacks[i]();
+    }
   }
 
   return arguments.length

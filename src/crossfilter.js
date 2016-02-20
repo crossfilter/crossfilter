@@ -91,9 +91,7 @@ function crossfilter() {
         index, // value rank ↦ object id
         newValues, // temporary array storing newly-added values
         newIndex, // temporary array storing newly-added index
-        iterableValues, // temporary array storing the newly-added iterable index
-        sortedIterableValues, // temporary array storing the newly-added iterable index
-        iterableIndex, // temporary array storing the newly-added iterable index
+        iterablesIndexCount,
         sort = quicksort_by(function(i) { return newValues[i]; }),
         refilter = crossfilter_filterAll, // for recomputing filter
         refilterFunction, // the custom filter function in use
@@ -138,10 +136,12 @@ function crossfilter() {
         }
 
         newValues = [];
+        iterablesIndexCount = crossfilter_range(n);
         var unsortedIndex = crossfilter_range(t);
 
         for (l = 0, i = 0; i < newData.length; i++) {
           k = value(newData[i])
+          iterablesIndexCount[i] = k.length
           for (j = 0; j < k.length; j++) {
             newValues.push(k[j]);
             unsortedIndex[l] = i;
@@ -156,12 +156,12 @@ function crossfilter() {
         newValues = permute(newValues, sortMap);
 
         // Use the sortMap to sort the unsortedIndex map
+        // newIndex should be a map of sortedValue -> crossfilterData
         newIndex = permute(unsortedIndex, sortMap)
-        // newIndex should now be a map from sortedValue -> crossfilterData
 
-        // console.log('newData', newData)
-        // console.log('newIndex', newIndex)
-        // console.log('newValues', newValues)
+        console.log('newValues', newValues)
+        console.log('newIndex', newIndex)
+        console.log('iterablesIndexCount', iterablesIndexCount)
 
       } else{
         // Permute new values into natural order using a standard sorted index.
@@ -271,6 +271,7 @@ function crossfilter() {
           added = [],
           removed = [];
 
+
       // Fast incremental update based on previous lo index.
       if (lo1 < lo0) {
         for (i = lo1, j = Math.min(lo0, hi1); i < j; ++i) {
@@ -298,16 +299,35 @@ function crossfilter() {
       }
 
       if(iterable){
-        // For iterables, we only need to add or remove each index once, so let's remove any duplicate indices
-        added = dedupe(added)
-        removed = dedupe(removed)
-      }
+        // For iterables, we need to figure out if the row has been completely removed vs partially included
 
-      function dedupe(a){
-        var s = {};
-        return a.filter(function(i) {
-          return s.hasOwnProperty(i) ? false : (s[i] = true);
-        });
+
+        // Count the totals for each dataRow being added and removed
+        var addedTotals = {}
+        var removedTotals = {}
+        for (i = 0; i < added.length; i++) {
+          addedTotals[added[i]] = addedTotals[added[i]] || 0
+          addedTotals[added[i]]++
+          removedTotals[removed[i]] = removedTotals[removed[i]] || 0
+          removedTotals[removed[i]]++
+        }
+
+        var partials = {}
+        // Now let's see if there are any partial removes or adds
+        for (i = 0; i < iterablesIndexCount.length; i++) {
+          if(iterablesIndexCount[i] - addedTotals[i] > 1){
+            added[i] = true
+          }
+
+          if(iterablesIndexCount[i] - removedTotals[i] > 1){
+            added
+          }
+
+        }
+
+        console.log('addedTotals', addedTotals)
+        console.log('removedTotals', removedTotals)
+
       }
 
       lo0 = lo1;
