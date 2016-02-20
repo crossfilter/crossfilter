@@ -1439,7 +1439,7 @@ suite.addBatch({
               {date: '2011-11-14T21:18:48Z', quantity: 4, total: 270, tip: 0, type: 'tab', tags: [1,2,3]}
             ]);
           } finally {
-            // data.tags.filterAll();
+            data.tags.filterAll();
           }
         },
         // "observes other dimensions' filters": function(data) {

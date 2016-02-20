@@ -300,34 +300,29 @@ function crossfilter() {
 
       if(iterable){
         // For iterables, we need to figure out if the row has been completely removed vs partially included
-
-
-        // Count the totals for each dataRow being added and removed
-        var addedTotals = {}
-        var removedTotals = {}
+        // Only count a row as added if it is not already being aggregated. Only count a row
+        // as removed if the last element being aggregated is removed.
+        
+        var newAdded = [];
+        var newRemoved = [];
         for (i = 0; i < added.length; i++) {
-          addedTotals[added[i]] = addedTotals[added[i]] || 0
-          addedTotals[added[i]]++
-          removedTotals[removed[i]] = removedTotals[removed[i]] || 0
-          removedTotals[removed[i]]++
+          iterablesIndexCount[added[i]]++
+          if(iterablesIndexCount[added[i]] === 1) {
+            newAdded.push(added[i]);
+          }
+        }
+        for (i = 0; i < removed.length; i++) {
+          iterablesIndexCount[removed[i]]--
+          if(iterablesIndexCount[removed[i]] === 0) {
+            newRemoved.push(removed[i]);
+          }
         }
 
-        var partials = {}
-        // Now let's see if there are any partial removes or adds
-        for (i = 0; i < iterablesIndexCount.length; i++) {
-          if(iterablesIndexCount[i] - addedTotals[i] > 1){
-            added[i] = true
-          }
+        added = newAdded;
+        removed = newRemoved;
 
-          if(iterablesIndexCount[i] - removedTotals[i] > 1){
-            added
-          }
-
-        }
-
-        console.log('addedTotals', addedTotals)
-        console.log('removedTotals', removedTotals)
-
+        console.log('newAdded', newAdded)
+        console.log('newRemoved', newRemoved)
       }
 
       lo0 = lo1;

@@ -953,29 +953,29 @@ function crossfilter() {
 
       if(iterable){
         // For iterables, we need to figure out if the row has been completely removed vs partially included
-
-        // We can do this by looking up if
-
-        var addedTotals = {}
+        // Only count a row as added if it is not already being aggregated. Only count a row
+        // as removed if the last element being aggregated is removed.
+        
+        var newAdded = [];
+        var newRemoved = [];
         for (i = 0; i < added.length; i++) {
-          addedTotals[added[i]] = addedTotals[added[i]] || 0
-          addedTotals[added[i]]++
+          iterablesIndexCount[added[i]]++
+          if(iterablesIndexCount[added[i]] === 1) {
+            newAdded.push(added[i]);
+          }
         }
-
-        var removedTotals = {}
         for (i = 0; i < removed.length; i++) {
-          removedTotals[removed[i]] = removedTotals[removed[i]] || 0
-          removedTotals[removed[i]]++
+          iterablesIndexCount[removed[i]]--
+          if(iterablesIndexCount[removed[i]] === 0) {
+            newRemoved.push(removed[i]);
+          }
         }
 
-        for (i = 0; i < iterablesIndexCount.length; i++) {
-          addedTotals[i] = iterablesIndexCount[i] - addedTotals[i]
-          removedTotals[i] = iterablesIndexCount[i] - removedTotals[i]
-        }
+        added = newAdded;
+        removed = newRemoved;
 
-        console.log('addedTotals', addedTotals)
-        console.log('removedTotals', removedTotals)
-
+        console.log('newAdded', newAdded)
+        console.log('newRemoved', newRemoved)
       }
 
       lo0 = lo1;
