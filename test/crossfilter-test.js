@@ -1442,43 +1442,44 @@ suite.addBatch({
             data.tags.filterAll();
           }
         },
-        // "observes other dimensions' filters": function(data) {
-        //   try {
-        //     data.quantity.filterExact(4);
-        //     assert.deepEqual(data.tags.top(1), [
-        //       {date: '2011-11-14T21:18:48Z', quantity: 4, total: 270, tip: 0, type: 'tab', tags: [1,2,3]}
-        //     ]);
-        //     data.type.filterExact("visa");
-        //     assert.deepEqual(data.tags.top(1), [
-        //       {date: "2011-11-14T16:28:54Z", quantity: 1, total: 300, tip: 200, type: "visa", tags: [2,4,5]}
-        //     ]);
-        //     data.quantity.filterExact(2);
-        //     assert.deepEqual(data.tags.top(1), [
-        //       {date: "2011-11-14T17:38:40Z", quantity: 2, total: 200, tip: 100, type: "visa", tags: [2,4,5]}
-        //     ]);
-        //   } finally {
-        //     data.type.filterAll();
-        //     data.quantity.filterAll();
-        //   }
-          // try {
-          //   data.type.filterExact("tab");
-          //   assert.deepEqual(data.date.top(2), [
-          //     {date: "2011-11-14T23:28:54Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]},
-          //     {date: "2011-11-14T23:23:29Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]}
-          //   ]);
-          //   data.type.filterExact("visa");
-          //   assert.deepEqual(data.date.top(1), [
-          //     {date: "2011-11-14T23:16:09Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [2,4,5]}
-          //   ]);
-          //   data.quantity.filterExact(2);
-          //   assert.deepEqual(data.date.top(1), [
-          //     {date: "2011-11-14T22:58:54Z", quantity: 2, total: 100, tip: 0, type: "visa", tags: [2,3,4]}
-          //   ]);
-          // } finally {
-          //   data.type.filterAll();
-          //   data.quantity.filterAll();
-          // }
-        // },
+        "observes other dimensions' filters": function(data) {
+          try {
+            data.quantity.filterExact(4);
+            assert.deepEqual(data.tags.top(1), [
+              {date: '2011-11-14T21:18:48Z', quantity: 4, total: 270, tip: 0, type: 'tab', tags: [1,2,3]}
+            ]);
+            data.quantity.filterAll();
+            data.type.filterExact("visa");
+            assert.deepEqual(data.tags.top(1), [
+              {date: "2011-11-14T16:28:54Z", quantity: 1, total: 300, tip: 200, type: "visa", tags: [2,4,5]}
+            ]);
+            data.quantity.filterExact(2);
+            assert.deepEqual(data.tags.top(1), [
+              {date: "2011-11-14T17:38:40Z", quantity: 2, total: 200, tip: 100, type: "visa", tags: [2,4,5]}
+            ]);
+          } finally {
+            data.type.filterAll();
+            data.quantity.filterAll();
+          }
+          try {
+            data.type.filterExact("tab");
+            assert.deepEqual(data.date.top(2), [
+              {date: "2011-11-14T23:28:54Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]},
+              {date: "2011-11-14T23:23:29Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]}
+            ]);
+            data.type.filterExact("visa");
+            assert.deepEqual(data.date.top(1), [
+              {date: "2011-11-14T23:16:09Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [2,4,5]}
+            ]);
+            data.quantity.filterExact(2);
+            assert.deepEqual(data.date.top(1), [
+              {date: "2011-11-14T22:58:54Z", quantity: 2, total: 100, tip: 0, type: "visa", tags: [2,3,4]}
+            ]);
+          } finally {
+            data.type.filterAll();
+            data.quantity.filterAll();
+          }
+        },
         // "negative or zero k returns an empty array": function(data) {
         //   assert.deepEqual(data.quantity.top(0), []);
         //   assert.deepEqual(data.quantity.top(-1), []);
