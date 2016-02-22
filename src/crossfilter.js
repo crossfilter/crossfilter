@@ -484,6 +484,10 @@ function crossfilter() {
       // This function is responsible for updating groups and groupIndex.
       function add(newValues, newIndex, n0, n1) {
 
+        if(iterable) {
+          n1 = n0 + newValues.length;
+        }
+
         var oldGroups = groups,
             reIndex = crossfilter_index(k, groupCapacity),
             add = reduceAdd,
@@ -506,13 +510,19 @@ function crossfilter() {
         // Reset the new groups (k is a lower bound).
         // Also, make sure that groupIndex exists and is long enough.
         groups = new Array(k), k = 0;
-        groupIndex = k0 > 1 ? crossfilter_arrayLengthen(groupIndex, n) : crossfilter_index(n, groupCapacity);
+        if(iterable){
+          groupIndex = [];
+        }
+        else{
+          groupIndex = k0 > 1 ? crossfilter_arrayLengthen(groupIndex, n) : crossfilter_index(n, groupCapacity);
+        }
 
         // Get the first old key (x0 of g0), if it exists.
         if (k0) x0 = (g0 = oldGroups[0]).key;
 
         // Find the first new key (x1), skipping NaN keys.
         while (i1 < n1 && !((x1 = key(newValues[i1])) >= x1)) ++i1;
+
 
         // While new keys remain…
         while (i1 < n1) {
@@ -536,8 +546,21 @@ function crossfilter() {
 
           // Add any selected records belonging to the added group, while
           // advancing the new key and populating the associated group index.
+
           while (!(x1 > x)) {
-            groupIndex[j = newIndex[i1] + n0] = k;
+            j = newIndex[i1] + n0
+
+            if(iterable){
+              if(groupIndex[j]){
+                groupIndex[j].push(k)
+              }
+              else{
+                groupIndex[j] = [k]
+              }
+            }
+            else{
+              groupIndex[j] = k;
+            }
 
             // Always add new values to groups. Only remove when not in filter.
             // This gives groups full information on data life-cycle.
@@ -545,6 +568,10 @@ function crossfilter() {
             if (!filters.zeroExcept(j, offset, zero)) g.value = remove(g.value, data[j], false);
             if (++i1 >= n1) break;
             x1 = key(newValues[i1]);
+          }
+
+          if(iterable){
+            console.log('groupIndex', groupIndex)
           }
 
           groupIncrement();
