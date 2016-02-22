@@ -159,9 +159,9 @@ function crossfilter() {
         // newIndex should be a map of sortedValue -> crossfilterData
         newIndex = permute(unsortedIndex, sortMap)
 
-        console.log('newValues', newValues)
-        console.log('newIndex', newIndex)
-        console.log('iterablesIndexCount', iterablesIndexCount)
+        // console.log('newValues', newValues)
+        // console.log('newIndex', newIndex)
+        // console.log('iterablesIndexCount', iterablesIndexCount)
 
       } else{
         // Permute new values into natural order using a standard sorted index.
@@ -302,7 +302,7 @@ function crossfilter() {
         // For iterables, we need to figure out if the row has been completely removed vs partially included
         // Only count a row as added if it is not already being aggregated. Only count a row
         // as removed if the last element being aggregated is removed.
-        
+
         var newAdded = [];
         var newRemoved = [];
         for (i = 0; i < added.length; i++) {
@@ -321,8 +321,8 @@ function crossfilter() {
         added = newAdded;
         removed = newRemoved;
 
-        console.log('newAdded', newAdded)
-        console.log('newRemoved', newRemoved)
+        // console.log('newAdded', newAdded)
+        // console.log('newRemoved', newRemoved)
       }
 
       lo0 = lo1;
@@ -483,6 +483,7 @@ function crossfilter() {
       // Incorporates the specified new values into this group.
       // This function is responsible for updating groups and groupIndex.
       function add(newValues, newIndex, n0, n1) {
+
         var oldGroups = groups,
             reIndex = crossfilter_index(k, groupCapacity),
             add = reduceAdd,
