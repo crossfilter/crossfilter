@@ -122,8 +122,6 @@ function crossfilter() {
     function preAdd(newData, n0, n1) {
 
       if (iterable){
-
-
         // Count all the values
         t = 0;
         j = 0;
@@ -158,10 +156,6 @@ function crossfilter() {
         // Use the sortMap to sort the unsortedIndex map
         // newIndex should be a map of sortedValue -> crossfilterData
         newIndex = permute(unsortedIndex, sortMap)
-
-        // console.log('newValues', newValues)
-        // console.log('newIndex', newIndex)
-        // console.log('iterablesIndexCount', iterablesIndexCount)
 
       } else{
         // Permute new values into natural order using a standard sorted index.
@@ -690,7 +684,7 @@ function crossfilter() {
             if (filters.zeroExcept(k = added[i], offset, zero)) {
               for (j = 0; j < groupIndex[k].length; j++) {
                 g = groups[groupIndex[k][j]];
-                g.value = reduceAdd(g.value, data[k]);
+                g.value = reduceAdd(g.value, data[k], false, j);
               }
             }
           }
@@ -700,7 +694,7 @@ function crossfilter() {
             if (filters.onlyExcept(k = removed[i], offset, zero, filterOffset, filterOne)) {
               for (j = 0; j < groupIndex[k].length; j++) {
                 g = groups[groupIndex[k][j]];
-                g.value = reduceRemove(g.value, data[k], notFilter);
+                g.value = reduceRemove(g.value, data[k], notFilter, j);
               }
             }
           }
@@ -711,7 +705,7 @@ function crossfilter() {
         for (i = 0, n = added.length; i < n; ++i) {
           if (filters.zeroExcept(k = added[i], offset, zero)) {
             g = groups[groupIndex[k]];
-            g.value = reduceAdd(g.value, data[k]);
+            g.value = reduceAdd(g.value, data[k], false);
           }
         }
 
@@ -738,7 +732,7 @@ function crossfilter() {
         // Add the added values.
         for (i = 0, n = added.length; i < n; ++i) {
           if (filters.zeroExcept(k = added[i], offset, zero)) {
-            g.value = reduceAdd(g.value, data[k]);
+            g.value = reduceAdd(g.value, data[k], false);
           }
         }
 
@@ -769,14 +763,14 @@ function crossfilter() {
           for (i = 0; i < n; ++i) {
             for (j = 0; j < groupIndex[i].length; j++) {
               g = groups[groupIndex[i][j]];
-              g.value = reduceAdd(g.value, data[i], true);
+              g.value = reduceAdd(g.value, data[i], true, j);
             }
           }
           for (i = 0; i < n; ++i) {
             if (!filters.zeroExcept(i, offset, zero)) {
               for (j = 0; j < groupIndex[i].length; j++) {
                 g = groups[groupIndex[i][j]];
-                g.value = reduceRemove(g.value, data[i], false);
+                g.value = reduceRemove(g.value, data[i], false, j);
               }
             }
           }
