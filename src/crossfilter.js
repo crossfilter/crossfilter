@@ -679,9 +679,33 @@ function crossfilter() {
         if ((filterOne === one && filterOffset === offset) || resetNeeded) return;
 
         var i,
+            j,
             k,
             n,
             g;
+
+        if(iterable){
+          // Add the added values.
+          for (i = 0, n = added.length; i < n; ++i) {
+            if (filters.zeroExcept(k = added[i], offset, zero)) {
+              for (j = 0; j < groupIndex[k].length; j++) {
+                g = groups[groupIndex[k][j]];
+                g.value = reduceAdd(g.value, data[k]);
+              }
+            }
+          }
+
+          // Remove the removed values.
+          for (i = 0, n = removed.length; i < n; ++i) {
+            if (filters.onlyExcept(k = removed[i], offset, zero, filterOffset, filterOne)) {
+              for (j = 0; j < groupIndex[k].length; j++) {
+                g = groups[groupIndex[k][j]];
+                g.value = reduceRemove(g.value, data[k], notFilter);
+              }
+            }
+          }
+          return;
+        }
 
         // Add the added values.
         for (i = 0, n = added.length; i < n; ++i) {
