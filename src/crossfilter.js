@@ -570,9 +570,9 @@ function crossfilter() {
             x1 = key(newValues[i1]);
           }
 
-          if(iterable){
-            console.log('groupIndex', groupIndex)
-          }
+          // if(iterable){
+          //   console.log('groupIndex', groupIndex)
+          // }
 
           groupIncrement();
         }
@@ -730,6 +730,7 @@ function crossfilter() {
       // This function is only used when the cardinality is greater than 1.
       function resetMany() {
         var i,
+            j,
             g;
 
         // Reset all group values.
@@ -740,11 +741,28 @@ function crossfilter() {
         // We add all records and then remove filtered records so that reducers
         // can build an 'unfiltered' view even if there are already filters in
         // place on other dimensions.
+        if(iterable){
+          for (i = 0; i < n; ++i) {
+            for (j = 0; j < groupIndex[i].length; j++) {
+              g = groups[groupIndex[i][j]];
+              g.value = reduceAdd(g.value, data[i], true);
+            }
+          }
+          for (i = 0; i < n; ++i) {
+            if (!filters.zeroExcept(i, offset, zero)) {
+              for (j = 0; j < groupIndex[i].length; j++) {
+                g = groups[groupIndex[i][j]];
+                g.value = reduceRemove(g.value, data[i], false);
+              }
+            }
+          }
+          return;
+        }
+
         for (i = 0; i < n; ++i) {
           g = groups[groupIndex[i]];
           g.value = reduceAdd(g.value, data[i], true);
         }
-
         for (i = 0; i < n; ++i) {
           if (!filters.zeroExcept(i, offset, zero)) {
             g = groups[groupIndex[i]];

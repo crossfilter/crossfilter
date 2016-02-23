@@ -2123,9 +2123,11 @@ suite.addBatch({
 
         "key defaults to value": function(data) {
           assert.deepEqual(data.tags.all.top(Infinity), [
-            {key: "tab", value: 32},
-            {key: "visa", value: 7},
-            {key: "cash", value: 4}
+            { key: 2, value: 34 },
+            { key: 3, value: 30 },
+            { key: 4, value: 24 },
+            { key: 1, value: 19 },
+            { key: 5, value: 13 }
           ]);
         },
 
