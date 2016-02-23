@@ -2131,180 +2131,201 @@ suite.addBatch({
           ]);
         },
 
-        // "cardinality may be greater than 256": function() {
-        //   var data = crossfilter(d3.range(256).concat(256, 256)),
-        //       index = data.dimension(function(d) { return d; }),
-        //       indexes = index.group();
-        //   assert.deepEqual(index.top(2), [256, 256]);
-        //   assert.deepEqual(indexes.top(1), [{key: 256, value: 2}]);
-        //   assert.equal(indexes.size(), 257);
-        // },
-        //
-        // "cardinality may be greater than 65536": function() {
-        //   var data = crossfilter(d3.range(65536).concat(65536, 65536)),
-        //       index = data.dimension(function(d) { return d; }),
-        //       indexes = index.group();
-        //   assert.deepEqual(index.top(2), [65536, 65536]);
-        //   assert.deepEqual(indexes.top(1), [{key: 65536, value: 2}]);
-        //   assert.equal(indexes.size(), 65537);
-        // },
-        //
-        // "adds all records before removing filtered": function(data) {
-        //   try {
-        //     data.quantity.filter(1);
-        //     // Group only adds
-        //     var addGroup = data.type.group().reduce(
-        //         function(p, v) {
-        //           ++p;
-        //           return p;
-        //         }, function(p, v) {
-        //           return p;
-        //         }, function() {
-        //           return 0;
-        //         }
-        //       );
-        //     // Normal group
-        //     var stdGroup = data.type.group();
-        //     assert.isTrue(addGroup.top(1)[0].value > stdGroup.top(1)[0].value);
-        //   } finally {
-        //     data.quantity.filterAll();
-        //   }
-        // },
-        //
-        // "size": {
-        //   "returns the cardinality": function(data) {
-        //     assert.equal(data.date.hours.size(), 8);
-        //     assert.equal(data.type.types.size(), 3);
-        //   },
-        //   "ignores any filters": function(data) {
-        //     try {
-        //       data.type.filterExact("tab");
-        //       data.quantity.filterRange([100, 200]);
-        //       assert.equal(data.date.hours.size(), 8);
-        //       assert.equal(data.type.types.size(), 3);
-        //     } finally {
-        //       data.quantity.filterAll();
-        //       data.type.filterAll();
-        //     }
-        //   }
-        // },
-        //
-        // "reduce": {
-        //   "defaults to count": function(data) {
-        //     assert.deepEqual(data.date.hours.top(1), [
-        //       {key: new Date(Date.UTC(2011, 10, 14, 17, 00, 00)), value: 9}
-        //     ]);
-        //   },
-        //   "determines the computed reduce value": function(data) {
-        //     try {
-        //       data.date.hours.reduceSum(function(d) { return d.total; });
-        //       assert.deepEqual(data.date.hours.top(1), [
-        //         {key: new Date(Date.UTC(2011, 10, 14, 17, 00, 00)), value: 1240}
-        //       ]);
-        //     } finally {
-        //       data.date.hours.reduceCount();
-        //     }
-        //   },
-        //   "gives reduce functions information on lifecycle of data element": {
-        //     "topic": function() {
-        //       var data = crossfilter();
-        //       data.add([{foo: 1, val: 2}, {foo: 2, val: 2}, {foo: 3, val: 2}, {foo: 3, val: 2}]);
-        //       data.foo = data.dimension(function(d) { return d.foo; });
-        //       data.bar = data.dimension(function(d) { return d.foo; });
-        //       data.val = data.dimension(function(d) { return d.val; });
-        //       data.groupMax = data.bar.group().reduce(function(p,v,n){
-        //         if(n) {
-        //           p += v.val;
-        //         }
-        //         return p;
-        //       }, function(p,v,n) {
-        //         if(n) {
-        //           p -= v.val;
-        //         }
-        //         return p;
-        //       }, function() {
-        //         return 0;
-        //       });
-        //       data.groupSum = data.bar.group().reduceSum(function(d) { return d.val; });
-        //
-        //       return data;
-        //     },
-        //     "on group creation": function(data) {
-        //       assert.deepEqual(data.groupMax.all(), data.groupSum.all());
-        //     },
-        //     "on filtering": function(data) {
-        //       data.foo.filterRange([1, 3]);
-        //       assert.deepEqual(data.groupMax.all(), [{ key: 1, value: 2 }, { key: 2, value: 2 }, { key: 3, value: 4 }]);
-        //       assert.deepEqual(data.groupSum.all(), [{ key: 1, value: 2 }, { key: 2, value: 2 }, { key: 3, value: 0 }]);
-        //       data.foo.filterAll();
-        //     },
-        //     "on adding data after group creation": function(data) {
-        //       data.add([{foo: 1, val: 2}]);
-        //       assert.deepEqual(data.groupMax.all(), data.groupSum.all());
-        //     },
-        //     "on adding data when a filter is in place": function(data) {
-        //       data.foo.filterRange([1,3]);
-        //       data.add([{foo: 3, val: 1}]);
-        //       assert.deepEqual(data.groupMax.all(), [{ key: 1, value: 4 }, { key: 2, value: 2 }, { key: 3, value: 5 }]);
-        //       assert.deepEqual(data.groupSum.all(), [{ key: 1, value: 4 }, { key: 2, value: 2 }, { key: 3, value: 0 }]);
-        //       data.foo.filterAll();
-        //     },
-        //     "on removing data after group creation": function(data) {
-        //       data.val.filter(1);
-        //       data.remove();
-        //       assert.deepEqual(data.groupMax.all(), [{ key: 1, value: 4 },{ key: 2, value: 2 },{ key: 3, value: 4 }]);
-        //       assert.deepEqual(data.groupSum.all(), [{ key: 1, value: 0 },{ key: 2, value: 0 },{ key: 3, value: 0 }]);
-        //
-        //       data.val.filterAll();
-        //       assert.deepEqual(data.groupMax.all(), data.groupSum.all());
-        //     }
-        //   }
-        // },
-        //
-        // "top": {
-        //   "returns the top k groups by reduce value, in descending order": function(data) {
-        //     assert.deepEqual(data.date.hours.top(3), [
-        //       {key: new Date(Date.UTC(2011, 10, 14, 17, 00, 00)), value: 9},
-        //       {key: new Date(Date.UTC(2011, 10, 14, 16, 00, 00)), value: 7},
-        //       {key: new Date(Date.UTC(2011, 10, 14, 21, 00, 00)), value: 6}
-        //     ]);
-        //   },
-        //   "observes the specified order": function(data) {
-        //     try {
-        //       data.date.hours.order(function(v) { return -v; });
-        //       assert.deepEqual(data.date.hours.top(3), [
-        //         {key: new Date(Date.UTC(2011, 10, 14, 20, 00, 00)), value: 2},
-        //         {key: new Date(Date.UTC(2011, 10, 14, 19, 00, 00)), value: 3},
-        //         {key: new Date(Date.UTC(2011, 10, 14, 18, 00, 00)), value: 5}
-        //       ]);
-        //     } finally {
-        //       data.date.hours.order(function(v) { return v; });
-        //     }
-        //   }
-        // },
-        //
-        // "order": {
-        //   "defaults to the identity function": function(data) {
-        //     assert.deepEqual(data.date.hours.top(1), [
-        //       {key: new Date(Date.UTC(2011, 10, 14, 17, 00, 00)), value: 9}
-        //     ]);
-        //   },
-        //   "is useful in conjunction with a compound reduce value": function(data) {
-        //     try {
-        //       data.date.hours.reduce(
-        //           function(p, v) { ++p.count; p.total += v.total; return p; },
-        //           function(p, v) { --p.count; p.total -= v.total; return p; },
-        //           function() { return {count: 0, total: 0}; })
-        //           .order(function(v) { return v.total; });
-        //       assert.deepEqual(data.date.hours.top(1), [
-        //         {key: new Date(Date.UTC(2011, 10, 14, 17, 00, 00)), value: {count: 9, total: 1240}}
-        //       ]);
-        //     } finally {
-        //       data.date.hours.reduceCount().orderNatural();
-        //     }
-        //   }
-        // },
-        //
+        "cardinality may be greater than 256": function() {
+          var data = crossfilter(d3.range(256).concat(256, 256).map(function(d){
+            return {tags: [d, d+1, d+2]}
+          })),
+              index = data.dimension(function(d) { return d.tags; }, true),
+              indexes = index.group();
+          assert.deepEqual(index.top(2), [
+            {tags:[256, 257, 258]},
+            {tags:[256, 257, 258]}
+          ]);
+          assert.deepEqual(indexes.top(1), [{ key: 256, value: 4 }]);
+          assert.equal(indexes.size(), 259);
+        },
+
+        "cardinality may be greater than 65536": function() {
+          var data = crossfilter(d3.range(65536).concat(65536, 65536).map(function(d){
+            return {tags: [d, d+1, d+2]}
+          })),
+              index = data.dimension(function(d) { return d.tags; }, true),
+              indexes = index.group();
+          assert.deepEqual(index.top(2), [
+            {tags: [ 65536, 65537, 65538 ]},
+            {tags: [ 65536, 65537, 65538 ]}
+          ]);
+          assert.deepEqual(indexes.top(1), [{key: 65536, value: 4}]);
+          assert.equal(indexes.size(), 65539);
+        },
+
+        "adds all records before removing filtered": function(data) {
+          try {
+            data.quantity.filter(1);
+            // Group only adds
+            var addGroup = data.tags.group().reduce(
+                function(p, v) {
+                  ++p;
+                  return p;
+                }, function(p, v) {
+                  return p;
+                }, function() {
+                  return 0;
+                }
+              );
+            // Normal group
+            var stdGroup = data.tags.group();
+            assert.isTrue(addGroup.top(1)[0].value > stdGroup.top(1)[0].value);
+          } finally {
+            data.quantity.filterAll();
+          }
+        },
+
+        "size": {
+          "returns the cardinality": function(data) {
+            assert.equal(data.date.hours.size(), 8);
+            assert.equal(data.tags.all.size(), 5);
+          },
+          "ignores any filters": function(data) {
+            try {
+              data.tags.filterExact(1);
+              data.quantity.filterRange([100, 200]);
+              assert.equal(data.date.hours.size(), 8);
+              assert.equal(data.tags.all.size(), 5);
+            } finally {
+              data.quantity.filterAll();
+              data.tags.filterAll();
+            }
+          }
+        },
+
+        "reduce": {
+          "defaults to count": function(data) {
+            assert.deepEqual(data.tags.all.top(1), [
+              { key: 2, value: 34 }
+            ]);
+          },
+          // "determines the computed reduce value": function(data) {
+          //   try {
+          //     data.tags.all.reduceSum(function(d) { return d.total; });
+          //     assert.deepEqual(data.tags.all.top(Infinity), [
+          //       { key: 2, value: 5441 }
+          //     ]);
+          //   } finally {
+          //     data.tags.all.reduceCount();
+          //   }
+          // },
+          "gives reduce functions information on lifecycle of data element": {
+            "topic": function() {
+              var data = crossfilter();
+              data.add([{foo: 1, val: [1, 2]}, {foo: 2, val: [1,2]}, {foo: 3, val: [1,2]}, {foo: 3, val: [1,2]}]);
+              data.foo = data.dimension(function(d) { return d.foo; });
+              data.bar = data.dimension(function(d) { return d.foo; });
+              data.val = data.dimension(function(d) { return d.val; }, true);
+              data.groupMaxLength = data.bar.group().reduce(function(p,v,n){
+                if(n) {
+                  p += v.val.length;
+                }
+                return p;
+              }, function(p,v,n) {
+                if(n) {
+                  p -= v.val.length;
+                }
+                return p;
+              }, function() {
+                return 0;
+              });
+              data.groupSumLength = data.bar.group().reduceSum(function(d) { return d.val.length; });
+
+              return data;
+            },
+            "on group creation": function(data) {
+              assert.deepEqual(data.groupMaxLength.all(), data.groupSumLength.all());
+            },
+            "on filtering": function(data) {
+              data.foo.filterRange([1, 3]);
+              assert.deepEqual(data.groupMaxLength.all(), [
+                { key: 1, value: 2 },
+                { key: 2, value: 2 },
+                { key: 3, value: 4 }
+              ]);
+              assert.deepEqual(data.groupSumLength.all(), [
+                { key: 1, value: 2 },
+                { key: 2, value: 2 },
+                { key: 3, value: 0 }
+              ]);
+              data.foo.filterAll();
+            },
+            "on adding data after group creation": function(data) {
+              data.add([{foo: 1, val: [1,2]}]);
+              assert.deepEqual(data.groupMaxLength.all(), data.groupSumLength.all());
+            },
+            "on adding data when a filter is in place": function(data) {
+              data.foo.filterRange([1,3]);
+              data.add([{foo: 3, val: [1]}]);
+              assert.deepEqual(data.groupMaxLength.all(), [{ key: 1, value: 4 }, { key: 2, value: 2 }, { key: 3, value: 5 }]);
+              assert.deepEqual(data.groupSumLength.all(), [{ key: 1, value: 4 }, { key: 2, value: 2 }, { key: 3, value: 0 }]);
+              data.foo.filterAll();
+            },
+            // "on removing data after group creation": function(data) {
+            //   data.val.filter(2);
+            //   data.remove();
+            //   assert.deepEqual(data.groupMaxLength.all(), [{ key: 1, value: 4 },{ key: 2, value: 2 },{ key: 3, value: 4 }]);
+            //   assert.deepEqual(data.groupSumLength.all(), [{ key: 1, value: 0 },{ key: 2, value: 0 },{ key: 3, value: 0 }]);
+            //
+            //   data.val.filterAll();
+            //   assert.deepEqual(data.groupMaxLength.all(), data.groupSumLength.all());
+            // }
+          }
+        },
+
+        "top": {
+          "returns the top k groups by reduce value, in descending order": function(data) {
+            assert.deepEqual(data.tags.all.top(3), [
+              {key: 2, value: 34},
+              {key: 3, value: 30},
+              {key: 4, value: 24}
+            ]);
+          },
+          "observes the specified order": function(data) {
+            try {
+              data.tags.all.order(function(v) { return -v; });
+              assert.deepEqual(data.tags.all.top(3), [
+                {key: 5, value: 13},
+                {key: 1, value: 19},
+                {key: 4, value: 24}
+              ]);
+            } finally {
+              data.tags.all.order(function(v) { return v; });
+            }
+          }
+        },
+
+        "order": {
+          "defaults to the identity function": function(data) {
+            assert.deepEqual(data.tags.all.top(1), [
+              { key: 2, value: 34 }
+            ]);
+          },
+          "is useful in conjunction with a compound reduce value": function(data) {
+            try {
+              data.tags.all.reduce(
+                  function(p, v) { ++p.count; p.total += v.total; return p; },
+                  function(p, v) { --p.count; p.total -= v.total; return p; },
+                  function() { return {count: 0, total: 0}; })
+                  .order(function(v) { return v.total; });
+              assert.deepEqual(data.tags.all.top(1), [
+                {
+                  key: 2,
+                  value: { count: 34, total: 5441 }
+                }
+              ]);
+            } finally {
+              data.tags.all.reduceCount().orderNatural();
+            }
+          }
+        },
+
         // "dispose": {
         //   "detaches from reduce listeners": function() {
         //     var data = crossfilter([0, 1, 2]),

@@ -511,7 +511,7 @@ function crossfilter() {
         // Also, make sure that groupIndex exists and is long enough.
         groups = new Array(k), k = 0;
         if(iterable){
-          groupIndex = [];
+          groupIndex = k0 > 1 ? crossfilter_arrayLengthenUntyped(groupIndex, n) : [];
         }
         else{
           groupIndex = k0 > 1 ? crossfilter_arrayLengthen(groupIndex, n) : crossfilter_index(n, groupCapacity);
@@ -621,7 +621,7 @@ function crossfilter() {
         function groupIncrement() {
           if (++k === groupCapacity) {
             reIndex = crossfilter_arrayWiden(reIndex, groupWidth <<= 1);
-            groupIndex = crossfilter_arrayWiden(groupIndex, groupWidth);
+            groupIndex = iterable ? groupIndex : crossfilter_arrayWiden(groupIndex, groupWidth);
             groupCapacity = crossfilter_capacity(groupWidth);
           }
         }
