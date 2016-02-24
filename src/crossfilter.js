@@ -92,6 +92,7 @@ function crossfilter() {
         newValues, // temporary array storing newly-added values
         newIndex, // temporary array storing newly-added index
         iterablesIndexCount,
+        iterablesEmptyRows,
         sort = quicksort_by(function(i) { return newValues[i]; }),
         refilter = crossfilter_filterAll, // for recomputing filter
         refilterFunction, // the custom filter function in use
@@ -128,27 +129,22 @@ function crossfilter() {
         k = [];
 
         for (i = 0; i < newData.length; i++) {
-          k = value(newData[i])
-          if(!k.length){
-            t++;
-            continue;
-          }
-          for(j = 0; j < k.length; j++) {
+          for(j = 0, k = value(newData[i]); j < k.length; j++) {
             t++;
           }
         }
 
         newValues = [];
         iterablesIndexCount = crossfilter_range(n);
+        iterablesEmptyRows = crossfilter_range(n);
         var unsortedIndex = crossfilter_range(t);
 
         for (l = 0, i = 0; i < newData.length; i++) {
           k = value(newData[i])
+          //
           if(!k.length){
             iterablesIndexCount[i] = 0;
-            newValues.push(null);
-            unsortedIndex[l] = i;
-            l++;
+            iterablesEmptyRows[i] = true
             continue;
           }
           iterablesIndexCount[i] = k.length
@@ -167,7 +163,7 @@ function crossfilter() {
 
 
         // Use the sortMap to sort the unsortedIndex map
-        // newIndex should bel a map of sortedValue -> crossfilterData
+        // newIndex should be a map of sortedValue -> crossfilterData
         newIndex = permute(unsortedIndex, sortMap)
         console.log(newValues, newIndex)
 
@@ -278,7 +274,6 @@ function crossfilter() {
           k,
           added = [],
           removed = [];
-
 
       // Fast incremental update based on previous lo index.
       if (lo1 < lo0) {
