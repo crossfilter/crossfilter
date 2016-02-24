@@ -17,7 +17,7 @@ var testData = [
   {date: "2011-11-14T17:07:21Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,2,3]},
   {date: "2011-11-14T17:22:59Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: []},
   {date: "2011-11-14T17:25:45Z", quantity: 2, total: 200, tip: null, type: "cash", tags: [2,4,5]},
-  {date: "2011-11-14T17:29:52Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [2,3,4]},
+  {date: "2011-11-14T17:29:52Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [-1, 0, 'hello', 'world']},
   {date: "2011-11-14T17:33:46Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]},
   {date: "2011-11-14T17:33:59Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,3]},
   {date: "2011-11-14T17:38:40Z", quantity: 2, total: 200, tip: 100, type: "visa", tags: [2,4,5]},

@@ -128,7 +128,12 @@ function crossfilter() {
         k = [];
 
         for (i = 0; i < newData.length; i++) {
-          for(k = value(newData[i]), j = 0; j < k.length; j++) {
+          k = value(newData[i])
+          if(!k.length){
+            t++;
+            continue;
+          }
+          for(j = 0; j < k.length; j++) {
             t++;
           }
         }
@@ -139,6 +144,13 @@ function crossfilter() {
 
         for (l = 0, i = 0; i < newData.length; i++) {
           k = value(newData[i])
+          if(!k.length){
+            iterablesIndexCount[i] = 0;
+            newValues.push(null);
+            unsortedIndex[l] = i;
+            l++;
+            continue;
+          }
           iterablesIndexCount[i] = k.length
           for (j = 0; j < k.length; j++) {
             newValues.push(k[j]);
@@ -153,9 +165,11 @@ function crossfilter() {
         // Use the sortMap to sort the newValues
         newValues = permute(newValues, sortMap);
 
+
         // Use the sortMap to sort the unsortedIndex map
         // newIndex should bel a map of sortedValue -> crossfilterData
         newIndex = permute(unsortedIndex, sortMap)
+        console.log(newValues, newIndex)
 
       } else{
         // Permute new values into natural order using a standard sorted index.
