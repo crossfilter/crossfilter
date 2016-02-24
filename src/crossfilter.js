@@ -415,26 +415,17 @@ function crossfilter() {
           i = hi0,
           j;
 
-      if(iterable){
-        while (--i >= lo0 && k > 0) {
-          if (filters.zero(j = index[i])) {
-            array.push(data[j]);
-            --k;
-          }
-        }
-        
-        for(i = 0; i < iterablesEmptyRows.length && k > 0; i++) {
-          // Add empty rows at the end
-          array.push(data[iterablesEmptyRows[i]]);
-          --k;
-        }
-
-        return array;
-      }
-
       while (--i >= lo0 && k > 0) {
         if (filters.zero(j = index[i])) {
           array.push(data[j]);
+          --k;
+        }
+      }
+      
+      if(iterable){
+        for(i = 0; i < iterablesEmptyRows.length && k > 0; i++) {
+          // Add empty rows at the end
+          array.push(data[iterablesEmptyRows[i]]);
           --k;
         }
       }
@@ -446,7 +437,7 @@ function crossfilter() {
     // Note: observes this dimension's filter, unlike group and groupAll.
     function bottom(k) {
       var array = [],
-          i = lo0,
+          i,
           j;
 
       if(iterable) {
@@ -456,6 +447,8 @@ function crossfilter() {
           --k;
         }
       }
+      
+      i = lo0;
 
       while (i < hi0 && k > 0) {
         if (filters.zero(j = index[i])) {
