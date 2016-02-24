@@ -136,7 +136,7 @@ function crossfilter() {
 
         newValues = [];
         iterablesIndexCount = crossfilter_range(n);
-        iterablesEmptyRows = crossfilter_range(n);
+        iterablesEmptyRows = [];
         var unsortedIndex = crossfilter_range(t);
 
         for (l = 0, i = 0; i < newData.length; i++) {
@@ -144,7 +144,7 @@ function crossfilter() {
           //
           if(!k.length){
             iterablesIndexCount[i] = 0;
-            iterablesEmptyRows[i] = true
+            iterablesEmptyRows.push(i);
             continue;
           }
           iterablesIndexCount[i] = k.length
@@ -165,7 +165,6 @@ function crossfilter() {
         // Use the sortMap to sort the unsortedIndex map
         // newIndex should be a map of sortedValue -> crossfilterData
         newIndex = permute(unsortedIndex, sortMap)
-        console.log(newValues, newIndex)
 
       } else{
         // Permute new values into natural order using a standard sorted index.
@@ -323,7 +322,26 @@ function crossfilter() {
 
         added = newAdded;
         removed = newRemoved;
-
+        
+        // Now handle empty rows.
+        if(bounds[0] === 0 && bounds[1] === index.length) {
+          for(i = 0; i < iterablesEmptyRows.length; i++) {
+            if((filters[offset][k = iterablesEmptyRows[i]] & one)) {
+              // Was not in the filter, so set the filter and add
+              filters[offset][k] ^= one;
+              added.push(k);
+            }
+          }
+        } else {
+          // filter in place - remove empty rows if necessary
+          for(i = 0; i < iterablesEmptyRows.length; i++) {
+            if(!(filters[offset][k = iterablesEmptyRows[i]] & one)) {
+              // Was in the filter, so set the filter and remove
+              filters[offset][k] ^= one;
+              removed.push(k);
+            }
+          }
+        }
       }
 
       lo0 = lo1;
@@ -404,6 +422,12 @@ function crossfilter() {
             --k;
           }
         }
+        
+        for(i = 0; i < iterablesEmptyRows.length && k > 0; i++) {
+          // Add empty rows at the end
+          array.push(data[iterablesEmptyRows[i]]);
+          --k;
+        }
 
         return array;
       }
@@ -424,6 +448,14 @@ function crossfilter() {
       var array = [],
           i = lo0,
           j;
+
+      if(iterable) {
+        // Add empty rows at the top
+        for(i = 0; i < iterablesEmptyRows.length && k > 0; i++) {
+          array.push(data[iterablesEmptyRows[i]]);
+          --k;
+        }
+      }
 
       while (i < hi0 && k > 0) {
         if (filters.zero(j = index[i])) {

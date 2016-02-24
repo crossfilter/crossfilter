@@ -1967,10 +1967,6 @@ suite.addBatch({
                   return 0
                 }
               )
-
-            console.log(group0.all())
-            console.log(group1.all())
-            console.log(group2.all())
           }
         }
       },
