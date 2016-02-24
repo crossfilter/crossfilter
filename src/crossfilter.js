@@ -425,8 +425,10 @@ function crossfilter() {
       if(iterable){
         for(i = 0; i < iterablesEmptyRows.length && k > 0; i++) {
           // Add empty rows at the end
-          array.push(data[iterablesEmptyRows[i]]);
-          --k;
+          if(filters.zero(j = iterablesEmptyRows[i])) {
+            array.push(data[j]);
+            --k;
+          }
         }
       }
 
@@ -443,8 +445,10 @@ function crossfilter() {
       if(iterable) {
         // Add empty rows at the top
         for(i = 0; i < iterablesEmptyRows.length && k > 0; i++) {
-          array.push(data[iterablesEmptyRows[i]]);
-          --k;
+          if(filters.zero(j = iterablesEmptyRows[i])) {
+            array.push(data[j]);
+            --k;
+          }
         }
       }
       
