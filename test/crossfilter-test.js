@@ -1423,17 +1423,20 @@ suite.addBatch({
         "returns the top k records by value, in descending order": function(data) {
           var top = data.tags.top(3)
           assert.equal(top.length, 3)
-          assert.deepEqual(top[0],{ date: '2011-11-14T22:48:05Z', quantity: 2, total: 91, tip: 0, type: 'tab', tags: [2,4,5]});
+
+          assert.equal(Math.max.apply(null, top[0].tags), 5)
+          assert.equal(Math.max.apply(null, top[1].tags), 5)
+          assert.equal(Math.max.apply(null, top[2].tags), 5)
         },
         "observes the associated dimension's filters": function(data) {
           try {
             data.tags.filterExact(1);
-            assert.deepEqual(data.tags.top(4), [
-              {date: '2011-11-14T23:06:25Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [1,2,3]},
-              {date: '2011-11-14T16:17:54Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [1,2,3]},
-              {date: '2011-11-14T18:02:42Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [1,2,3]},
-              {date: '2011-11-14T21:18:48Z', quantity: 4, total: 270, tip: 0, type: 'tab', tags: [1,2,3]}
-            ]);
+
+            var top = data.tags.top(3)
+            assert.equal(top[0].tags.indexOf(1) > -1, true)
+            assert.equal(top[1].tags.indexOf(1) > -1, true)
+            assert.equal(top[2].tags.indexOf(1) > -1, true)
+
           } finally {
             data.tags.filterAll();
           }
@@ -1486,11 +1489,13 @@ suite.addBatch({
 
       "bottom": {
         "returns the bottom k records by value, in descending order": function(data) {
-          assert.deepEqual(data.tags.bottom(3), [
-            {date: '2011-11-14T21:31:05Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [1,2,3]},
-            {date: '2011-11-14T16:20:19Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [1,3]},
-            {date: '2011-11-14T16:48:46Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [1,2,3]}
-          ]);
+          var bottom = data.tags.bottom(3)
+
+          console.log(data.tags.bottom(Infinity))
+
+          assert.equal(Math.min.apply(null, bottom[0].tags), 1)
+          assert.equal(Math.min.apply(null, bottom[1].tags), 1)
+          assert.equal(Math.min.apply(null, bottom[2].tags), 1)
         },
         "observes the associated dimension's filters": function(data) {
           try {
