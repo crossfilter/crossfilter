@@ -48,7 +48,7 @@ var testData = [
   {date: "2011-11-14T23:16:09Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [2,4,5]},
   {date: "2011-11-14T23:21:22Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,4,5]},
   {date: "2011-11-14T23:23:29Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]},
-  {date: "2011-11-14T23:28:54Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]}
+  {date: "2011-11-14T23:28:54Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: []}
 ];
 
 suite.addBatch({
@@ -1782,16 +1782,20 @@ suite.addBatch({
               { key: 2, value: 34 }
             ]);
           },
-          // "determines the computed reduce value": function(data) {
-          //   try {
-          //     data.tags.all.reduceSum(function(d) { return d.total; });
-          //     assert.deepEqual(data.tags.all.top(Infinity), [
-          //       { key: 2, value: 5441 }
-          //     ]);
-          //   } finally {
-          //     data.tags.all.reduceCount();
-          //   }
-          // },
+          "determines the computed reduce value": function(data) {
+            try {
+              data.tags.all.reduceSum(function(d) { return d.total; });
+              assert.deepEqual(data.tags.all.top(Infinity), [
+                { key: 2, value: 5441 },
+                { key: 3, value: 4319 },
+                { key: 4, value: 3861 },
+                { key: 1, value: 2799 },
+                { key: 5, value: 2341 }
+              ]);
+            } finally {
+              data.tags.all.reduceCount();
+            }
+          },
           "gives reduce functions information on lifecycle of data element": {
             "topic": function() {
               var data = crossfilter();
@@ -1840,7 +1844,7 @@ suite.addBatch({
               data.foo.filterAll();
             },
             // "on adding data after group creation": function(data) {
-            //   data.add([{foo: 1, val: [1,2]}]);
+            //   data.add([{foo: 1, val: [5,6]}]);
             //   assert.deepEqual(data.val.groupSumLength.all(), data.val.groupSumEach.all());
             // },
             // "on adding data when a filter is in place": function(data) {
@@ -1944,6 +1948,29 @@ suite.addBatch({
             group.dispose();
             data.add({tags: [3]}, {tags: [4,5]}, {tags: [4,5,6]});
             assert.isFalse(callback);
+          }
+        },
+        "other": {
+          "tanner's test": function(data){
+            var group0 = data.type.group()
+            var group1 = data.tags.group()
+              .reduceCount(function(d, p, b, i){return d.tags[i]})
+            var group2 = data.tags.group()
+              .reduce(
+                function(p, v, b, i){
+                  p += v.tags[i]; return p
+                },
+                function(p, v, b, i){
+                  p -= v.tags[i]; return p
+                },
+                function(){
+                  return 0
+                }
+              )
+
+            console.log(group0.all())
+            console.log(group1.all())
+            console.log(group2.all())
           }
         }
       },

@@ -154,7 +154,7 @@ function crossfilter() {
         newValues = permute(newValues, sortMap);
 
         // Use the sortMap to sort the unsortedIndex map
-        // newIndex should be a map of sortedValue -> crossfilterData
+        // newIndex should bel a map of sortedValue -> crossfilterData
         newIndex = permute(unsortedIndex, sortMap)
 
       } else{
@@ -315,8 +315,6 @@ function crossfilter() {
         added = newAdded;
         removed = newRemoved;
 
-        // console.log('newAdded', newAdded)
-        // console.log('newRemoved', newRemoved)
       }
 
       lo0 = lo1;
@@ -483,7 +481,7 @@ function crossfilter() {
         }
 
         var oldGroups = groups,
-            reIndex = crossfilter_index(k, groupCapacity),
+            reIndex = iterable ? [] : crossfilter_index(k, groupCapacity),
             add = reduceAdd,
             remove = reduceRemove,
             initial = reduceInitial,
@@ -505,7 +503,7 @@ function crossfilter() {
         // Also, make sure that groupIndex exists and is long enough.
         groups = new Array(k), k = 0;
         if(iterable){
-          groupIndex = k0 > 1 ? crossfilter_arrayLengthenUntyped(groupIndex, n) : [];
+          groupIndex = k0 > 1 ? groupIndex : [];
         }
         else{
           groupIndex = k0 > 1 ? crossfilter_arrayLengthen(groupIndex, n) : crossfilter_index(n, groupCapacity);
@@ -516,7 +514,6 @@ function crossfilter() {
 
         // Find the first new key (x1), skipping NaN keys.
         while (i1 < n1 && !((x1 = key(newValues[i1])) >= x1)) ++i1;
-
 
         // While new keys remain…
         while (i1 < n1) {
@@ -541,7 +538,7 @@ function crossfilter() {
           // Add any selected records belonging to the added group, while
           // advancing the new key and populating the associated group index.
 
-          while (!(x1 > x)) {
+          while (x1 <= x) {
             j = newIndex[i1] + n0
 
             if(iterable){
@@ -564,9 +561,6 @@ function crossfilter() {
             x1 = key(newValues[i1]);
           }
 
-          // if(iterable){
-          //   console.log('groupIndex', groupIndex)
-          // }
 
           groupIncrement();
         }
@@ -579,11 +573,21 @@ function crossfilter() {
           groupIncrement();
         }
 
+        // Fill in gaps with empty arrays where there may have been rows with empty iterables
+        if(iterable){
+          for (i = 0; i < groupIndex.length; i++) {
+            if(!groupIndex[i]){
+              groupIndex[i] = []
+            }
+          }
+        }
+
         // If we added any new groups before any old groups,
         // update the group index of all the old records.
         if (k > i0) for (i0 = 0; i0 < n0; ++i0) {
           groupIndex[i0] = reIndex[groupIndex[i0]];
         }
+
 
         // Modify the update and reset behavior based on the cardinality.
         // If the cardinality is less than or equal to one, then the groupIndex
@@ -613,9 +617,13 @@ function crossfilter() {
         // Count the number of added groups,
         // and widen the group index as needed.
         function groupIncrement() {
+          if(iterable){
+            k++
+            return
+          }
           if (++k === groupCapacity) {
             reIndex = crossfilter_arrayWiden(reIndex, groupWidth <<= 1);
-            groupIndex = iterable ? groupIndex : crossfilter_arrayWiden(groupIndex, groupWidth);
+            groupIndex = crossfilter_arrayWiden(groupIndex, groupWidth);
             groupCapacity = crossfilter_capacity(groupWidth);
           }
         }
