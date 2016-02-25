@@ -1845,10 +1845,10 @@ suite.addBatch({
               ]);
               data.foo.filterAll();
             },
-            // "on adding data after group creation": function(data) {
-            //   data.add([{foo: 1, val: [5,6]}]);
-            //   assert.deepEqual(data.val.groupSumLength.all(), data.val.groupSumEach.all());
-            // },
+            "on adding data after group creation": function(data) {
+              data.add([{foo: 1, val: [5,6]}]);
+              assert.deepEqual(data.val.groupSumLength.all(), data.val.groupSumEach.all());
+            },
             // "on adding data when a filter is in place": function(data) {
             //   data.foo.filterRange([1,3]);
             //   data.add([{foo: 3, val: [1]}]);
@@ -1907,7 +1907,7 @@ suite.addBatch({
                 {
                     key: 3,
                     value: { count: 28, total: 4029 }
-                } 
+                }
               ]);
             } finally {
               data.tags.all.reduceCount().orderNatural();

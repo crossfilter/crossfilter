@@ -99,7 +99,8 @@ function crossfilter() {
         indexListeners = [], // when data is added
         dimensionGroups = [],
         lo0 = 0,
-        hi0 = 0;
+        hi0 = 0,
+        t = 0;
 
     // Updating a dimension is a two-stage process. First, we must update the
     // associated filters for the newly-added records. Once all dimensions have
@@ -195,14 +196,20 @@ function crossfilter() {
       }
 
 
+
       var oldValues = values,
           oldIndex = index,
           i0 = 0,
           i1 = 0;
 
+      if(iterable){
+        n0 = oldValues.length;
+        n1 = t
+      }
+
       // Otherwise, create new arrays into which to merge new and old.
-      values = new Array(n);
-      index = crossfilter_index(n, n);
+      values = iterable ? new Array(n0 + n1) : new Array(n);
+      index = iterable ? new Array(n0 + n1) : crossfilter_index(n, n);
 
       // Merge the old and new sorted values, and old and new index.
       for (i = 0; i0 < n0 && i1 < n1; ++i) {
@@ -322,7 +329,7 @@ function crossfilter() {
 
         added = newAdded;
         removed = newRemoved;
-        
+
         // Now handle empty rows.
         if(bounds[0] === 0 && bounds[1] === index.length) {
           for(i = 0; i < iterablesEmptyRows.length; i++) {
@@ -421,7 +428,7 @@ function crossfilter() {
           --k;
         }
       }
-      
+
       if(iterable){
         for(i = 0; i < iterablesEmptyRows.length && k > 0; i++) {
           // Add empty rows at the end
@@ -451,7 +458,7 @@ function crossfilter() {
           }
         }
       }
-      
+
       i = lo0;
 
       while (i < hi0 && k > 0) {
@@ -515,6 +522,7 @@ function crossfilter() {
       function add(newValues, newIndex, n0, n1) {
 
         if(iterable) {
+          console.log('n0', n0, 'n1', n1)
           n1 = n0 + newValues.length;
         }
 
@@ -546,6 +554,7 @@ function crossfilter() {
         else{
           groupIndex = k0 > 1 ? crossfilter_arrayLengthen(groupIndex, n) : crossfilter_index(n, groupCapacity);
         }
+
 
         // Get the first old key (x0 of g0), if it exists.
         if (k0) x0 = (g0 = oldGroups[0]).key;
@@ -599,7 +608,6 @@ function crossfilter() {
             x1 = key(newValues[i1]);
           }
 
-
           groupIncrement();
         }
 
@@ -619,6 +627,7 @@ function crossfilter() {
             }
           }
         }
+
 
         // If we added any new groups before any old groups,
         // update the group index of all the old records.
