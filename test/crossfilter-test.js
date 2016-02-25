@@ -1846,7 +1846,7 @@ suite.addBatch({
               data.foo.filterAll();
             },
             "on adding data after group creation": function(data) {
-              data.add([{foo: 1, val: [5,6]}]);
+              data.add([{foo: 1, val: [5,6,7]}]);
               assert.deepEqual(data.val.groupSumLength.all(), data.val.groupSumEach.all());
             },
             // "on adding data when a filter is in place": function(data) {
