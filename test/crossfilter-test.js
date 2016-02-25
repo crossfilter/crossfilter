@@ -1719,19 +1719,19 @@ suite.addBatch({
           assert.equal(indexes.size(), 259);
         },
 
-        // "cardinality may be greater than 65536": function() {
-        //   var data = crossfilter(d3.range(65536).concat(65536, 65536).map(function(d){
-        //     return {tags: [d, d+1, d+2]}
-        //   })),
-        //       index = data.dimension(function(d) { return d.tags; }, true),
-        //       indexes = index.group();
-        //   assert.deepEqual(index.top(2), [
-        //     {tags: [ 65536, 65537, 65538 ]},
-        //     {tags: [ 65536, 65537, 65538 ]}
-        //   ]);
-        //   assert.deepEqual(indexes.top(1), [{key: 65536, value: 4}]);
-        //   assert.equal(indexes.size(), 65539);
-        // },
+        "cardinality may be greater than 65536": function() {
+          var data = crossfilter(d3.range(65536).concat(65536, 65536).map(function(d){
+            return {tags: [d, d+1, d+2]}
+          })),
+              index = data.dimension(function(d) { return d.tags; }, true),
+              indexes = index.group();
+          assert.deepEqual(index.top(2), [
+            {tags: [ 65536, 65537, 65538 ]},
+            {tags: [ 65536, 65537, 65538 ]}
+          ]);
+          assert.deepEqual(indexes.top(1), [{key: 65536, value: 4}]);
+          assert.equal(indexes.size(), 65539);
+        },
 
         "adds all records before removing filtered": function(data) {
           try {
@@ -1853,22 +1853,38 @@ suite.addBatch({
               data.foo.filterRange([1,3]);
               data.add([{foo: 3, val: [6]}]);
               assert.deepEqual(data.val.groupSumLength.all(), [
-                { key: 1, value: 4 }, { key: 2, value: 2 }, { key: 3, value: 5 }
+                { key: 1, value: 6 },
+                { key: 2, value: 6 },
+                { key: 3, value: 3 },
+                { key: 4, value: 3 },
+                { key: 5, value: 6 },
+                { key: 6, value: 4 },
+                { key: 7, value: 3 }
               ]);
               assert.deepEqual(data.val.groupSumEach.all(), [
-                { key: 1, value: 4 }, { key: 2, value: 2 }, { key: 3, value: 0 }
+                { key: 1, value: 4 },
+                { key: 2, value: 4 },
+                { key: 3, value: 0 },
+                { key: 4, value: 0 },
+                { key: 5, value: 3 },
+                { key: 6, value: 3 },
+                { key: 7, value: 3 }
               ]);
               data.foo.filterAll();
             },
-            // "on removing data after group creation": function(data) {
-            //   data.val.filter(2);
-            //   data.remove();
-            //   assert.deepEqual(data.val.groupSumLength.all(), [{ key: 1, value: 4 },{ key: 2, value: 2 },{ key: 3, value: 4 }]);
-            //   assert.deepEqual(data.val.groupSumEach.all(), [{ key: 1, value: 0 },{ key: 2, value: 0 },{ key: 3, value: 0 }]);
-            //
-            //   data.val.filterAll();
-            //   assert.deepEqual(data.val.groupSumLength.all(), data.val.groupSumEach.all());
-            // }
+            "on removing data after group creation": function(data) {
+              data.val.filter(2);
+              data.remove();
+              assert.deepEqual(data.val.groupSumLength.all(), [
+                { key: 6, value: 4 }
+              ]);
+              assert.deepEqual(data.val.groupSumEach.all(), [
+                { key: 6, value: 4 }
+              ]);
+
+              data.val.filterAll();
+              assert.deepEqual(data.val.groupSumLength.all(), data.val.groupSumEach.all());
+            }
           }
         },
 

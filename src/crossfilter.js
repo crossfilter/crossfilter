@@ -575,7 +575,6 @@ function crossfilter() {
             g = g0, x = x0;
 
             // Record the new index of the old group.
-            iterable && console.log(reIndex, i0, k)
             reIndex[i0] = k;
 
             // Retrieve the next old key.
@@ -589,8 +588,6 @@ function crossfilter() {
 
           // Add any selected records belonging to the added group, while
           // advancing the new key and populating the associated group index.
-
-          iterable && console.log(groupIndex)
 
           while (x1 <= x) {
             j = newIndex[i1] + (iterable ? n0old : n0)
@@ -639,15 +636,16 @@ function crossfilter() {
 
         // If we added any new groups before any old groups,
         // update the group index of all the old records.
-        iterable && groupIndex.length < 100 && console.log('before reIndex', groupIndex)
         if(k > i0){
-          for (i0 = 0; i0 < n0; ++i0) {
-            groupIndex[i0] = reIndex[groupIndex[i0]];
+          if(iterable){
+            groupIndex = permute(groupIndex, reIndex, true)
+          }
+          else{
+            for (i0 = 0; i0 < n0; ++i0) {
+              groupIndex[i0] = reIndex[groupIndex[i0]];
+            }
           }
         }
-        iterable && groupIndex.length < 100 && console.log(' after reIndex', groupIndex)
-
-        // iterable && console.log('after', groupIndex)
 
         // Modify the update and reset behavior based on the cardinality.
         // If the cardinality is less than or equal to one, then the groupIndex
@@ -760,9 +758,6 @@ function crossfilter() {
           // Remove the removed values.
           for (i = 0, n = removed.length; i < n; ++i) {
             if (filters.onlyExcept(k = removed[i], offset, zero, filterOffset, filterOne)) {
-              if(groupIndex[k] === undefined){
-                console.log(groupIndex, k)
-              }
               for (j = 0; j < groupIndex[k].length; j++) {
                 g = groups[groupIndex[k][j]];
                 g.value = reduceRemove(g.value, data[k], notFilter, j);
