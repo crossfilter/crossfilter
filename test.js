@@ -13,28 +13,31 @@ var payments = crossfilter([
   {date: "2011-11-14T17:29:52Z", quantity: 1, total: 200, tip: 100, type: "visa", productIDs:["004"]}
 ]);
 
-var paymentsByType = payments.dimension(function(d) { return d.type; }, true);
-
+var paymentsByType = payments.dimension(function(d) { return d.type; });
 var groupByType = paymentsByType.group();
 
+var paymentsByTypeCharacter = payments.dimension(function(d) { return d.type; }, true);
+var groupByTypeCharacter = paymentsByTypeCharacter.group();
+
 var paymentsByProductID = payments.dimension(function(d) { return d.productIDs; }, true);
-
-// Filter to all transactions involving a particular product
-paymentsByProductID.filter("004");
-
-// Group by product and sum total quantity. Group keys are product IDs.
 var quantityGroupByProduct = paymentsByProductID.group().reduceSum(function(d) { return d.quantity; });
 
-var productQuantityChart = dc.rowChart('#chart1');
+var typeCountChart = dc.pieChart('#chart1');
+typeCountChart
+.dimension(paymentsByType)
+.group(groupByType);
 
+
+var typeCharacterCountChart = dc.pieChart('#chart2');
+typeCharacterCountChart
+.dimension(paymentsByTypeCharacter)
+.group(groupByTypeCharacter);
+
+
+var productQuantityChart = dc.rowChart('#chart3');
 productQuantityChart
   .dimension(paymentsByProductID)
   .group(quantityGroupByProduct);
 
-var typeCountChart = dc.pieChart('#chart2');
-
-typeCountChart
-  .dimension(paymentsByType)
-  .group(groupByType);
 
 dc.renderAll();

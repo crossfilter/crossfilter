@@ -93,7 +93,7 @@ function crossfilter() {
         oldIndex, // temporary array storing previously-added index
         newValues, // temporary array storing newly-added values
         newIndex, // temporary array storing newly-added index
-        iterablesIndexCount,
+        iterablesIndexCount = new Array(n).fill(0),
         iterablesEmptyRows,
         sort = quicksort_by(function(i) { return newValues[i]; }),
         refilter = crossfilter_filterAll, // for recomputing filter
@@ -138,19 +138,18 @@ function crossfilter() {
         }
 
         newValues = [];
-        iterablesIndexCount = crossfilter_range(n);
         iterablesEmptyRows = [];
-        var unsortedIndex = crossfilter_range(t);
+        var unsortedIndex =  new Array(t).fill(0)
 
         for (l = 0, i = 0; i < newData.length; i++) {
           k = value(newData[i])
           //
           if(!k.length){
-            iterablesIndexCount[i] = 0;
+            iterablesIndexCount[n0 + i] = 0;
             iterablesEmptyRows.push(i);
             continue;
           }
-          iterablesIndexCount[i] = k.length
+          iterablesIndexCount[n0 + i] = k.length
           for (j = 0; j < k.length; j++) {
             newValues.push(k[j]);
             unsortedIndex[l] = i;
@@ -282,74 +281,115 @@ function crossfilter() {
           j,
           k,
           added = [],
-          removed = [];
+          removed = [],
+          netAdded = [],
+          netRemoved = [];
 
-      // Fast incremental update based on previous lo index.
-      if (lo1 < lo0) {
-        for (i = lo1, j = Math.min(lo0, hi1); i < j; ++i) {
-          filters[offset][k = index[i]] ^= one;
-          added.push(k);
-        }
-      } else if (lo1 > lo0) {
-        for (i = lo0, j = Math.min(lo1, hi0); i < j; ++i) {
-          filters[offset][k = index[i]] ^= one;
-          removed.push(k);
-        }
-      }
-
-      // Fast incremental update based on previous hi index.
-      if (hi1 > hi0) {
-        for (i = Math.max(lo1, hi0), j = hi1; i < j; ++i) {
-          filters[offset][k = index[i]] ^= one;
-          added.push(k);
-        }
-      } else if (hi1 < hi0) {
-        for (i = Math.max(lo0, hi1), j = hi0; i < j; ++i) {
-          filters[offset][k = index[i]] ^= one;
-          removed.push(k);
-        }
-      }
 
       if(iterable){
-        // For iterables, we need to figure out if the row has been completely removed vs partially included
-        // Only count a row as added if it is not already being aggregated. Only count a row
-        // as removed if the last element being aggregated is removed.
 
-        var newAdded = [];
-        var newRemoved = [];
-        for (i = 0; i < added.length; i++) {
-          iterablesIndexCount[added[i]]++
-          if(iterablesIndexCount[added[i]] === 1) {
-            newAdded.push(added[i]);
+        // Figure out the net count for added and removed records
+        // Then we track the record's entry and exit based on that net
+
+        // Fast incremental update based on previous lo index.
+        if (lo1 < lo0) {
+          for (i = lo1, j = Math.min(lo0, hi1); i < j; ++i) {
+            k = index[i]
+            iterablesIndexCount[k]++
+            if(iterablesIndexCount[k] === 1) {
+              netAdded.push(k);
+            }
+          }
+        } else if (lo1 > lo0) {
+          for (i = lo0, j = Math.min(lo1, hi0); i < j; ++i) {
+            k = index[i]
+            iterablesIndexCount[k]--
+            if(iterablesIndexCount[k] === 0) {
+              netRemoved.push(k);
+            }
           }
         }
-        for (i = 0; i < removed.length; i++) {
-          iterablesIndexCount[removed[i]]--
-          if(iterablesIndexCount[removed[i]] === 0) {
-            newRemoved.push(removed[i]);
+
+        // Fast incremental update based on previous hi index.
+        if (hi1 > hi0) {
+          for (i = Math.max(lo1, hi0), j = hi1; i < j; ++i) {
+            k = index[i]
+            iterablesIndexCount[k]++
+            if(iterablesIndexCount[k] === 1) {
+              netAdded.push(k);
+            }
+          }
+        } else if (hi1 < hi0) {
+          for (i = Math.max(lo0, hi1), j = hi0; i < j; ++i) {
+            k = index[i]
+            iterablesIndexCount[k]--
+            if(iterablesIndexCount[k] === 0) {
+              netRemoved.push(k);
+            }
           }
         }
 
-        added = newAdded;
-        removed = newRemoved;
+        // Now that its possible for indices to pass through more than once,
+        // we take the net adds/removes and only flip the bits once
 
-        // Now handle empty rows.
+        for (i = 0; i < netAdded.length; i++) {
+          filters[offset][netAdded[i]] ^= one;
+        }
+
+        for (i = 0; i < netRemoved.length; i++) {
+          filters[offset][netRemoved[i]] ^= one;
+        }
+
+
+        added = netAdded;
+        removed = netRemoved;
+
+        // Lastly, deal with empty iterables (which are not indexed at all)
+
+        //If viewing all records, they should be included
         if(bounds[0] === 0 && bounds[1] === index.length) {
           for(i = 0; i < iterablesEmptyRows.length; i++) {
             if((filters[offset][k = iterablesEmptyRows[i]] & one)) {
-              // Was not in the filter, so set the filter and add
-              filters[offset][k] ^= one;
+              // Was not in the filter, so add
               added.push(k);
             }
           }
-        } else {
-          // filter in place - remove empty rows if necessary
+        }
+        //If any filter is present, they should be excluded
+        else {
           for(i = 0; i < iterablesEmptyRows.length; i++) {
             if(!(filters[offset][k = iterablesEmptyRows[i]] & one)) {
-              // Was in the filter, so set the filter and remove
-              filters[offset][k] ^= one;
+              // Was in the filter, so remove
               removed.push(k);
             }
+          }
+        }
+      }
+      else{
+        // Fast incremental update based on previous lo index.
+        if (lo1 < lo0) {
+          for (i = lo1, j = Math.min(lo0, hi1); i < j; ++i) {
+            filters[offset][k = index[i]] ^= one;
+            added.push(k);
+          }
+        } else if (lo1 > lo0) {
+          for (i = lo0, j = Math.min(lo1, hi0); i < j; ++i) {
+            k = index[i]
+            filters[offset][k = index[i]] ^= one;
+            removed.push(k);
+          }
+        }
+
+        // Fast incremental update based on previous hi index.
+        if (hi1 > hi0) {
+          for (i = Math.max(lo1, hi0), j = hi1; i < j; ++i) {
+            filters[offset][k = index[i]] ^= one;
+            added.push(k);
+          }
+        } else if (hi1 < hi0) {
+          for (i = Math.max(lo0, hi1), j = hi0; i < j; ++i) {
+            filters[offset][k = index[i]] ^= one;
+            removed.push(k);
           }
         }
       }
@@ -406,13 +446,10 @@ function crossfilter() {
           k,
           x,
           added = [],
-          removed = [];
+          removed = []
+          indexLength = index.length;
 
-
-      for (i = 0; i < n; ++i) {
-        if(typeof(k = index[i]) === 'undefined'){
-          continue
-        }
+      for (i = 0; i < indexLength; ++i) {
         if (!(filters[offset][k] & one) ^ !!(x = f(values[i], i))) {
           if (x) filters[offset][k] &= zero, added.push(k);
           else filters[offset][k] |= one, removed.push(k);
@@ -749,6 +786,7 @@ function crossfilter() {
             g;
 
         if(iterable){
+
           // Add the added values.
           for (i = 0, n = added.length; i < n; ++i) {
             if (filters.zeroExcept(k = added[i], offset, zero)) {
@@ -786,6 +824,7 @@ function crossfilter() {
             g.value = reduceRemove(g.value, data[k], notFilter);
           }
         }
+
       }
 
       // Reduces the specified selected or deselected records.
