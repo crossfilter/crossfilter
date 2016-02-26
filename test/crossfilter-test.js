@@ -1972,25 +1972,6 @@ suite.addBatch({
             assert.isFalse(callback);
           }
         },
-        "other": {
-          "tanner's test": function(data){
-            var group0 = data.type.group()
-            var group1 = data.tags.group()
-              .reduceCount(function(d, p, b, i){return d.tags[i]})
-            var group2 = data.tags.group()
-              .reduce(
-                function(p, v, b, i){
-                  p += v.tags[i]; return p
-                },
-                function(p, v, b, i){
-                  p -= v.tags[i]; return p
-                },
-                function(){
-                  return 0
-                }
-              )
-          }
-        }
       },
     }
   }
