@@ -283,7 +283,7 @@ function crossfilter() {
 
       if (refilterFunction) {
         refilterFunction = null;
-        filterIndexFunction(function(d, i) { return lo1 <= i && i < hi1; });
+        filterIndexFunction(function(d, i) { return lo1 <= i && i < hi1; }, bounds[0] === 0 && bounds[1] === index.length);
         lo0 = lo1;
         hi0 = hi1;
         return dimension;
@@ -422,7 +422,7 @@ function crossfilter() {
       return dimension;
     }
 
-    function filterIndexFunction(f) {
+    function filterIndexFunction(f, filterAll) {
       var i,
           k,
           x,
@@ -435,7 +435,7 @@ function crossfilter() {
         if(typeof(k = index[i]) === 'undefined'){
           continue
         }
-        if (!(filters[offset][k] & one) ^ !!(x = f(values[i], i))) {
+        if (!(filters[offset][k] & one) !== !!(x = f(values[i], i))) {
           if (x) added.push(k);
           else removed.push(k);
         }
@@ -455,28 +455,38 @@ function crossfilter() {
         for (i = 0; i < added.length; i++) {
           iterablesIndexCount[added[i]]++
           if(iterablesIndexCount[added[i]] === 1) {
-            filters[offset][added[i]] &= zero;
+            filters[offset][added[i]] ^= one;
             newAdded.push(added[i]);
           }
         }
         for (i = 0; i < removed.length; i++) {
           iterablesIndexCount[removed[i]]--
           if(iterablesIndexCount[removed[i]] === 0) {
-            filters[offset][removed[i]] |= one;
+            filters[offset][removed[i]] ^= one;
             newRemoved.push(removed[i]);
           }
         }
 
         added = newAdded;
         removed = newRemoved;
-
+        
         // Now handle empty rows.
-        // filter in place - remove empty rows if necessary
-        for(i = 0; i < iterablesEmptyRows.length; i++) {
-          if(!(filters[offset][k = iterablesEmptyRows[i]] & one)) {
-            // Was in the filter, so set the filter and remove
-            filters[offset][k] ^= one;
-            removed.push(k);
+        if(filterAll) {
+          for(i = 0; i < iterablesEmptyRows.length; i++) {
+            if((filters[offset][k = iterablesEmptyRows[i]] & one)) {
+              // Was not in the filter, so set the filter and add
+              filters[offset][k] ^= one;
+              added.push(k);
+            }
+          }
+        } else {
+          // filter in place - remove empty rows if necessary
+          for(i = 0; i < iterablesEmptyRows.length; i++) {
+            if(!(filters[offset][k = iterablesEmptyRows[i]] & one)) {
+              // Was in the filter, so set the filter and remove
+              filters[offset][k] ^= one;
+              removed.push(k);
+            }
           }
         }
       }

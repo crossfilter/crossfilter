@@ -1647,6 +1647,34 @@ suite.addBatch({
           } finally {
             data.total.filterAll();
           }
+        },
+        "group values with multiple filters on and off on standard dimension": function(data) {
+          try {
+            var group = data.tags.group();
+            data.total.filterFunction(function(d) { return d === 90; });
+            assert.equal(group.all()[group.all().length-1].value, 1);
+            data.total.filterAll();
+            data.total.filterFunction(function(d) { return d === 91; });
+            assert.equal(group.all()[group.all().length-1].value, 1);
+            data.total.filterAll();
+            assert.equal(group.all()[group.all().length-1].value, 13);
+          } finally {
+            data.total.filterAll();
+          }
+        },
+        "group values with multiple filters on and off on iterable dimension": function(data) {
+          try {
+            var group = data.total.groupAll().reduceCount();
+            data.tags.filterFunction(function(d) { return d === 1; });
+            assert.equal(group.value(), 18);
+            data.tags.filterAll();
+            data.tags.filterFunction(function(d) { return d === 2; });
+            assert.equal(group.value(), 33);
+            data.tags.filterAll();
+            assert.equal(group.value(), 43);
+          } finally {
+            data.tags.filterAll();
+          }
         }
       },
 
