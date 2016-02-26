@@ -405,13 +405,15 @@ function crossfilter() {
       var i,
           k,
           x,
-          indexLength = index.length,
           added = [],
           removed = [];
 
 
-      for (i = 0; i < indexLength; ++i) {
-        if (!(filters[offset][k = index[i]] & one) ^ !!(x = f(values[i], i))) {
+      for (i = 0; i < n; ++i) {
+        if(typeof(k = index[i]) === 'undefined'){
+          continue
+        }
+        if (!(filters[offset][k] & one) ^ !!(x = f(values[i], i))) {
           if (x) filters[offset][k] &= zero, added.push(k);
           else filters[offset][k] |= one, removed.push(k);
         }
