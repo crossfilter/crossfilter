@@ -406,10 +406,11 @@ function crossfilter() {
           k,
           x,
           added = [],
-          removed = [];
+          removed = [],
+          indexLength = index.length;
 
 
-      for (i = 0; i < n; ++i) {
+      for (i = 0; i < indexLength; ++i) {
         if(typeof(k = index[i]) === 'undefined'){
           continue
         }
