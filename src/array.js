@@ -55,7 +55,7 @@ function crossfilter_bitarray(n) {
   }
 
   this[0] = crossfilter_array8(n);
-};
+}
 
 crossfilter_bitarray.prototype.lengthen = function(n) {
   var i, len;

@@ -6,49 +6,49 @@ var vows = require("vows"),
 var suite = vows.describe("crossfilter");
 
 var testData = [
-  {date: "2011-11-14T16:17:54Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-  {date: "2011-11-14T16:20:19Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-  {date: "2011-11-14T16:28:54Z", quantity: 1, total: 300, tip: 200, type: "visa"},
-  {date: "2011-11-14T16:30:43Z", quantity: 2, total: 90, tip: 0, type: "tab"},
-  {date: "2011-11-14T16:48:46Z", quantity: 2, total: 90, tip: 0, type: "tab"},
-  {date: "2011-11-14T16:53:41Z", quantity: 2, total: 90, tip: 0, type: "tab"},
-  {date: "2011-11-14T16:54:06Z", quantity: 1, total: 100, tip: null, type: "cash"},
-  {date: "2011-11-14T17:02:03Z", quantity: 2, total: 90, tip: 0, type: "tab"},
-  {date: "2011-11-14T17:07:21Z", quantity: 2, total: 90, tip: 0, type: "tab"},
-  {date: "2011-11-14T17:22:59Z", quantity: 2, total: 90, tip: 0, type: "tab"},
-  {date: "2011-11-14T17:25:45Z", quantity: 2, total: 200, tip: null, type: "cash"},
-  {date: "2011-11-14T17:29:52Z", quantity: 1, total: 200, tip: 100, type: "visa"},
-  {date: "2011-11-14T17:33:46Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-  {date: "2011-11-14T17:33:59Z", quantity: 2, total: 90, tip: 0, type: "tab"},
-  {date: "2011-11-14T17:38:40Z", quantity: 2, total: 200, tip: 100, type: "visa"},
-  {date: "2011-11-14T17:52:02Z", quantity: 2, total: 90, tip: 0, type: "tab"},
-  {date: "2011-11-14T18:02:42Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-  {date: "2011-11-14T18:02:51Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-  {date: "2011-11-14T18:12:54Z", quantity: 1, total: 200, tip: 100, type: "visa"},
-  {date: "2011-11-14T18:14:53Z", quantity: 2, total: 100, tip: null, type: "cash"},
-  {date: "2011-11-14T18:45:24Z", quantity: 2, total: 90, tip: 0, type: "tab"},
-  {date: "2011-11-14T19:00:31Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-  {date: "2011-11-14T19:04:22Z", quantity: 2, total: 90, tip: 0, type: "tab"},
-  {date: "2011-11-14T19:30:44Z", quantity: 2, total: 90, tip: 0, type: "tab"},
-  {date: "2011-11-14T20:06:33Z", quantity: 1, total: 100, tip: null, type: "cash"},
-  {date: "2011-11-14T20:49:07Z", quantity: 2, total: 290, tip: 200, type: "tab"},
-  {date: "2011-11-14T21:05:36Z", quantity: 2, total: 90, tip: 0, type: "tab"},
-  {date: "2011-11-14T21:18:48Z", quantity: 4, total: 270, tip: 0, type: "tab"},
-  {date: "2011-11-14T21:22:31Z", quantity: 1, total: 200, tip: 100, type: "visa"},
-  {date: "2011-11-14T21:26:30Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-  {date: "2011-11-14T21:30:55Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-  {date: "2011-11-14T21:31:05Z", quantity: 2, total: 90, tip: 0, type: "tab"},
-  {date: "2011-11-14T22:30:22Z", quantity: 2, total: 89, tip: 0, type: "tab"},
-  {date: "2011-11-14T22:34:28Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-  {date: "2011-11-14T22:48:05Z", quantity: 2, total: 91, tip: 0, type: "tab"},
-  {date: "2011-11-14T22:51:40Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-  {date: "2011-11-14T22:58:54Z", quantity: 2, total: 100, tip: 0, type: "visa"},
-  {date: "2011-11-14T23:06:25Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-  {date: "2011-11-14T23:07:58Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-  {date: "2011-11-14T23:16:09Z", quantity: 1, total: 200, tip: 100, type: "visa"},
-  {date: "2011-11-14T23:21:22Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-  {date: "2011-11-14T23:23:29Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-  {date: "2011-11-14T23:28:54Z", quantity: 2, total: 190, tip: 100, type: "tab"}
+  {date: "2011-11-14T16:17:54Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]},
+  {date: "2011-11-14T16:20:19Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,3]},
+  {date: "2011-11-14T16:28:54Z", quantity: 1, total: 300, tip: 200, type: "visa", tags: [2,4,5]},
+  {date: "2011-11-14T16:30:43Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [2,3,4]},
+  {date: "2011-11-14T16:48:46Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,2,3]},
+  {date: "2011-11-14T16:53:41Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,3]},
+  {date: "2011-11-14T16:54:06Z", quantity: 1, total: 100, tip: null, type: "cash", tags: [2,4,5]},
+  {date: "2011-11-14T17:02:03Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [2,3,4]},
+  {date: "2011-11-14T17:07:21Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,2,3]},
+  {date: "2011-11-14T17:22:59Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: []},
+  {date: "2011-11-14T17:25:45Z", quantity: 2, total: 200, tip: null, type: "cash", tags: [2,4,5]},
+  {date: "2011-11-14T17:29:52Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [-1, 0, 'hello', 'world']},
+  {date: "2011-11-14T17:33:46Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]},
+  {date: "2011-11-14T17:33:59Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,3]},
+  {date: "2011-11-14T17:38:40Z", quantity: 2, total: 200, tip: 100, type: "visa", tags: [2,4,5]},
+  {date: "2011-11-14T17:52:02Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [2,3,4]},
+  {date: "2011-11-14T18:02:42Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]},
+  {date: "2011-11-14T18:02:51Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,3]},
+  {date: "2011-11-14T18:12:54Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [2,4,5]},
+  {date: "2011-11-14T18:14:53Z", quantity: 2, total: 100, tip: null, type: "cash", tags: [2,3,4]},
+  {date: "2011-11-14T18:45:24Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [2,4,5]},
+  {date: "2011-11-14T19:00:31Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]},
+  {date: "2011-11-14T19:04:22Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,2,3]},
+  {date: "2011-11-14T19:30:44Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,3]},
+  {date: "2011-11-14T20:06:33Z", quantity: 1, total: 100, tip: null, type: "cash", tags: [2,4,5]},
+  {date: "2011-11-14T20:49:07Z", quantity: 2, total: 290, tip: 200, type: "tab", tags: [2,4,5]},
+  {date: "2011-11-14T21:05:36Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [2,3,4]},
+  {date: "2011-11-14T21:18:48Z", quantity: 4, total: 270, tip: 0, type: "tab", tags: [1,2,3]},
+  {date: "2011-11-14T21:22:31Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [1,3]},
+  {date: "2011-11-14T21:26:30Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,4,5]},
+  {date: "2011-11-14T21:30:55Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]},
+  {date: "2011-11-14T21:31:05Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,2,3]},
+  {date: "2011-11-14T22:30:22Z", quantity: 2, total: 89, tip: 0, type: "tab", tags: [1,3]},
+  {date: "2011-11-14T22:34:28Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,4,5]},
+  {date: "2011-11-14T22:48:05Z", quantity: 2, total: 91, tip: 0, type: "tab", tags: [2,4,5]},
+  {date: "2011-11-14T22:51:40Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]},
+  {date: "2011-11-14T22:58:54Z", quantity: 2, total: 100, tip: 0, type: "visa", tags: [2,3,4]},
+  {date: "2011-11-14T23:06:25Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]},
+  {date: "2011-11-14T23:07:58Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,3]},
+  {date: "2011-11-14T23:16:09Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [2,4,5]},
+  {date: "2011-11-14T23:21:22Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,4,5]},
+  {date: "2011-11-14T23:23:29Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]},
+  {date: "2011-11-14T23:28:54Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]}
 ];
 
 suite.addBatch({
@@ -63,6 +63,7 @@ suite.addBatch({
         data.tip = data.dimension(function(d) { return d.tip; });
         data.total = data.dimension(function(d) { return d.total; });
         data.type = data.dimension(function(d) { return d.type; });
+        data.tags = data.dimension(function(d) { return d.tags; }, true);
       } catch (e) {
         console.log(e.stack);
       }
@@ -278,21 +279,21 @@ suite.addBatch({
       "top": {
         "returns the top k records by value, in descending order": function(data) {
           assert.deepEqual(data.total.top(3), [
-            {date: "2011-11-14T16:28:54Z", quantity: 1, total: 300, tip: 200, type: "visa"},
-            {date: "2011-11-14T20:49:07Z", quantity: 2, total: 290, tip: 200, type: "tab"},
-            {date: "2011-11-14T21:18:48Z", quantity: 4, total: 270, tip: 0, type: "tab"}
+            {date: "2011-11-14T16:28:54Z", quantity: 1, total: 300, tip: 200, type: "visa", tags: [2,4,5]},
+            {date: "2011-11-14T20:49:07Z", quantity: 2, total: 290, tip: 200, type: "tab", tags: [2,4,5]},
+            {date: "2011-11-14T21:18:48Z", quantity: 4, total: 270, tip: 0, type: "tab", tags: [1,2,3]}
           ]);
           assert.deepEqual(data.date.top(3), [
-            {date: "2011-11-14T23:28:54Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-            {date: "2011-11-14T23:23:29Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-            {date: "2011-11-14T23:21:22Z", quantity: 2, total: 190, tip: 100, type: "tab"}
+            {date: "2011-11-14T23:28:54Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]},
+            {date: "2011-11-14T23:23:29Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]},
+            {date: "2011-11-14T23:21:22Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,4,5]}
           ]);
         },
         "observes the associated dimension's filters": function(data) {
           try {
             data.quantity.filterExact(4);
             assert.deepEqual(data.total.top(3), [
-              {date: "2011-11-14T21:18:48Z", quantity: 4, total: 270, tip: 0, type: "tab"}
+              {date: "2011-11-14T21:18:48Z", quantity: 4, total: 270, tip: 0, type: "tab", tags: [1,2,3]}
             ]);
           } finally {
             data.quantity.filterAll();
@@ -300,15 +301,15 @@ suite.addBatch({
           try {
             data.date.filterRange([new Date(Date.UTC(2011, 10, 14, 19)), new Date(Date.UTC(2011, 10, 14, 20))]);
             assert.deepEqual(data.date.top(10), [
-              {date: "2011-11-14T19:30:44Z", quantity: 2, total: 90, tip: 0, type: "tab"},
-              {date: "2011-11-14T19:04:22Z", quantity: 2, total: 90, tip: 0, type: "tab"},
-              {date: "2011-11-14T19:00:31Z", quantity: 2, total: 190, tip: 100, type: "tab"}
+              {date: "2011-11-14T19:30:44Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,3]},
+              {date: "2011-11-14T19:04:22Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,2,3]},
+              {date: "2011-11-14T19:00:31Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]}
             ]);
             data.date.filterRange([Date.UTC(2011, 10, 14, 19), Date.UTC(2011, 10, 14, 20)]); // also comparable
             assert.deepEqual(data.date.top(10), [
-              {date: "2011-11-14T19:30:44Z", quantity: 2, total: 90, tip: 0, type: "tab"},
-              {date: "2011-11-14T19:04:22Z", quantity: 2, total: 90, tip: 0, type: "tab"},
-              {date: "2011-11-14T19:00:31Z", quantity: 2, total: 190, tip: 100, type: "tab"}
+              {date: "2011-11-14T19:30:44Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,3]},
+              {date: "2011-11-14T19:04:22Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,2,3]},
+              {date: "2011-11-14T19:00:31Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]}
             ]);
           } finally {
             data.date.filterAll();
@@ -318,16 +319,16 @@ suite.addBatch({
           try {
             data.type.filterExact("tab");
             assert.deepEqual(data.total.top(2), [
-              {date: "2011-11-14T20:49:07Z", quantity: 2, total: 290, tip: 200, type: "tab"},
-              {date: "2011-11-14T21:18:48Z", quantity: 4, total: 270, tip: 0, type: "tab"}
+              {date: "2011-11-14T20:49:07Z", quantity: 2, total: 290, tip: 200, type: "tab", tags: [2,4,5]},
+              {date: "2011-11-14T21:18:48Z", quantity: 4, total: 270, tip: 0, type: "tab", tags: [1,2,3]}
             ]);
             data.type.filterExact("visa");
             assert.deepEqual(data.total.top(1), [
-              {date: "2011-11-14T16:28:54Z", quantity: 1, total: 300, tip: 200, type: "visa"}
+              {date: "2011-11-14T16:28:54Z", quantity: 1, total: 300, tip: 200, type: "visa", tags: [2,4,5]}
             ]);
             data.quantity.filterExact(2);
             assert.deepEqual(data.tip.top(1), [
-              {date: "2011-11-14T17:38:40Z", quantity: 2, total: 200, tip: 100, type: "visa"}
+              {date: "2011-11-14T17:38:40Z", quantity: 2, total: 200, tip: 100, type: "visa", tags: [2,4,5]}
             ]);
           } finally {
             data.type.filterAll();
@@ -336,16 +337,16 @@ suite.addBatch({
           try {
             data.type.filterExact("tab");
             assert.deepEqual(data.date.top(2), [
-              {date: "2011-11-14T23:28:54Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-              {date: "2011-11-14T23:23:29Z", quantity: 2, total: 190, tip: 100, type: "tab"}
+              {date: "2011-11-14T23:28:54Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]},
+              {date: "2011-11-14T23:23:29Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]}
             ]);
             data.type.filterExact("visa");
             assert.deepEqual(data.date.top(1), [
-              {date: "2011-11-14T23:16:09Z", quantity: 1, total: 200, tip: 100, type: "visa"}
+              {date: "2011-11-14T23:16:09Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [2,4,5]}
             ]);
             data.quantity.filterExact(2);
             assert.deepEqual(data.date.top(1), [
-              {date: "2011-11-14T22:58:54Z", quantity: 2, total: 100, tip: 0, type: "visa"}
+              {date: "2011-11-14T22:58:54Z", quantity: 2, total: 100, tip: 0, type: "visa", tags: [2,3,4]}
             ]);
           } finally {
             data.type.filterAll();
@@ -367,21 +368,21 @@ suite.addBatch({
       "bottom": {
         "returns the bottom k records by value, in descending order": function(data) {
           assert.deepEqual(data.total.bottom(3), [
-            {date: "2011-11-14T22:30:22Z", quantity: 2, total: 89, tip: 0, type: "tab"},
-            {date: "2011-11-14T16:30:43Z", quantity: 2, total: 90, tip: 0, type: "tab"},
-            {date: "2011-11-14T16:48:46Z", quantity: 2, total: 90, tip: 0, type: "tab"}
+            {date: "2011-11-14T22:30:22Z", quantity: 2, total: 89, tip: 0, type: "tab", tags: [1,3]},
+            {date: "2011-11-14T16:30:43Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [2,3,4]},
+            {date: "2011-11-14T16:48:46Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,2,3]}
           ]);
           assert.deepEqual(data.date.bottom(3), [
-            {date: "2011-11-14T16:17:54Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-            {date: "2011-11-14T16:20:19Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-            {date: "2011-11-14T16:28:54Z", quantity: 1, total: 300, tip: 200, type: "visa"}
+            {date: "2011-11-14T16:17:54Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]},
+            {date: "2011-11-14T16:20:19Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,3]},
+            {date: "2011-11-14T16:28:54Z", quantity: 1, total: 300, tip: 200, type: "visa", tags: [2,4,5]}
          ]);
         },
         "observes the associated dimension's filters": function(data) {
           try {
             data.quantity.filterExact(4);
             assert.deepEqual(data.total.bottom(3), [
-              {date: "2011-11-14T21:18:48Z", quantity: 4, total: 270, tip: 0, type: "tab"}
+              {date: "2011-11-14T21:18:48Z", quantity: 4, total: 270, tip: 0, type: "tab", tags: [1,2,3]}
             ]);
           } finally {
             data.quantity.filterAll();
@@ -389,15 +390,15 @@ suite.addBatch({
           try {
             data.date.filterRange([new Date(Date.UTC(2011, 10, 14, 19)), new Date(Date.UTC(2011, 10, 14, 20))]);
             assert.deepEqual(data.date.bottom(10), [
-              {date: "2011-11-14T19:00:31Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-              {date: "2011-11-14T19:04:22Z", quantity: 2, total: 90, tip: 0, type: "tab"},
-              {date: "2011-11-14T19:30:44Z", quantity: 2, total: 90, tip: 0, type: "tab"}
+              {date: "2011-11-14T19:00:31Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]},
+              {date: "2011-11-14T19:04:22Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,2,3]},
+              {date: "2011-11-14T19:30:44Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,3]}
             ]);
             data.date.filterRange([Date.UTC(2011, 10, 14, 19), Date.UTC(2011, 10, 14, 20)]); // also comparable
             assert.deepEqual(data.date.bottom(10), [
-              {date: "2011-11-14T19:00:31Z", quantity: 2, total: 190, type: "tab", tip: 100},
-              {date: "2011-11-14T19:04:22Z", quantity: 2, total: 90, type: "tab", tip: 0},
-              {date: "2011-11-14T19:30:44Z", quantity: 2, total: 90, type: "tab", tip: 0}
+              {date: "2011-11-14T19:00:31Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]},
+              {date: "2011-11-14T19:04:22Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,2,3]},
+              {date: "2011-11-14T19:30:44Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,3]}
             ]);
           } finally {
             data.date.filterAll();
@@ -407,16 +408,16 @@ suite.addBatch({
           try {
             data.type.filterExact("tab");
             assert.deepEqual(data.total.bottom(2), [
-              {date: "2011-11-14T22:30:22Z", quantity: 2, total: 89, tip: 0, type: "tab"},
-              {date: "2011-11-14T16:30:43Z", quantity: 2, total: 90, tip: 0, type: "tab"}
+              {date: "2011-11-14T22:30:22Z", quantity: 2, total: 89, tip: 0, type: "tab", tags: [1,3]},
+              {date: "2011-11-14T16:30:43Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [2,3,4]}
             ]);
             data.type.filterExact("visa");
             assert.deepEqual(data.total.bottom(1), [
-              {date: "2011-11-14T22:58:54Z", quantity: 2, total: 100, tip: 0, type: "visa"}
+              {date: "2011-11-14T22:58:54Z", quantity: 2, total: 100, tip: 0, type: "visa", tags: [2,3,4]}
             ]);
             data.quantity.filterExact(2);
             assert.deepEqual(data.tip.bottom(1), [
-              {date: "2011-11-14T22:58:54Z", quantity: 2, total: 100, tip: 0, type: "visa"}
+              {date: "2011-11-14T22:58:54Z", quantity: 2, total: 100, tip: 0, type: "visa", tags: [2,3,4]}
             ]);
           } finally {
             data.type.filterAll();
@@ -425,16 +426,16 @@ suite.addBatch({
           try {
             data.type.filterExact("tab");
             assert.deepEqual(data.date.bottom(2), [
-              {date: "2011-11-14T16:17:54Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-              {date: "2011-11-14T16:20:19Z", quantity: 2, total: 190, tip: 100, type: "tab"}
+              {date: "2011-11-14T16:17:54Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]},
+              {date: "2011-11-14T16:20:19Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,3]}
             ]);
             data.type.filterExact("visa");
             assert.deepEqual(data.date.bottom(1), [
-              {date: "2011-11-14T16:28:54Z", quantity: 1, total: 300, tip: 200, type: "visa"}
+              {date: "2011-11-14T16:28:54Z", quantity: 1, total: 300, tip: 200, type: "visa", tags: [2,4,5]}
             ]);
             data.quantity.filterExact(2);
             assert.deepEqual(data.date.bottom(1), [
-              {date: "2011-11-14T17:38:40Z", quantity: 2, total: 200, tip: 100, type: "visa"}
+              {date: "2011-11-14T17:38:40Z", quantity: 2, total: 200, tip: 100, type: "visa", tags: [2,4,5]}
             ]);
           } finally {
             data.type.filterAll();
@@ -458,8 +459,8 @@ suite.addBatch({
           try {
             data.tip.filterExact(100);
             assert.deepEqual(data.date.top(2), [
-              {date: "2011-11-14T23:28:54Z", quantity: 2, total: 190, tip: 100, type: "tab"},
-              {date: "2011-11-14T23:23:29Z", quantity: 2, total: 190, tip: 100, type: "tab"}
+              {date: "2011-11-14T23:28:54Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]},
+              {date: "2011-11-14T23:23:29Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]}
             ]);
           } finally {
             data.tip.filterAll();
@@ -469,8 +470,8 @@ suite.addBatch({
           try {
             data.tip.filterExact(null); // equivalent to 0 by natural ordering
             assert.deepEqual(data.date.top(2), [
-              {date: "2011-11-14T22:58:54Z", quantity: 2, total: 100, tip: 0, type: "visa"},
-              {date: "2011-11-14T22:48:05Z", quantity: 2, total: 91, tip: 0, type: "tab"}
+              {date: "2011-11-14T22:58:54Z", quantity: 2, total: 100, tip: 0, type: "visa", tags: [2,3,4]},
+              {date: "2011-11-14T22:48:05Z", quantity: 2, total: 91, tip: 0, type: "tab", tags: [2,4,5]}
             ]);
           } finally {
             data.tip.filterAll();
@@ -1417,6 +1418,562 @@ suite.addBatch({
         assert.equal(num, 2);
       },
     },
+    "iterableDimension": {
+      "top":{
+        "returns the top k records by value, in descending order": function(data) {
+          var top = data.tags.top(3)
+          assert.equal(top.length, 3)
+
+          assert.equal(Math.max.apply(null, top[0].tags), 5)
+          assert.equal(Math.max.apply(null, top[1].tags), 5)
+          assert.equal(Math.max.apply(null, top[2].tags), 5)
+        },
+        "observes the associated dimension's filters": function(data) {
+          try {
+            data.tags.filterExact(1);
+
+            var top = data.tags.top(3)
+            assert.equal(top[0].tags.indexOf(1) > -1, true)
+            assert.equal(top[1].tags.indexOf(1) > -1, true)
+            assert.equal(top[2].tags.indexOf(1) > -1, true)
+
+          } finally {
+            data.tags.filterAll();
+          }
+        },
+        "observes other dimensions' filters": function(data) {
+          try {
+            data.quantity.filterExact(4);
+            assert.deepEqual(data.tags.top(1), [
+              {date: '2011-11-14T21:18:48Z', quantity: 4, total: 270, tip: 0, type: 'tab', tags: [1,2,3]}
+            ]);
+            data.quantity.filterAll();
+            data.type.filterExact("visa");
+            assert.deepEqual(data.tags.top(1), [
+              {date: "2011-11-14T16:28:54Z", quantity: 1, total: 300, tip: 200, type: "visa", tags: [2,4,5]}
+            ]);
+            data.quantity.filterExact(2);
+            assert.deepEqual(data.tags.top(1), [
+              {date: "2011-11-14T17:38:40Z", quantity: 2, total: 200, tip: 100, type: "visa", tags: [2,4,5]}
+            ]);
+          } finally {
+            data.type.filterAll();
+            data.quantity.filterAll();
+          }
+          try {
+            data.type.filterExact("tab");
+            assert.deepEqual(data.date.top(2), [
+              {date: "2011-11-14T23:28:54Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]},
+              {date: "2011-11-14T23:23:29Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]}
+            ]);
+            data.type.filterExact("visa");
+            assert.deepEqual(data.date.top(1), [
+              {date: "2011-11-14T23:16:09Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [2,4,5]}
+            ]);
+            data.quantity.filterExact(2);
+            assert.deepEqual(data.date.top(1), [
+              {date: "2011-11-14T22:58:54Z", quantity: 2, total: 100, tip: 0, type: "visa", tags: [2,3,4]}
+            ]);
+          } finally {
+            data.type.filterAll();
+            data.quantity.filterAll();
+          }
+        },
+        "negative or zero k returns an empty array": function(data) {
+          assert.deepEqual(data.tags.top(0), []);
+          assert.deepEqual(data.tags.top(-1), []);
+          assert.deepEqual(data.tags.top(NaN), []);
+          assert.deepEqual(data.tags.top(-Infinity), []);
+        }
+      },
+
+      "bottom": {
+        "returns the bottom k records by value, in descending order": function(data) {
+          var bottom = data.tags.bottom(3)
+
+          assert.equal(bottom[0].tags.length, 0)
+          assert.equal(bottom[1].tags[0], -1)
+          assert.equal(bottom[2].tags[1], 0)
+        },
+        "observes the associated dimension's filters": function(data) {
+          try {
+            data.quantity.filterExact(4);
+            assert.deepEqual(data.tags.bottom(3), [
+              {date: '2011-11-14T21:18:48Z',quantity: 4,total: 270,tip: 0,type: 'tab',tags: [1,2,3]},
+              {date: '2011-11-14T21:18:48Z',quantity: 4,total: 270,tip: 0,type: 'tab',tags: [1,2,3]},
+              {date: '2011-11-14T21:18:48Z',quantity: 4,total: 270,tip: 0,type: 'tab',tags: [1,2,3]}
+            ]);
+          } finally {
+            data.quantity.filterAll();
+          }
+          try {
+            data.date.filterRange([new Date(Date.UTC(2011, 10, 14, 19)), new Date(Date.UTC(2011, 10, 14, 20))]);
+            assert.deepEqual(data.tags.bottom(10), [
+              {date: '2011-11-14T19:04:22Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [ 1, 2, 3 ]},
+              {date: '2011-11-14T19:30:44Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [ 1, 3 ]},
+              {date: '2011-11-14T19:00:31Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [ 2, 3, 4 ]},
+              {date: '2011-11-14T19:04:22Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [ 1, 2, 3 ]},
+              {date: '2011-11-14T19:00:31Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [ 2, 3, 4 ]},
+              {date: '2011-11-14T19:04:22Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [ 1, 2, 3 ]},
+              {date: '2011-11-14T19:30:44Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [ 1, 3 ]},
+              {date: '2011-11-14T19:00:31Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [ 2, 3, 4 ]}
+            ]);
+          } finally {
+            data.date.filterAll();
+          }
+        },
+        "observes other dimensions' filters": function(data) {
+          try {
+            data.type.filterExact("tab");
+            assert.deepEqual(data.tags.bottom(2), [
+              {date: '2011-11-14T17:22:59Z',quantity: 2,total: 90,tip: 0,type: 'tab',tags: []},
+              {date: '2011-11-14T16:20:19Z',quantity: 2,total: 190,tip: 100,type: 'tab',tags: [ 1, 3 ]}
+            ]);
+            data.type.filterExact("visa");
+            assert.deepEqual(data.tags.bottom(1), [
+              {date: '2011-11-14T17:29:52Z', quantity: 1, total: 200, tip: 100, type: 'visa', tags: [ -1, 0, 'hello', 'world']}
+            ]);
+            data.quantity.filterExact(2);
+            assert.deepEqual(data.tags.bottom(1), [
+              {date: '2011-11-14T17:38:40Z', quantity: 2, total: 200, tip: 100, type: 'visa', tags: [ 2, 4, 5 ]}
+            ]);
+          } finally {
+            data.type.filterAll();
+            data.quantity.filterAll();
+          }
+        },
+        "negative or zero k returns an empty array": function(data) {
+          assert.deepEqual(data.tags.bottom(0), []);
+          assert.deepEqual(data.tags.bottom(-1), []);
+          assert.deepEqual(data.tags.bottom(NaN), []);
+          assert.deepEqual(data.tags.bottom(-Infinity), []);
+        },
+      },
+
+      "filterExact": {
+        "selects records that match the specified value exactly": function(data) {
+          try {
+            data.tip.filterExact(100);
+            assert.deepEqual(data.tags.top(2), [
+              {date: '2011-11-14T22:34:28Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [ 2, 4, 5 ]},
+              {date: '2011-11-14T23:21:22Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [ 2, 4, 5 ]}
+            ]);
+          } finally {
+            data.tip.filterAll();
+          }
+        },
+        "allows the filter value to be null": function(data) {
+          try {
+            data.tip.filterExact(null); // equivalent to 0 by natural ordering
+            assert.deepEqual(data.tags.top(2), [
+              {date: '2011-11-14T17:25:45Z', quantity: 2, total: 200, tip: null, type: 'cash', tags: [ 2, 4, 5 ]},
+              {date: '2011-11-14T20:06:33Z', quantity: 1, total: 100, tip: null, type: 'cash', tags: [ 2, 4, 5 ]}
+            ]);
+          } finally {
+            data.tip.filterAll();
+          }
+        }
+      },
+
+      "filterRange": {
+        "selects records greater than or equal to the inclusive lower bound": function(data) {
+          try {
+            data.total.filterRange([100, 190]);
+            assert.isTrue(data.tags.top(Infinity).every(function(d) { return d.total >= 100; }));
+            data.total.filterRange([110, 190]);
+            assert.isTrue(data.tags.top(Infinity).every(function(d) { return d.total >= 110; }));
+          } finally {
+            data.total.filterAll();
+          }
+        },
+        "selects records less than the exclusive lower bound": function(data) {
+          try {
+            data.total.filterRange([100, 200]);
+            assert.isTrue(data.tags.top(Infinity).every(function(d) { return d.total < 200; }));
+            data.total.filterRange([100, 190]);
+            assert.isTrue(data.tags.top(Infinity).every(function(d) { return d.total < 190; }));
+          } finally {
+            data.total.filterAll();
+          }
+        }
+      },
+
+      "filterAll": {
+        "clears the filter": function(data) {
+          data.total.filterRange([100, 200]);
+          assert.lesser(data.tags.top(Infinity).length, 120);
+          data.total.filterAll();
+          assert.equal(data.tags.top(Infinity).length, 120);
+        }
+      },
+
+      "filterFunction": {
+        "selects records according to an arbitrary function": function(data) {
+          try {
+            data.total.filterFunction(function(d) { return d % 2; });
+            assert.isTrue(data.tags.top(Infinity).every(function(d) { return d.total % 2; }));
+          } finally {
+            data.total.filterAll();
+          }
+        },
+        "respects truthy values": function(data) {
+          try {
+            var group = data.tags.groupAll().reduceCount();
+            data.total.filterRange([200, Infinity]);
+            data.total.filterFunction(function(d) { return "0"; });
+            assert.equal(group.value(), 43);
+            data.total.filterFunction(function(d) { return ""; });
+            assert.equal(group.value(), 0);
+          } finally {
+            data.total.filterAll();
+          }
+        },
+        "groups on the first dimension are updated correctly": function(data) {
+          try {
+            var group = data.tags.groupAll().reduceCount();
+            data.total.filterFunction(function(d) { return d === 90; });
+            assert.equal(group.value(), 13);
+            data.total.filterFunction(function(d) { return d === 91; });
+            assert.equal(group.value(), 1);
+          } finally {
+            data.total.filterAll();
+          }
+        },
+        "followed by filterRange": function(data) {
+          try {
+            data.total.filterFunction(function(d) { return d % 2; });
+            data.total.filterRange([100, 200]);
+            assert.deepEqual(data.tags.top(Infinity).length, 54);
+          } finally {
+            data.total.filterAll();
+          }
+        }
+      },
+
+      "filter": {
+        "is equivalent to filterRange when passed an array": function(data) {
+          try {
+            data.total.filter([100, 190]);
+            assert.isTrue(data.tags.top(Infinity).every(function(d) { return d.total >= 100; }));
+          } finally {
+            data.total.filter(null);
+          }
+        },
+        "is equivalent to filterExact when passed a single value": function(data) {
+          try {
+            data.total.filter(100);
+            assert.isTrue(data.tags.top(Infinity).every(function(d) { return d.total == 100; }));
+          } finally {
+            data.total.filter(null);
+          }
+        },
+        "is equivalent to filterFunction when passed a function": function(data) {
+          try {
+            data.total.filter(function(d) { return d % 2; });
+            assert.isTrue(data.tags.top(Infinity).every(function(d) { return d.total % 2; }));
+          } finally {
+            data.total.filter(null);
+          }
+        },
+        "is equivalent to filterAll when passed null": function(data) {
+          data.total.filter([100, 200]);
+          assert.lesser(data.tags.top(Infinity).length, 120);
+          data.total.filter(null);
+          assert.equal(data.tags.top(Infinity).length, 120);
+        }
+      },
+
+      "group": {
+        topic: function(data) {
+          data.date.hours = data.date.group(function(d) { d = new Date(+d); d.setHours(d.getHours(), 0, 0, 0); return d; });
+          data.tags.all = data.tags.group();
+          return data;
+        },
+
+        "key defaults to value": function(data) {
+          assert.deepEqual(data.tags.all.top(Infinity), [
+            { key: 3, value: 28 },
+            { key: 2, value: 23 },
+            { key: 4, value: 23 },
+            { key: 1, value: 18 },
+            { key: 5, value: 13 },
+            { key: 2, value: 10 },
+            { key: 'world', value: 1 },
+            { key: 'hello', value: 1 },
+            { key: 0, value: 1 },
+            { key: -1, value: 1 }
+          ]);
+        },
+
+        "cardinality may be greater than 256": function() {
+          var data = crossfilter(d3.range(256).concat(256, 256).map(function(d){
+            return {tags: [d, d+1, d+2]}
+          })),
+              index = data.dimension(function(d) { return d.tags; }, true),
+              indexes = index.group();
+          assert.deepEqual(index.top(2), [
+            {tags:[256, 257, 258]},
+            {tags:[256, 257, 258]}
+          ]);
+          assert.deepEqual(indexes.top(1), [{ key: 256, value: 4 }]);
+          assert.equal(indexes.size(), 259);
+        },
+
+        "cardinality may be greater than 65536": function() {
+          var data = crossfilter(d3.range(65536).concat(65536, 65536).map(function(d){
+            return {tags: [d, d+1, d+2]}
+          })),
+              index = data.dimension(function(d) { return d.tags; }, true),
+              indexes = index.group();
+          assert.deepEqual(index.top(2), [
+            {tags: [ 65536, 65537, 65538 ]},
+            {tags: [ 65536, 65537, 65538 ]}
+          ]);
+          assert.deepEqual(indexes.top(1), [{key: 65536, value: 4}]);
+          assert.equal(indexes.size(), 65539);
+        },
+
+        "adds all records before removing filtered": function(data) {
+          try {
+            data.quantity.filter(1);
+            // Group only adds
+            var addGroup = data.tags.group().reduce(
+                function(p, v) {
+                  ++p;
+                  return p;
+                }, function(p, v) {
+                  return p;
+                }, function() {
+                  return 0;
+                }
+              );
+            // Normal group
+            var stdGroup = data.tags.group();
+            assert.isTrue(addGroup.top(1)[0].value > stdGroup.top(1)[0].value);
+          } finally {
+            data.quantity.filterAll();
+          }
+        },
+
+        "size": {
+          "returns the cardinality": function(data) {
+            assert.equal(data.date.hours.size(), 8);
+            assert.equal(data.tags.all.size(), 10);
+          },
+          "ignores any filters": function(data) {
+            try {
+              data.tags.filterExact(1);
+              data.quantity.filterRange([100, 200]);
+              assert.equal(data.date.hours.size(), 8);
+              assert.equal(data.tags.all.size(), 10);
+            } finally {
+              data.quantity.filterAll();
+              data.tags.filterAll();
+            }
+          }
+        },
+
+        "reduce": {
+          "defaults to count": function(data) {
+            assert.deepEqual(data.tags.all.top(1), [
+              { key: 3, value: 28 }
+            ]);
+          },
+          "determines the computed reduce value": function(data) {
+            try {
+              data.tags.all.reduceSum(function(d) { return d.total; });
+              assert.deepEqual(data.tags.all.top(Infinity), [
+                { key: 3, value: 4029 },
+                { key: 4, value: 3661 },
+                { key: 2, value: 3631 },
+                { key: 1, value: 2709 },
+                { key: 5, value: 2341 },
+                { key: 2, value: 1610 },
+                { key: 'world', value: 200 },
+                { key: 'hello', value: 200 },
+                { key: 0, value: 200 },
+                { key: -1, value: 200 }
+              ]);
+            } finally {
+              data.tags.all.reduceCount();
+            }
+          },
+          "gives reduce functions information on lifecycle of data element": {
+            "topic": function() {
+              var data = crossfilter();
+              data.add([{foo: 1, val: [1, 2]}, {foo: 2, val: [1,2]}, {foo: 3, val: [3, 4, 5]}, {foo: 3, val: [1,2]}]);
+              data.foo = data.dimension(function(d) { return d.foo; });
+              data.bar = data.dimension(function(d) { return d.foo; });
+              data.val = data.dimension(function(d) { return d.val; }, true);
+              data.val.groupSumLength = data.val.group().reduce(function(p,v,n){
+                if(n) {
+                  p += v.val.length;
+                }
+                return p;
+              }, function(p,v,n) {
+                if(n) {
+                  p -= v.val.length;
+                }
+                return p;
+              }, function() {
+                return 0;
+              });
+              data.val.groupSumEach = data.val.group().reduceSum(function(d) {
+                return d.val.length
+              });
+
+              return data;
+            },
+            "on group creation": function(data) {
+              assert.deepEqual(data.val.groupSumLength.all(), data.val.groupSumEach.all());
+            },
+            "on filtering": function(data) {
+              data.foo.filterRange([1,2]);
+              assert.deepEqual(data.val.groupSumLength.all(), [
+                { key: 1, value: 6 },
+                { key: 2, value: 6 },
+                { key: 3, value: 3 },
+                { key: 4, value: 3 },
+                { key: 5, value: 3 }
+              ]);
+              assert.deepEqual(data.val.groupSumEach.all(), [
+                { key: 1, value: 2 },
+                { key: 2, value: 2 },
+                { key: 3, value: 0 },
+                { key: 4, value: 0 },
+                { key: 5, value: 0 }
+              ]);
+              data.foo.filterAll();
+            },
+            "on adding data after group creation": function(data) {
+              data.add([{foo: 1, val: [5,6,7]}]);
+              assert.deepEqual(data.val.groupSumLength.all(), data.val.groupSumEach.all());
+            },
+            "on adding data when a filter is in place": function(data) {
+              data.foo.filterRange([1,3]);
+              data.add([{foo: 3, val: [6]}]);
+              assert.deepEqual(data.val.groupSumLength.all(), [
+                { key: 1, value: 6 },
+                { key: 2, value: 6 },
+                { key: 3, value: 3 },
+                { key: 4, value: 3 },
+                { key: 5, value: 6 },
+                { key: 6, value: 4 },
+                { key: 7, value: 3 }
+              ]);
+              assert.deepEqual(data.val.groupSumEach.all(), [
+                { key: 1, value: 4 },
+                { key: 2, value: 4 },
+                { key: 3, value: 0 },
+                { key: 4, value: 0 },
+                { key: 5, value: 3 },
+                { key: 6, value: 3 },
+                { key: 7, value: 3 }
+              ]);
+              data.foo.filterAll();
+            },
+            "on removing data after group creation": function(data) {
+              data.val.filter(2);
+              data.remove();
+              assert.deepEqual(data.val.groupSumLength.all(), [
+                { key: 6, value: 4 }
+              ]);
+              assert.deepEqual(data.val.groupSumEach.all(), [
+                { key: 6, value: 4 }
+              ]);
+
+              data.val.filterAll();
+              assert.deepEqual(data.val.groupSumLength.all(), data.val.groupSumEach.all());
+            }
+          }
+        },
+
+        "top": {
+          "returns the top k groups by reduce value, in descending order": function(data) {
+            assert.deepEqual(data.tags.all.top(3), [
+              { key: 3, value: 28 },
+              { key: 2, value: 23 },
+              { key: 4, value: 23 }
+            ]);
+          },
+          "observes the specified order": function(data) {
+            try {
+              data.tags.all.order(function(v) { return -v; });
+              assert.deepEqual(data.tags.all.top(3), [
+                { key: 0, value: 1 },
+                { key: -1, value: 1 },
+                { key: 'hello', value: 1 }
+              ]);
+            } finally {
+              data.tags.all.order(function(v) { return v; });
+            }
+          }
+        },
+
+        "order": {
+          "defaults to the identity function": function(data) {
+            assert.deepEqual(data.tags.all.top(1), [
+              { key: 3, value: 28 }
+            ]);
+          },
+          "is useful in conjunction with a compound reduce value": function(data) {
+            try {
+              data.tags.all.reduce(
+                  function(p, v) { ++p.count; p.total += v.total; return p; },
+                  function(p, v) { --p.count; p.total -= v.total; return p; },
+                  function() { return {count: 0, total: 0}; })
+                  .order(function(v) { return v.total; });
+              assert.deepEqual(data.tags.all.top(1), [
+                {
+                    key: 3,
+                    value: { count: 28, total: 4029 }
+                }
+              ]);
+            } finally {
+              data.tags.all.reduceCount().orderNatural();
+            }
+          }
+        },
+
+        "dispose": {
+          "detaches from reduce listeners": function() {
+            var data = crossfilter([
+              {tags: [1,2,3]},
+              {tags: [1,2,3]},
+              {tags: [3]}
+            ]),
+                callback, // indicates a reduce has occurred in this group
+                dimension = data.dimension(function(d) { return d.tags; }, true),
+                other = data.dimension(function(d) { return d.tags; }, true),
+                group = dimension
+                  .group(function(d) { return d;} )
+                  .reduce(function() { callback = true; }, function() { callback = true; }, function() {});
+            group.all(); // force this group to be reduced when filters change
+            callback = false;
+            group.dispose();
+            other.filterRange([1, 2]);
+            assert.isFalse(callback);
+          },
+          "detaches from add listeners": function() {
+            var data = crossfilter([
+              {tags: [1,2,3]},
+              {tags: [1,2,3]},
+              {tags: [3]}
+            ]),
+                callback, // indicates data has been added and the group has been reduced
+                dimension = data.dimension(function(d) { return d.tags; }, true),
+                group = dimension
+                  .group(function(d) { return d; })
+                  .reduce(function() { callback = true; }, function() { callback = true; }, function() {});
+            group.all(); // force this group to be reduced when filters change
+            callback = false;
+            group.dispose();
+            data.add({tags: [3]}, {tags: [4,5]}, {tags: [4,5,6]});
+            assert.isFalse(callback);
+          }
+        },
+      },
+    }
   }
 });
 

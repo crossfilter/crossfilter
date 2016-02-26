@@ -5,8 +5,8 @@ function crossfilter_identity(d) {
 }
 crossfilter.permute = permute;
 
-function permute(array, index) {
-  for (var i = 0, n = index.length, copy = new Array(n); i < n; ++i) {
+function permute(array, index, deep) {
+  for (var i = 0, n = index.length, copy = deep ? JSON.parse(JSON.stringify(array)) : new Array(n); i < n; ++i) {
     copy[i] = array[index[i]];
   }
   return copy;
@@ -493,7 +493,7 @@ function crossfilter_bitarray(n) {
   }
 
   this[0] = crossfilter_array8(n);
-};
+}
 
 crossfilter_bitarray.prototype.lengthen = function(n) {
   var i, len;
@@ -661,6 +661,7 @@ function crossfilter() {
     groupAll: groupAll,
     size: size,
     all: all,
+    onChange: onChange,
   };
 
   var data = [], // the records
@@ -668,7 +669,8 @@ function crossfilter() {
       filters, // 1 is filtered out
       filterListeners = [], // when the filters change
       dataListeners = [], // when data is added
-      removeDataListeners = []; // when data is removed
+      removeDataListeners = [], // when data is removed
+      callbacks = [];
 
   filters = new crossfilter_bitarray(0);
 
@@ -685,6 +687,7 @@ function crossfilter() {
       data = data.concat(newData);
       filters.lengthen(n += n1);
       dataListeners.forEach(function(l) { l(newData, n0, n1); });
+      triggerOnChange();
     }
 
     return crossfilter;
@@ -715,10 +718,11 @@ function crossfilter() {
 
     data.length = n = j;
     filters.truncate(j);
+    triggerOnChange();
   }
 
   // Adds a new dimension with the specified value accessor function.
-  function dimension(value) {
+  function dimension(value, iterable) {
     var dimension = {
       filter: filter,
       filterExact: filterExact,
@@ -738,15 +742,20 @@ function crossfilter() {
         offset, // offset into the filters arrays
         values, // sorted, cached array
         index, // value rank ↦ object id
+        oldValues, // temporary array storing previously-added values
+        oldIndex, // temporary array storing previously-added index
         newValues, // temporary array storing newly-added values
         newIndex, // temporary array storing newly-added index
+        iterablesIndexCount,
+        iterablesEmptyRows,
         sort = quicksort_by(function(i) { return newValues[i]; }),
         refilter = crossfilter_filterAll, // for recomputing filter
         refilterFunction, // the custom filter function in use
         indexListeners = [], // when data is added
         dimensionGroups = [],
         lo0 = 0,
-        hi0 = 0;
+        hi0 = 0,
+        t = 0;
 
     // Updating a dimension is a two-stage process. First, we must update the
     // associated filters for the newly-added records. Once all dimensions have
@@ -769,13 +778,59 @@ function crossfilter() {
     // This function is responsible for updating filters, values, and index.
     function preAdd(newData, n0, n1) {
 
-      // Permute new values into natural order using a sorted index.
-      newValues = newData.map(value);
-      newIndex = sort(crossfilter_range(n1), 0, n1);
-      newValues = permute(newValues, newIndex);
+      if (iterable){
+        // Count all the values
+        t = 0;
+        j = 0;
+        k = [];
+
+        for (i = 0; i < newData.length; i++) {
+          for(j = 0, k = value(newData[i]); j < k.length; j++) {
+            t++;
+          }
+        }
+
+        newValues = [];
+        iterablesIndexCount = crossfilter_range(n);
+        iterablesEmptyRows = [];
+        var unsortedIndex = crossfilter_range(t);
+
+        for (l = 0, i = 0; i < newData.length; i++) {
+          k = value(newData[i])
+          //
+          if(!k.length){
+            iterablesIndexCount[i] = 0;
+            iterablesEmptyRows.push(i);
+            continue;
+          }
+          iterablesIndexCount[i] = k.length
+          for (j = 0; j < k.length; j++) {
+            newValues.push(k[j]);
+            unsortedIndex[l] = i;
+            l++;
+          }
+        }
+
+        // Create the Sort map used to sort both the values and the valueToData indices
+        var sortMap = sort(crossfilter_range(t), 0, t);
+
+        // Use the sortMap to sort the newValues
+        newValues = permute(newValues, sortMap);
+
+
+        // Use the sortMap to sort the unsortedIndex map
+        // newIndex should be a map of sortedValue -> crossfilterData
+        newIndex = permute(unsortedIndex, sortMap)
+
+      } else{
+        // Permute new values into natural order using a standard sorted index.
+        newValues = newData.map(value);
+        newIndex = sort(crossfilter_range(n1), 0, n1);
+        newValues = permute(newValues, newIndex);
+      }
 
       // Bisect newValues to determine which new records are selected.
-      var bounds = refilter(newValues), lo1 = bounds[0], hi1 = bounds[1], i;
+      var bounds = refilter(newValues), lo1 = bounds[0], hi1 = bounds[1];
       if (refilterFunction) {
         for (i = 0; i < n1; ++i) {
           if (!refilterFunction(newValues[i], i)) filters[offset][newIndex[i] + n0] |= one;
@@ -795,14 +850,22 @@ function crossfilter() {
         return;
       }
 
-      var oldValues = values,
-          oldIndex = index,
-          i0 = 0,
-          i1 = 0;
+
+
+      oldValues = values,
+        oldIndex = index,
+        i0 = 0,
+        i1 = 0;
+
+      if(iterable){
+        old_n0 = n0
+        n0 = oldValues.length;
+        n1 = t
+      }
 
       // Otherwise, create new arrays into which to merge new and old.
-      values = new Array(n);
-      index = crossfilter_index(n, n);
+      values = iterable ? new Array(n0 + n1) : new Array(n);
+      index = iterable ? new Array(n0 + n1) : crossfilter_index(n, n);
 
       // Merge the old and new sorted values, and old and new index.
       for (i = 0; i0 < n0 && i1 < n1; ++i) {
@@ -811,7 +874,7 @@ function crossfilter() {
           index[i] = oldIndex[i0++];
         } else {
           values[i] = newValues[i1];
-          index[i] = newIndex[i1++] + n0;
+          index[i] = newIndex[i1++] + (iterable ? old_n0 : n0);
         }
       }
 
@@ -824,7 +887,7 @@ function crossfilter() {
       // Add any remaining new values.
       for (; i1 < n1; ++i1, ++i) {
         values[i] = newValues[i1];
-        index[i] = newIndex[i1] + n0;
+        index[i] = newIndex[i1] + (iterable ? old_n0 : n0);
       }
 
       // Bisect again to recompute lo0 and hi0.
@@ -856,6 +919,7 @@ function crossfilter() {
     // Updates the selected values based on the specified bounds [lo, hi].
     // This implementation is used by all the public filter methods.
     function filterIndexBounds(bounds) {
+
       var lo1 = bounds[0],
           hi1 = bounds[1];
 
@@ -899,9 +963,54 @@ function crossfilter() {
         }
       }
 
+      if(iterable){
+        // For iterables, we need to figure out if the row has been completely removed vs partially included
+        // Only count a row as added if it is not already being aggregated. Only count a row
+        // as removed if the last element being aggregated is removed.
+
+        var newAdded = [];
+        var newRemoved = [];
+        for (i = 0; i < added.length; i++) {
+          iterablesIndexCount[added[i]]++
+          if(iterablesIndexCount[added[i]] === 1) {
+            newAdded.push(added[i]);
+          }
+        }
+        for (i = 0; i < removed.length; i++) {
+          iterablesIndexCount[removed[i]]--
+          if(iterablesIndexCount[removed[i]] === 0) {
+            newRemoved.push(removed[i]);
+          }
+        }
+
+        added = newAdded;
+        removed = newRemoved;
+
+        // Now handle empty rows.
+        if(bounds[0] === 0 && bounds[1] === index.length) {
+          for(i = 0; i < iterablesEmptyRows.length; i++) {
+            if((filters[offset][k = iterablesEmptyRows[i]] & one)) {
+              // Was not in the filter, so set the filter and add
+              filters[offset][k] ^= one;
+              added.push(k);
+            }
+          }
+        } else {
+          // filter in place - remove empty rows if necessary
+          for(i = 0; i < iterablesEmptyRows.length; i++) {
+            if(!(filters[offset][k = iterablesEmptyRows[i]] & one)) {
+              // Was in the filter, so set the filter and remove
+              filters[offset][k] ^= one;
+              removed.push(k);
+            }
+          }
+        }
+      }
+
       lo0 = lo1;
       hi0 = hi1;
       filterListeners.forEach(function(l) { l(one, offset, added, removed); });
+      triggerOnChange();
       return dimension;
     }
 
@@ -952,13 +1061,18 @@ function crossfilter() {
           added = [],
           removed = [];
 
+
       for (i = 0; i < n; ++i) {
-        if (!(filters[offset][k = index[i]] & one) ^ !!(x = f(values[i], i))) {
+        if(typeof(k = index[i]) === 'undefined'){
+          continue
+        }
+        if (!(filters[offset][k] & one) ^ !!(x = f(values[i], i))) {
           if (x) filters[offset][k] &= zero, added.push(k);
           else filters[offset][k] |= one, removed.push(k);
         }
       }
       filterListeners.forEach(function(l) { l(one, offset, added, removed); });
+      triggerOnChange();
     }
 
     // Returns the top K selected records based on this dimension's order.
@@ -975,6 +1089,16 @@ function crossfilter() {
         }
       }
 
+      if(iterable){
+        for(i = 0; i < iterablesEmptyRows.length && k > 0; i++) {
+          // Add empty rows at the end
+          if(filters.zero(j = iterablesEmptyRows[i])) {
+            array.push(data[j]);
+            --k;
+          }
+        }
+      }
+
       return array;
     }
 
@@ -982,8 +1106,20 @@ function crossfilter() {
     // Note: observes this dimension's filter, unlike group and groupAll.
     function bottom(k) {
       var array = [],
-          i = lo0,
+          i,
           j;
+
+      if(iterable) {
+        // Add empty rows at the top
+        for(i = 0; i < iterablesEmptyRows.length && k > 0; i++) {
+          if(filters.zero(j = iterablesEmptyRows[i])) {
+            array.push(data[j]);
+            --k;
+          }
+        }
+      }
+
+      i = lo0;
 
       while (i < hi0 && k > 0) {
         if (filters.zero(j = index[i])) {
@@ -1044,8 +1180,15 @@ function crossfilter() {
       // Incorporates the specified new values into this group.
       // This function is responsible for updating groups and groupIndex.
       function add(newValues, newIndex, n0, n1) {
+
+        if(iterable) {
+          n0old = n0
+          n0 = values.length - newValues.length
+          n1 = newValues.length;
+        }
+
         var oldGroups = groups,
-            reIndex = crossfilter_index(k, groupCapacity),
+            reIndex = iterable ? [] : crossfilter_index(k, groupCapacity),
             add = reduceAdd,
             remove = reduceRemove,
             initial = reduceInitial,
@@ -1066,7 +1209,13 @@ function crossfilter() {
         // Reset the new groups (k is a lower bound).
         // Also, make sure that groupIndex exists and is long enough.
         groups = new Array(k), k = 0;
-        groupIndex = k0 > 1 ? crossfilter_arrayLengthen(groupIndex, n) : crossfilter_index(n, groupCapacity);
+        if(iterable){
+          groupIndex = k0 > 1 ? groupIndex : [];
+        }
+        else{
+          groupIndex = k0 > 1 ? crossfilter_arrayLengthen(groupIndex, n) : crossfilter_index(n, groupCapacity);
+        }
+
 
         // Get the first old key (x0 of g0), if it exists.
         if (k0) x0 = (g0 = oldGroups[0]).key;
@@ -1096,8 +1245,22 @@ function crossfilter() {
 
           // Add any selected records belonging to the added group, while
           // advancing the new key and populating the associated group index.
-          while (!(x1 > x)) {
-            groupIndex[j = newIndex[i1] + n0] = k;
+
+          while (x1 <= x) {
+            j = newIndex[i1] + (iterable ? n0old : n0)
+
+
+            if(iterable){
+              if(groupIndex[j]){
+                groupIndex[j].push(k)
+              }
+              else{
+                groupIndex[j] = [k]
+              }
+            }
+            else{
+              groupIndex[j] = k;
+            }
 
             // Always add new values to groups. Only remove when not in filter.
             // This gives groups full information on data life-cycle.
@@ -1110,7 +1273,7 @@ function crossfilter() {
           groupIncrement();
         }
 
-        // Add any remaining old groups that were greater than all new keys.
+        // Add any remaining old groups that were greater th1an all new keys.
         // No incremental reduce is needed; these groups have no new records.
         // Also record the new index of the old group.
         while (i0 < k0) {
@@ -1118,10 +1281,27 @@ function crossfilter() {
           groupIncrement();
         }
 
+
+        // Fill in gaps with empty arrays where there may have been rows with empty iterables
+        if(iterable){
+          for (i = 0; i < groupIndex.length; i++) {
+            if(!groupIndex[i]){
+              groupIndex[i] = []
+            }
+          }
+        }
+
         // If we added any new groups before any old groups,
         // update the group index of all the old records.
-        if (k > i0) for (i0 = 0; i0 < n0; ++i0) {
-          groupIndex[i0] = reIndex[groupIndex[i0]];
+        if(k > i0){
+          if(iterable){
+            groupIndex = permute(groupIndex, reIndex, true)
+          }
+          else{
+            for (i0 = 0; i0 < n0; ++i0) {
+              groupIndex[i0] = reIndex[groupIndex[i0]];
+            }
+          }
         }
 
         // Modify the update and reset behavior based on the cardinality.
@@ -1152,6 +1332,10 @@ function crossfilter() {
         // Count the number of added groups,
         // and widen the group index as needed.
         function groupIncrement() {
+          if(iterable){
+            k++
+            return
+          }
           if (++k === groupCapacity) {
             reIndex = crossfilter_arrayWiden(reIndex, groupWidth <<= 1);
             groupIndex = crossfilter_arrayWiden(groupIndex, groupWidth);
@@ -1212,15 +1396,39 @@ function crossfilter() {
         if ((filterOne === one && filterOffset === offset) || resetNeeded) return;
 
         var i,
+            j,
             k,
             n,
             g;
+
+        if(iterable){
+          // Add the added values.
+          for (i = 0, n = added.length; i < n; ++i) {
+            if (filters.zeroExcept(k = added[i], offset, zero)) {
+              for (j = 0; j < groupIndex[k].length; j++) {
+                g = groups[groupIndex[k][j]];
+                g.value = reduceAdd(g.value, data[k], false, j);
+              }
+            }
+          }
+
+          // Remove the removed values.
+          for (i = 0, n = removed.length; i < n; ++i) {
+            if (filters.onlyExcept(k = removed[i], offset, zero, filterOffset, filterOne)) {
+              for (j = 0; j < groupIndex[k].length; j++) {
+                g = groups[groupIndex[k][j]];
+                g.value = reduceRemove(g.value, data[k], notFilter, j);
+              }
+            }
+          }
+          return;
+        }
 
         // Add the added values.
         for (i = 0, n = added.length; i < n; ++i) {
           if (filters.zeroExcept(k = added[i], offset, zero)) {
             g = groups[groupIndex[k]];
-            g.value = reduceAdd(g.value, data[k]);
+            g.value = reduceAdd(g.value, data[k], false);
           }
         }
 
@@ -1247,7 +1455,7 @@ function crossfilter() {
         // Add the added values.
         for (i = 0, n = added.length; i < n; ++i) {
           if (filters.zeroExcept(k = added[i], offset, zero)) {
-            g.value = reduceAdd(g.value, data[k]);
+            g.value = reduceAdd(g.value, data[k], false);
           }
         }
 
@@ -1263,6 +1471,7 @@ function crossfilter() {
       // This function is only used when the cardinality is greater than 1.
       function resetMany() {
         var i,
+            j,
             g;
 
         // Reset all group values.
@@ -1273,11 +1482,28 @@ function crossfilter() {
         // We add all records and then remove filtered records so that reducers
         // can build an 'unfiltered' view even if there are already filters in
         // place on other dimensions.
+        if(iterable){
+          for (i = 0; i < n; ++i) {
+            for (j = 0; j < groupIndex[i].length; j++) {
+              g = groups[groupIndex[i][j]];
+              g.value = reduceAdd(g.value, data[i], true, j);
+            }
+          }
+          for (i = 0; i < n; ++i) {
+            if (!filters.zeroExcept(i, offset, zero)) {
+              for (j = 0; j < groupIndex[i].length; j++) {
+                g = groups[groupIndex[i][j]];
+                g.value = reduceRemove(g.value, data[i], false, j);
+              }
+            }
+          }
+          return;
+        }
+
         for (i = 0; i < n; ++i) {
           g = groups[groupIndex[i]];
           g.value = reduceAdd(g.value, data[i], true);
         }
-
         for (i = 0; i < n; ++i) {
           if (!filters.zeroExcept(i, offset, zero)) {
             g = groups[groupIndex[i]];
@@ -1535,6 +1761,23 @@ function crossfilter() {
   // Returns the raw row data contained in this crossfilter
   function all(){
     return data;
+  }
+
+  function onChange(cb){
+    if(typeof cb !== 'function'){
+      console.warn('onChange callback parameter must be a function!');
+      return;
+    }
+    callbacks.push(cb);
+    return function(){
+      callbacks.splice(callbacks.indexOf(cb), 1);
+    };
+  }
+
+  function triggerOnChange(){
+    for (var i = 0; i < callbacks.length; i++) {
+      callbacks[i]();
+    }
   }
 
   return arguments.length
