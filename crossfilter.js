@@ -748,7 +748,6 @@ function crossfilter() {
         newIndex, // temporary array storing newly-added index
         iterablesIndexCount,
         newIterablesIndexCount,
-        oldIterablesIndexCount,
         iterablesEmptyRows,
         sort = quicksort_by(function(i) { return newValues[i]; }),
         refilter = crossfilter_filterAll, // for recomputing filter
