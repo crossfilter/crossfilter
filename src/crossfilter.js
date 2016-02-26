@@ -94,6 +94,8 @@ function crossfilter() {
         newValues, // temporary array storing newly-added values
         newIndex, // temporary array storing newly-added index
         iterablesIndexCount,
+        newIterablesIndexCount,
+        oldIterablesIndexCount,
         iterablesEmptyRows,
         sort = quicksort_by(function(i) { return newValues[i]; }),
         refilter = crossfilter_filterAll, // for recomputing filter
@@ -138,7 +140,7 @@ function crossfilter() {
         }
 
         newValues = [];
-        iterablesIndexCount = crossfilter_range(n);
+        newIterablesIndexCount = crossfilter_range(newData.length);
         iterablesEmptyRows = [];
         var unsortedIndex = crossfilter_range(t);
 
@@ -146,11 +148,11 @@ function crossfilter() {
           k = value(newData[i])
           //
           if(!k.length){
-            iterablesIndexCount[i] = 0;
+            newIterablesIndexCount[i] = 0;
             iterablesEmptyRows.push(i);
             continue;
           }
-          iterablesIndexCount[i] = k.length
+          newIterablesIndexCount[i] = k.length
           for (j = 0; j < k.length; j++) {
             newValues.push(k[j]);
             unsortedIndex[l] = i;
@@ -192,6 +194,7 @@ function crossfilter() {
       if (!n0) {
         values = newValues;
         index = newIndex;
+        iterablesIndexCount = newIterablesIndexCount;
         lo0 = lo1;
         hi0 = hi1;
         return;
@@ -212,7 +215,16 @@ function crossfilter() {
 
       // Otherwise, create new arrays into which to merge new and old.
       values = iterable ? new Array(n0 + n1) : new Array(n);
-      index = iterable ? new Array(n0 + n1) : crossfilter_index(n, n);
+      index = iterable ? new Array(n0 + n1) : crossfilter_index(n, n); 
+      
+      // Concatenate the newIterablesIndexCount onto the old one.
+      if(iterable) {
+        var oldiiclength = iterablesIndexCount.length;
+        iterablesIndexCount = crossfilter_arrayLengthen(iterablesIndexCount, n);
+        for(var j=0; j+oldiiclength < n; j++) {
+          iterablesIndexCount[j+oldiiclength] = newIterablesIndexCount[j];
+        }
+      }
 
       // Merge the old and new sorted values, and old and new index.
       for (i = 0; i0 < n0 && i1 < n1; ++i) {
@@ -283,34 +295,42 @@ function crossfilter() {
           k,
           added = [],
           removed = [];
-
+          
+          
       // Fast incremental update based on previous lo index.
       if (lo1 < lo0) {
         for (i = lo1, j = Math.min(lo0, hi1); i < j; ++i) {
-          filters[offset][k = index[i]] ^= one;
-          added.push(k);
+          added.push(index[i]);
         }
       } else if (lo1 > lo0) {
         for (i = lo0, j = Math.min(lo1, hi0); i < j; ++i) {
-          filters[offset][k = index[i]] ^= one;
-          removed.push(k);
+          removed.push(index[i]);
         }
       }
 
       // Fast incremental update based on previous hi index.
       if (hi1 > hi0) {
         for (i = Math.max(lo1, hi0), j = hi1; i < j; ++i) {
-          filters[offset][k = index[i]] ^= one;
-          added.push(k);
+          added.push(index[i]);
         }
       } else if (hi1 < hi0) {
         for (i = Math.max(lo0, hi1), j = hi0; i < j; ++i) {
-          filters[offset][k = index[i]] ^= one;
-          removed.push(k);
+          removed.push(index[i]);
         }
       }
 
-      if(iterable){
+      if(!iterable) {
+        // Flip filters normally.
+        
+        for(i=0; i<added.length; i++) {
+          filters[offset][added[i]] ^= one;
+        }
+        
+        for(i=0; i<removed.length; i++) {
+          filters[offset][removed[i]] ^= one;
+        }
+        
+      } else {
         // For iterables, we need to figure out if the row has been completely removed vs partially included
         // Only count a row as added if it is not already being aggregated. Only count a row
         // as removed if the last element being aggregated is removed.
@@ -320,12 +340,14 @@ function crossfilter() {
         for (i = 0; i < added.length; i++) {
           iterablesIndexCount[added[i]]++
           if(iterablesIndexCount[added[i]] === 1) {
+            filters[offset][added[i]] ^= one;
             newAdded.push(added[i]);
           }
         }
         for (i = 0; i < removed.length; i++) {
           iterablesIndexCount[removed[i]]--
           if(iterablesIndexCount[removed[i]] === 0) {
+            filters[offset][removed[i]] ^= one;
             newRemoved.push(removed[i]);
           }
         }
