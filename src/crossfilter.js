@@ -436,10 +436,51 @@ function crossfilter() {
           continue
         }
         if (!(filters[offset][k] & one) ^ !!(x = f(values[i], i))) {
-          if (x) filters[offset][k] &= zero, added.push(k);
-          else filters[offset][k] |= one, removed.push(k);
+          if (x) added.push(k);
+          else removed.push(k);
         }
       }
+      
+      if(!iterable) {
+        for(i=0; i<added.length; i++) {
+          filters[offset][added[i]] &= zero
+        }
+        
+        for(i=0; i<removed.length; i++) {
+          filters[offset][removed[i]] |= one;
+        }
+      } else {
+        var newAdded = [];
+        var newRemoved = [];
+        for (i = 0; i < added.length; i++) {
+          iterablesIndexCount[added[i]]++
+          if(iterablesIndexCount[added[i]] === 1) {
+            filters[offset][added[i]] &= zero;
+            newAdded.push(added[i]);
+          }
+        }
+        for (i = 0; i < removed.length; i++) {
+          iterablesIndexCount[removed[i]]--
+          if(iterablesIndexCount[removed[i]] === 0) {
+            filters[offset][removed[i]] |= one;
+            newRemoved.push(removed[i]);
+          }
+        }
+
+        added = newAdded;
+        removed = newRemoved;
+
+        // Now handle empty rows.
+        // filter in place - remove empty rows if necessary
+        for(i = 0; i < iterablesEmptyRows.length; i++) {
+          if(!(filters[offset][k = iterablesEmptyRows[i]] & one)) {
+            // Was in the filter, so set the filter and remove
+            filters[offset][k] ^= one;
+            removed.push(k);
+          }
+        }
+      }
+      
       filterListeners.forEach(function(l) { l(one, offset, added, removed); });
       triggerOnChange();
     }
