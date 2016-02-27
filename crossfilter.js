@@ -1067,7 +1067,7 @@ function crossfilter() {
     function filterFunction(f) {
       refilter = crossfilter_filterAll;
 
-      filterIndexFunction(refilterFunction = f);
+      filterIndexFunction(refilterFunction = f, false);
 
       lo0 = 0;
       hi0 = n;
@@ -1083,24 +1083,32 @@ function crossfilter() {
           removed = [],
           indexLength = index.length;
 
-
-      for (i = 0; i < indexLength; ++i) {
-        if(typeof(k = index[i]) === 'undefined'){
-          continue
+      if(!iterable) {
+        for (i = 0; i < indexLength; ++i) {
+          if (!(filters[offset][k = index[i]] & one) ^ !!(x = f(values[i], i))) {
+            if (x) added.push(k);
+            else removed.push(k);
+          }
         }
-        if (!(filters[offset][k] & one) !== !!(x = f(values[i], i))) {
-          if (x) added.push(k);
-          else removed.push(k);
+      }
+      
+      if(iterable) {
+        for(i=0; i < indexLength; ++i) {
+          if(f(values[i], i)) {
+            added.push(index[i])
+          } else {
+            removed.push(index[i])
+          }
         }
       }
       
       if(!iterable) {
         for(i=0; i<added.length; i++) {
-          filters[offset][added[i]] &= zero
+          if(filters[offset][added[i]] & one) filters[offset][added[i]] &= zero;
         }
         
         for(i=0; i<removed.length; i++) {
-          filters[offset][removed[i]] |= one;
+          if(!(filters[offset][removed[i]] & one)) filters[offset][removed[i]] |= one;
         }
       } else {
         var newAdded = [];
@@ -1143,7 +1151,7 @@ function crossfilter() {
           }
         }
       }
-      
+
       filterListeners.forEach(function(l) { l(one, offset, added, removed); });
       triggerOnChange();
     }
@@ -1466,6 +1474,7 @@ function crossfilter() {
       // This function is only used when the cardinality is greater than 1.
       // notFilter indicates a crossfilter.add/remove operation.
       function updateMany(filterOne, filterOffset, added, removed, notFilter) {
+        
         if ((filterOne === one && filterOffset === offset) || resetNeeded) return;
 
         var i,

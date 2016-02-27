@@ -1665,11 +1665,13 @@ suite.addBatch({
         "group values with multiple filters on and off on iterable dimension": function(data) {
           try {
             var group = data.total.groupAll().reduceCount();
+            assert.equal(group.value(), 43);
             data.tags.filterFunction(function(d) { return d === 1; });
             assert.equal(group.value(), 18);
             data.tags.filterAll();
-            data.tags.filterFunction(function(d) { return d === 2; });
-            assert.equal(group.value(), 33);
+            assert.equal(group.value(), 43);
+            data.tags.filterFunction(function(d) { return d === 1; });
+            assert.equal(group.value(), 18);
             data.tags.filterAll();
             assert.equal(group.value(), 43);
           } finally {
