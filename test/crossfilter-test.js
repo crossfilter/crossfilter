@@ -1333,6 +1333,12 @@ suite.addBatch({
         var cb = data.onChange(function(){});
         assert.equal(typeof cb, 'function');
       },
+      "sends the eventName with the callback": function(data) {
+        var name
+        var cb = data.onChange(function(n){name = n});
+        data.add([1])
+        assert.equal(name, 'dataAdded');
+      },
       "callback gets called when adding data": function(data) {
         var pass = false;
         var cb = data.onChange(function(){

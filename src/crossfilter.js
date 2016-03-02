@@ -34,7 +34,7 @@ function crossfilter() {
       data = data.concat(newData);
       filters.lengthen(n += n1);
       dataListeners.forEach(function(l) { l(newData, n0, n1); });
-      triggerOnChange();
+      triggerOnChange('dataAdded');
     }
 
     return crossfilter;
@@ -65,7 +65,7 @@ function crossfilter() {
 
     data.length = n = j;
     filters.truncate(j);
-    triggerOnChange();
+    triggerOnChange('dataRemoved');
   }
 
   // Adds a new dimension with the specified value accessor function.
@@ -410,7 +410,7 @@ function crossfilter() {
       lo0 = lo1;
       hi0 = hi1;
       filterListeners.forEach(function(l) { l(one, offset, added, removed); });
-      triggerOnChange();
+      triggerOnChange('filtered');
       return dimension;
     }
 
@@ -545,7 +545,7 @@ function crossfilter() {
       }
 
       filterListeners.forEach(function(l) { l(one, offset, added, removed); });
-      triggerOnChange();
+      triggerOnChange('filtered');
     }
 
     // Returns the top K selected records based on this dimension's order.
@@ -1248,9 +1248,9 @@ function crossfilter() {
     };
   }
 
-  function triggerOnChange(){
+  function triggerOnChange(eventName){
     for (var i = 0; i < callbacks.length; i++) {
-      callbacks[i]();
+      callbacks[i](eventName);
     }
   }
 
