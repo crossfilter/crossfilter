@@ -687,7 +687,7 @@ function crossfilter() {
       data = data.concat(newData);
       filters.lengthen(n += n1);
       dataListeners.forEach(function(l) { l(newData, n0, n1); });
-      triggerOnChange();
+      triggerOnChange('dataAdded');
     }
 
     return crossfilter;
@@ -718,7 +718,7 @@ function crossfilter() {
 
     data.length = n = j;
     filters.truncate(j);
-    triggerOnChange();
+    triggerOnChange('dataRemoved');
   }
 
   // Adds a new dimension with the specified value accessor function.
@@ -833,7 +833,7 @@ function crossfilter() {
         newIndex = sort(crossfilter_range(n1), 0, n1);
         newValues = permute(newValues, newIndex);
       }
-      
+
       if(iterable) {
         n1 = t;
       }
@@ -848,7 +848,7 @@ function crossfilter() {
           }
         }
       } else {
-        for (i = 0; i < lo1; ++i) { 
+        for (i = 0; i < lo1; ++i) {
           filters[offset][newIndex[i] + n0] |= one;
           if(iterable) newIterablesIndexFilterStatus[i] = 1;
         }
@@ -886,9 +886,9 @@ function crossfilter() {
 
       // Otherwise, create new arrays into which to merge new and old.
       values = iterable ? new Array(n0 + n1) : new Array(n);
-      index = iterable ? new Array(n0 + n1) : crossfilter_index(n, n); 
-      if(iterable) iterablesIndexFilterStatus = crossfilter_index(n0 + n1, 1); 
-      
+      index = iterable ? new Array(n0 + n1) : crossfilter_index(n, n);
+      if(iterable) iterablesIndexFilterStatus = crossfilter_index(n0 + n1, 1);
+
       // Concatenate the newIterablesIndexCount onto the old one.
       if(iterable) {
         var oldiiclength = iterablesIndexCount.length;
@@ -973,8 +973,8 @@ function crossfilter() {
           removed = [],
           valueIndexAdded = [],
           valueIndexRemoved = [];
-          
-          
+
+
       // Fast incremental update based on previous lo index.
       if (lo1 < lo0) {
         for (i = lo1, j = Math.min(lo0, hi1); i < j; ++i) {
@@ -1003,15 +1003,15 @@ function crossfilter() {
 
       if(!iterable) {
         // Flip filters normally.
-        
+
         for(i=0; i<added.length; i++) {
           filters[offset][added[i]] ^= one;
         }
-        
+
         for(i=0; i<removed.length; i++) {
           filters[offset][removed[i]] ^= one;
         }
-        
+
       } else {
         // For iterables, we need to figure out if the row has been completely removed vs partially included
         // Only count a row as added if it is not already being aggregated. Only count a row
@@ -1063,7 +1063,7 @@ function crossfilter() {
       lo0 = lo1;
       hi0 = hi1;
       filterListeners.forEach(function(l) { l(one, offset, added, removed); });
-      triggerOnChange();
+      triggerOnChange('filtered');
       return dimension;
     }
 
@@ -1125,7 +1125,7 @@ function crossfilter() {
           }
         }
       }
-      
+
       if(iterable) {
         for(i=0; i < indexLength; ++i) {
           if(f(values[i], i)) {
@@ -1137,22 +1137,22 @@ function crossfilter() {
           }
         }
       }
-      
+
       if(!iterable) {
         for(i=0; i<added.length; i++) {
           if(filters[offset][added[i]] & one) filters[offset][added[i]] &= zero;
         }
-        
+
         for(i=0; i<removed.length; i++) {
           if(!(filters[offset][removed[i]] & one)) filters[offset][removed[i]] |= one;
         }
       } else {
-        
+
         var newAdded = [];
         var newRemoved = [];
         for (i = 0; i < added.length; i++) {
           // First check this particular value needs to be added
-          if(iterablesIndexFilterStatus[valueIndexAdded[i]] === 1) {  
+          if(iterablesIndexFilterStatus[valueIndexAdded[i]] === 1) {
             iterablesIndexCount[added[i]]++
             iterablesIndexFilterStatus[valueIndexAdded[i]] = 0;
             if(iterablesIndexCount[added[i]] === 1) {
@@ -1163,7 +1163,7 @@ function crossfilter() {
         }
         for (i = 0; i < removed.length; i++) {
           // First check this particular value needs to be removed
-          if(iterablesIndexFilterStatus[valueIndexRemoved[i]] === 0) {  
+          if(iterablesIndexFilterStatus[valueIndexRemoved[i]] === 0) {
             iterablesIndexCount[removed[i]]--
             iterablesIndexFilterStatus[valueIndexRemoved[i]] = 1;
             if(iterablesIndexCount[removed[i]] === 0) {
@@ -1175,7 +1175,7 @@ function crossfilter() {
 
         added = newAdded;
         removed = newRemoved;
-        
+
         // Now handle empty rows.
         if(filterAll) {
           for(i = 0; i < iterablesEmptyRows.length; i++) {
@@ -1198,7 +1198,7 @@ function crossfilter() {
       }
 
       filterListeners.forEach(function(l) { l(one, offset, added, removed); });
-      triggerOnChange();
+      triggerOnChange('filtered');
     }
 
     // Returns the top K selected records based on this dimension's order.
@@ -1519,7 +1519,7 @@ function crossfilter() {
       // This function is only used when the cardinality is greater than 1.
       // notFilter indicates a crossfilter.add/remove operation.
       function updateMany(filterOne, filterOffset, added, removed, notFilter) {
-        
+
         if ((filterOne === one && filterOffset === offset) || resetNeeded) return;
 
         var i,
@@ -1901,9 +1901,9 @@ function crossfilter() {
     };
   }
 
-  function triggerOnChange(){
+  function triggerOnChange(eventName){
     for (var i = 0; i < callbacks.length; i++) {
-      callbacks[i]();
+      callbacks[i](eventName);
     }
   }
 
