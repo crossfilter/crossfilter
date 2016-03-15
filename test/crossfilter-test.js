@@ -1984,6 +1984,20 @@ suite.addBatch({
             }
           }
         },
+        
+        "works for empty arrays in middle or end": function() {
+          var data = crossfilter([
+              {tags: [1,2,3]},
+              {tags: []},
+              {tags: [1,2,3]},
+              {tags: [3]},
+              {tags: []}
+            ]),
+            dimension = data.dimension(function(d) { return d.tags; }, true),
+            group = dimension
+                  .group(function(d) { return d;} );
+            group.top(10);
+        },
 
         "dispose": {
           "detaches from reduce listeners": function() {

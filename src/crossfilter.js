@@ -757,7 +757,7 @@ function crossfilter() {
 
         // Fill in gaps with empty arrays where there may have been rows with empty iterables
         if(iterable){
-          for (i = 0; i < groupIndex.length; i++) {
+          for (i = 0; i < n; i++) {
             if(!groupIndex[i]){
               groupIndex[i] = []
             }
