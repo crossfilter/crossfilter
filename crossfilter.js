@@ -154,7 +154,7 @@ function insertionsort_by(f) {
   return insertionsort;
 }
 // Algorithm designed by Vladimir Yaroslavskiy.
-// Implementation based on the Dart project; see lib/dart/LICENSE for details.
+// Implementation based on the Dart project; see NOTICE and AUTHORS for details.
 
 var quicksort = crossfilter.quicksort = quicksort_by(crossfilter_identity);
 
