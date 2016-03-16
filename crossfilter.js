@@ -662,6 +662,7 @@ function crossfilter() {
     size: size,
     all: all,
     onChange: onChange,
+    isElementFiltered: isElementFiltered,
   };
 
   var data = [], // the records
@@ -721,6 +722,24 @@ function crossfilter() {
     triggerOnChange('dataRemoved');
   }
 
+  // Return true if the data element at index i is filtered IN.
+  // Optionally, ignore the filters of any dimensions in the ignore_dimensions list.
+  function isElementFiltered(i, ignore_dimensions) {
+      var n,
+          d,
+          dimension,
+          mask = Array(filters.subarrays);
+      for (n = 0; n < filters.subarrays; n++) mask[n] = ~0;
+      if (ignore_dimensions)
+          for (d = 0; d < ignore_dimensions.length; d++) {
+              dimension = ignore_dimensions[d];
+              mask[dimension._offset] &= dimension._zero;
+          }
+      for (n = 0; n < filters.subarrays; n++)
+          if (filters[n][i] & mask[n]) return false;
+      return true;
+  }  
+    
   // Adds a new dimension with the specified value accessor function.
   function dimension(value, iterable) {
     var dimension = {
@@ -774,6 +793,11 @@ function crossfilter() {
     offset = tmp.offset;
     one = tmp.one;
     zero = ~one;
+      
+    // Expose the dimension mask for internal use
+    dimension._offset = offset;
+    dimension._one = one;
+    dimension._zero = zero;
 
     preAdd(data, 0, n);
     postAdd(data, 0, n);
