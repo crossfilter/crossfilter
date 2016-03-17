@@ -144,6 +144,15 @@ crossfilter_bitarray.prototype.zeroExcept = function(n, offset, zero) {
   return true;
 };
 
+// Checks that all bits for the given indez are 0 except for the specified mask.
+// The mask should be an array of the same size as the filter subarrays width.
+crossfilter_bitarray.prototype.zeroExceptMask = function(n, mask) {
+  var i, len;
+  for (i = 0, len = this.subarrays; i < len; ++i)
+    if (this[i][n] & mask[i]) return false;
+  return true;
+}
+
 // Checks that only the specified bit is set for the given index
 crossfilter_bitarray.prototype.only = function(n, offset, one) {
   var i, len;

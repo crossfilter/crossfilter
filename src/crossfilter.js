@@ -82,9 +82,7 @@ function crossfilter() {
               dimension = ignore_dimensions[d];
               mask[dimension._offset] &= dimension._zero;
           }
-      for (n = 0; n < filters.subarrays; n++)
-          if (filters[n][i] & mask[n]) return false;
-      return true;
+      return filters.zeroExceptMask(i,mask);
   }  
     
   // Adds a new dimension with the specified value accessor function.
