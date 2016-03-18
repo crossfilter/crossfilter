@@ -586,8 +586,11 @@ crossfilter_bitarray.prototype.zeroExcept = function(n, offset, zero) {
 // The mask should be an array of the same size as the filter subarrays width.
 crossfilter_bitarray.prototype.zeroExceptMask = function(n, mask) {
   var i, len;
-  for (i = 0, len = this.subarrays; i < len; ++i)
-    if (this[i][n] & mask[i]) return false;
+  for (i = 0, len = this.subarrays; i < len; ++i) {
+    if (this[i][n] & mask[i]) {
+      return false;      
+    }
+  }
   return true;
 }
 
@@ -738,12 +741,13 @@ function crossfilter() {
           d,
           dimension,
           mask = Array(filters.subarrays);
-      for (n = 0; n < filters.subarrays; n++) mask[n] = ~0;
-      if (ignore_dimensions)
-          for (d = 0; d < ignore_dimensions.length; d++) {
-              dimension = ignore_dimensions[d];
-              mask[dimension._offset] &= dimension._zero;
-          }
+      for (n = 0; n < filters.subarrays; n++) { mask[n] = ~0; }
+      if (ignore_dimensions) {
+        for (d = 0; d < ignore_dimensions.length; d++) {
+          dimension = ignore_dimensions[d];
+          mask[dimension._offset] &= dimension._zero;
+        }
+      }
       return filters.zeroExceptMask(i,mask);
   }  
     

@@ -76,12 +76,13 @@ function crossfilter() {
           d,
           dimension,
           mask = Array(filters.subarrays);
-      for (n = 0; n < filters.subarrays; n++) mask[n] = ~0;
-      if (ignore_dimensions)
-          for (d = 0; d < ignore_dimensions.length; d++) {
-              dimension = ignore_dimensions[d];
-              mask[dimension._offset] &= dimension._zero;
-          }
+      for (n = 0; n < filters.subarrays; n++) { mask[n] = ~0; }
+      if (ignore_dimensions) {
+        for (d = 0; d < ignore_dimensions.length; d++) {
+          dimension = ignore_dimensions[d];
+          mask[dimension._offset] &= dimension._zero;
+        }
+      }
       return filters.zeroExceptMask(i,mask);
   }  
     

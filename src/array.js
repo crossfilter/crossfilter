@@ -148,8 +148,11 @@ crossfilter_bitarray.prototype.zeroExcept = function(n, offset, zero) {
 // The mask should be an array of the same size as the filter subarrays width.
 crossfilter_bitarray.prototype.zeroExceptMask = function(n, mask) {
   var i, len;
-  for (i = 0, len = this.subarrays; i < len; ++i)
-    if (this[i][n] & mask[i]) return false;
+  for (i = 0, len = this.subarrays; i < len; ++i) {
+    if (this[i][n] & mask[i]) {
+      return false;      
+    }
+  }
   return true;
 }
 
