@@ -739,13 +739,16 @@ function crossfilter() {
   function isElementFiltered(i, ignore_dimensions) {
       var n,
           d,
-          dimension,
+          id,
+          len,
           mask = Array(filters.subarrays);
       for (n = 0; n < filters.subarrays; n++) { mask[n] = ~0; }
       if (ignore_dimensions) {
-        for (d = 0; d < ignore_dimensions.length; d++) {
-          dimension = ignore_dimensions[d];
-          mask[dimension._offset] &= dimension._zero;
+        for (d = 0, len = ignore_dimensions.length; d < len; d++) {
+          // The top bits of the ID are the subarray offset and the lower bits are the bit 
+          // offset of the "one" mask.
+          id = ignore_dimensions[d].id;
+          mask[id >> 7] &= ~(0x1 << (id & 0x3f));
         }
       }
       return filters.zeroExceptMask(i,mask);
@@ -805,10 +808,11 @@ function crossfilter() {
     one = tmp.one;
     zero = ~one;
       
-    // Expose the dimension mask for internal use
-    dimension._offset = offset;
-    dimension._one = one;
-    dimension._zero = zero;
+    // Create a unique ID for the dimension
+    // IDs will be re-used if dimensions are disposed.
+    // For internal use the ID is the subarray offset shifted left 7 bits or'd with the
+    // bit offset of the set bit in the dimension's "one" mask.
+    dimension.id = (offset << 7) | (Math.log(one) / Math.log(2));
 
     preAdd(data, 0, n);
     postAdd(data, 0, n);
