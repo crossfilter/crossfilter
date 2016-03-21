@@ -737,21 +737,21 @@ function crossfilter() {
   // Return true if the data element at index i is filtered IN.
   // Optionally, ignore the filters of any dimensions in the ignore_dimensions list.
   function isElementFiltered(i, ignore_dimensions) {
-      var n,
-          d,
-          id,
-          len,
-          mask = Array(filters.subarrays);
-      for (n = 0; n < filters.subarrays; n++) { mask[n] = ~0; }
-      if (ignore_dimensions) {
-        for (d = 0, len = ignore_dimensions.length; d < len; d++) {
-          // The top bits of the ID are the subarray offset and the lower bits are the bit 
-          // offset of the "one" mask.
-          id = ignore_dimensions[d].id;
-          mask[id >> 7] &= ~(0x1 << (id & 0x3f));
-        }
+    var n,
+        d,
+        id,
+        len,
+        mask = Array(filters.subarrays);
+    for (n = 0; n < filters.subarrays; n++) { mask[n] = ~0; }
+    if (ignore_dimensions) {
+      for (d = 0, len = ignore_dimensions.length; d < len; d++) {
+        // The top bits of the ID are the subarray offset and the lower bits are the bit 
+        // offset of the "one" mask.
+        id = ignore_dimensions[d].id();
+        mask[id >> 7] &= ~(0x1 << (id & 0x3f));
       }
-      return filters.zeroExceptMask(i,mask);
+    }
+    return filters.zeroExceptMask(i,mask);
   }  
     
   // Adds a new dimension with the specified value accessor function.
@@ -767,12 +767,14 @@ function crossfilter() {
       group: group,
       groupAll: groupAll,
       dispose: dispose,
-      remove: dispose // for backwards-compatibility
+      remove: dispose, // for backwards-compatibility
+      id: function() { return id; },
     };
 
     var one, // lowest unset bit as mask, e.g., 00001000
         zero, // inverted one, e.g., 11110111
         offset, // offset into the filters arrays
+        id, // unique ID for this dimension (reused when dimensions are disposed)
         values, // sorted, cached array
         index, // value rank ↦ object id
         oldValues, // temporary array storing previously-added values
@@ -812,7 +814,7 @@ function crossfilter() {
     // IDs will be re-used if dimensions are disposed.
     // For internal use the ID is the subarray offset shifted left 7 bits or'd with the
     // bit offset of the set bit in the dimension's "one" mask.
-    dimension.id = (offset << 7) | (Math.log(one) / Math.log(2));
+    id = (offset << 7) | (Math.log(one) / Math.log(2));
 
     preAdd(data, 0, n);
     postAdd(data, 0, n);
