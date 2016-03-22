@@ -81,7 +81,8 @@ function crossfilter() {
       group: group,
       groupAll: groupAll,
       dispose: dispose,
-      remove: dispose // for backwards-compatibility
+      remove: dispose, // for backwards-compatibility
+      accessor: value
     };
 
     var one, // lowest unset bit as mask, e.g., 00001000
