@@ -275,6 +275,10 @@ suite.addBatch({
     },
 
     "dimension": {
+      
+      "accessor": function(data) {
+        assert.equal(data.type.accessor({ type: "a type" }), "a type");
+      },
 
       "top": {
         "returns the top k records by value, in descending order": function(data) {
