@@ -293,6 +293,18 @@ suite.addBatch({
             {date: "2011-11-14T23:21:22Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,4,5]}
           ]);
         },
+        "returns the top k records, using offset, by value, in descending order": function(data) {
+          assert.deepEqual(data.total.top(3, 1), [
+            {date: "2011-11-14T20:49:07Z", quantity: 2, total: 290, tip: 200, type: "tab", tags: [2,4,5]},
+            {date: "2011-11-14T21:18:48Z", quantity: 4, total: 270, tip: 0, type: "tab", tags: [1,2,3]},
+            {date: "2011-11-14T17:38:40Z", quantity: 2, total: 200, tip: 100, type: 'visa', tags: [2,4,5]} 
+          ]);
+          assert.deepEqual(data.date.top(3,10), [
+            {date: "2011-11-14T22:30:22Z", quantity: 2, total: 89, tip: 0, type: "tab", tags: [1,3]},
+            {date: "2011-11-14T21:31:05Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,2,3]},
+            {date: "2011-11-14T21:30:55Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]}
+          ]);
+        },
         "observes the associated dimension's filters": function(data) {
           try {
             data.quantity.filterExact(4);
@@ -309,10 +321,16 @@ suite.addBatch({
               {date: "2011-11-14T19:04:22Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,2,3]},
               {date: "2011-11-14T19:00:31Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]}
             ]);
+            assert.deepEqual(data.date.top(10, 2), [
+              {date: "2011-11-14T19:00:31Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]}
+            ]);
             data.date.filterRange([Date.UTC(2011, 10, 14, 19), Date.UTC(2011, 10, 14, 20)]); // also comparable
             assert.deepEqual(data.date.top(10), [
               {date: "2011-11-14T19:30:44Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,3]},
               {date: "2011-11-14T19:04:22Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,2,3]},
+              {date: "2011-11-14T19:00:31Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]}
+            ]);
+            assert.deepEqual(data.date.top(10, 2), [
               {date: "2011-11-14T19:00:31Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]}
             ]);
           } finally {
@@ -325,6 +343,10 @@ suite.addBatch({
             assert.deepEqual(data.total.top(2), [
               {date: "2011-11-14T20:49:07Z", quantity: 2, total: 290, tip: 200, type: "tab", tags: [2,4,5]},
               {date: "2011-11-14T21:18:48Z", quantity: 4, total: 270, tip: 0, type: "tab", tags: [1,2,3]}
+            ]);
+            assert.deepEqual(data.total.top(2, 8), [
+              {date: '2011-11-14T21:26:30Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [2,4,5]}, 
+              {date: '2011-11-14T23:28:54Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [1,2,3]}
             ]);
             data.type.filterExact("visa");
             assert.deepEqual(data.total.top(1), [
@@ -344,6 +366,10 @@ suite.addBatch({
               {date: "2011-11-14T23:28:54Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]},
               {date: "2011-11-14T23:23:29Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]}
             ]);
+            assert.deepEqual(data.date.top(2, 8), [
+              {date: '2011-11-14T22:30:22Z', quantity: 2, total: 89, tip: 0, type: 'tab', tags: [1,3]}, 
+              {date: '2011-11-14T21:31:05Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [1,2,3]}
+            ]);
             data.type.filterExact("visa");
             assert.deepEqual(data.date.top(1), [
               {date: "2011-11-14T23:16:09Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [2,4,5]}
@@ -362,10 +388,18 @@ suite.addBatch({
           assert.deepEqual(data.quantity.top(-1), []);
           assert.deepEqual(data.quantity.top(NaN), []);
           assert.deepEqual(data.quantity.top(-Infinity), []);
+          assert.deepEqual(data.quantity.top(0, 0), []);
+          assert.deepEqual(data.quantity.top(-1, -1), []);
+          assert.deepEqual(data.quantity.top(NaN, NaN), []);
+          assert.deepEqual(data.quantity.top(-Infinity, -Infinity), []);
           assert.deepEqual(data.date.top(0), []);
           assert.deepEqual(data.date.top(-1), []);
           assert.deepEqual(data.date.top(NaN), []);
           assert.deepEqual(data.date.top(-Infinity), []);
+          assert.deepEqual(data.date.top(0, 0), []);
+          assert.deepEqual(data.date.top(-1, -1), []);
+          assert.deepEqual(data.date.top(NaN, NaN), []);
+          assert.deepEqual(data.date.top(-Infinity, -Infinity), []);
         }
       },
 

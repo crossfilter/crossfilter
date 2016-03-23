@@ -580,15 +580,23 @@ function crossfilter() {
 
     // Returns the top K selected records based on this dimension's order.
     // Note: observes this dimension's filter, unlike group and groupAll.
-    function top(k) {
+    function top(k, top_offset) {
       var array = [],
           i = hi0,
-          j;
+          j,
+          toSkip = 0;
+
+      if(top_offset && top_offset > 0) toSkip = top_offset;
 
       while (--i >= lo0 && k > 0) {
         if (filters.zero(j = index[i])) {
-          array.push(data[j]);
-          --k;
+          if(toSkip > 0) {
+            //skip matching row
+            --toSkip;
+          } else {
+            array.push(data[j]);
+            --k;
+          }
         }
       }
 
