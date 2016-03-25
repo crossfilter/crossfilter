@@ -1494,6 +1494,56 @@ suite.addBatch({
         assert.equal(num, 2);
       },
     },
+    "iterablesEmptyRows": {
+      topic: function(data) {
+        var emptyRowsTestData = [
+          {name: "apha", labels: []},
+          {name: "bravo", labels: []},
+          {name: "charle", labels: []},
+          {name: "delta", labels: []},
+          {name: "echo", labels: ["courageous"]}
+        ];
+        var data = crossfilter(emptyRowsTestData);
+        data.labels = data.dimension(function(d) { return d.labels; }, true);
+        return data;
+      },
+      "top": {
+        "returns the top k records by value, placing non-empty row on top": function(data) {
+          assert.deepEqual(data.labels.top(5), [
+            {name: "echo", labels: ["courageous"]},
+            {name: "apha", labels: []},
+            {name: "bravo", labels: []},
+            {name: "charle", labels: []},
+            {name: "delta", labels: []},
+          ]);
+        },
+        "returns the top k records, using offset, by value": function(data) {
+          assert.deepEqual(data.labels.top(3, 2), [
+            {name: "bravo", labels: []},
+            {name: "charle", labels: []},
+            {name: "delta", labels: []}
+          ]);
+        }
+      },
+      "bottom": {
+        "returns the bottom k records by value, placing non-empty row on bottom": function(data) {
+          assert.deepEqual(data.labels.bottom(5), [
+            {name: "apha", labels: []},
+            {name: "bravo", labels: []},
+            {name: "charle", labels: []},
+            {name: "delta", labels: []},
+            {name: "echo", labels: ["courageous"]}
+          ]);
+        },
+        "returns the bottom k records, using offset, by value, in descending order": function(data) {
+          assert.deepEqual(data.labels.bottom(3, 2), [
+            {name: "charle", labels: []},
+            {name: "delta", labels: []},
+            {name: "echo", labels: ["courageous"]}
+          ]);
+        }
+      }
+    },
     "iterableDimension": {
       "top":{
         "returns the top k records by value, in descending order": function(data) {
