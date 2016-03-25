@@ -1267,10 +1267,15 @@ function crossfilter() {
 
       if(iterable){
         for(i = 0; i < iterablesEmptyRows.length && k > 0; i++) {
-          // Add empty rows at the end
+          // Add row with empty iterable column at the end
           if(filters.zero(j = iterablesEmptyRows[i])) {
-            array.push(data[j]);
-            --k;
+            if(toSkip > 0) {
+              //skip matching row
+              --toSkip;
+            } else {
+              array.push(data[j]);
+              --k;
+            }
           }
         }
       }
@@ -1289,11 +1294,16 @@ function crossfilter() {
       if(bottom_offset && bottom_offset > 0) toSkip = bottom_offset;
 
       if(iterable) {
-        // Add empty rows at the top
+        // Add row with empty iterable column at the top
         for(i = 0; i < iterablesEmptyRows.length && k > 0; i++) {
           if(filters.zero(j = iterablesEmptyRows[i])) {
-            array.push(data[j]);
-            --k;
+            if(toSkip > 0) {
+              //skip matching row
+              --toSkip;
+            } else {
+              array.push(data[j]);
+              --k;
+            }
           }
         }
       }
