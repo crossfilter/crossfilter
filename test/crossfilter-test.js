@@ -2157,7 +2157,58 @@ suite.addBatch({
           }
         },
       },
-    }
+    },
+      
+    "isElementFiltered": {
+      "Test if elements are filtered": function(data) {
+        try {
+          assert.isTrue(data.isElementFiltered(0)); // quantity = 2; total = 190;
+          assert.isTrue(data.isElementFiltered(2)); // quantity = 1; total = 300;
+          assert.isTrue(data.isElementFiltered(6)); // quantity = 1; total = 100;
+          assert.isTrue(data.isElementFiltered(0,[data.quantity])); // quantity = 2; total = 190;
+          assert.isTrue(data.isElementFiltered(2,[data.quantity])); // quantity = 1; total = 300;
+          assert.isTrue(data.isElementFiltered(6,[data.quantity])); // quantity = 1; total = 100;
+          assert.isTrue(data.isElementFiltered(0,[data.total])); // quantity = 2; total = 190;
+          assert.isTrue(data.isElementFiltered(2,[data.total])); // quantity = 1; total = 300;
+          assert.isTrue(data.isElementFiltered(6,[data.total])); // quantity = 1; total = 100;
+          assert.isTrue(data.isElementFiltered(0,[data.quantity,data.total])); // quantity = 2; total = 190;
+          assert.isTrue(data.isElementFiltered(2,[data.quantity,data.total])); // quantity = 1; total = 300;
+          assert.isTrue(data.isElementFiltered(6,[data.quantity,data.total])); // quantity = 1; total = 100;
+
+          data.quantity.filterExact(1);
+          assert.isFalse(data.isElementFiltered(0)); // quantity = 2; total = 190;
+          assert.isTrue(data.isElementFiltered(2)); // quantity = 1; total = 300;
+          assert.isTrue(data.isElementFiltered(6)); // quantity = 1; total = 100;
+          assert.isTrue(data.isElementFiltered(0,[data.quantity])); // quantity = 2; total = 190;
+          assert.isTrue(data.isElementFiltered(2,[data.quantity])); // quantity = 1; total = 300;
+          assert.isTrue(data.isElementFiltered(6,[data.quantity])); // quantity = 1; total = 100;
+          assert.isFalse(data.isElementFiltered(0,[data.total])); // quantity = 2; total = 190;
+          assert.isTrue(data.isElementFiltered(2,[data.total])); // quantity = 1; total = 300;
+          assert.isTrue(data.isElementFiltered(6,[data.total])); // quantity = 1; total = 100;
+          assert.isTrue(data.isElementFiltered(0,[data.quantity,data.total])); // quantity = 2; total = 190;
+          assert.isTrue(data.isElementFiltered(2,[data.quantity,data.total])); // quantity = 1; total = 300;
+          assert.isTrue(data.isElementFiltered(6,[data.quantity,data.total])); // quantity = 1; total = 100;
+
+          data.total.filterExact(100);
+          assert.isFalse(data.isElementFiltered(0)); // quantity = 2; total = 190;
+          assert.isFalse(data.isElementFiltered(2)); // quantity = 1; total = 300;
+          assert.isTrue(data.isElementFiltered(6)); // quantity = 1; total = 100;
+          assert.isFalse(data.isElementFiltered(0,[data.quantity])); // quantity = 2; total = 190;
+          assert.isFalse(data.isElementFiltered(2,[data.quantity])); // quantity = 1; total = 300;
+          assert.isTrue(data.isElementFiltered(6,[data.quantity])); // quantity = 1; total = 100;
+          assert.isFalse(data.isElementFiltered(0,[data.total])); // quantity = 2; total = 190;
+          assert.isTrue(data.isElementFiltered(2,[data.total])); // quantity = 1; total = 300;
+          assert.isTrue(data.isElementFiltered(6,[data.total])); // quantity = 1; total = 100;
+          assert.isTrue(data.isElementFiltered(0,[data.quantity,data.total])); // quantity = 2; total = 190;
+          assert.isTrue(data.isElementFiltered(2,[data.quantity,data.total])); // quantity = 1; total = 300;
+          assert.isTrue(data.isElementFiltered(6,[data.quantity,data.total])); // quantity = 1; total = 100;
+        } finally {
+          data.quantity.filterAll();
+          data.total.filterAll();
+        }
+      },        
+    },
+      
   }
 });
 
