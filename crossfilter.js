@@ -1245,24 +1245,37 @@ function crossfilter() {
 
     // Returns the top K selected records based on this dimension's order.
     // Note: observes this dimension's filter, unlike group and groupAll.
-    function top(k) {
+    function top(k, top_offset) {
       var array = [],
           i = hi0,
-          j;
+          j,
+          toSkip = 0;
+
+      if(top_offset && top_offset > 0) toSkip = top_offset;
 
       while (--i >= lo0 && k > 0) {
         if (filters.zero(j = index[i])) {
-          array.push(data[j]);
-          --k;
+          if(toSkip > 0) {
+            //skip matching row
+            --toSkip;
+          } else {
+            array.push(data[j]);
+            --k;
+          }
         }
       }
 
       if(iterable){
         for(i = 0; i < iterablesEmptyRows.length && k > 0; i++) {
-          // Add empty rows at the end
+          // Add row with empty iterable column at the end
           if(filters.zero(j = iterablesEmptyRows[i])) {
-            array.push(data[j]);
-            --k;
+            if(toSkip > 0) {
+              //skip matching row
+              --toSkip;
+            } else {
+              array.push(data[j]);
+              --k;
+            }
           }
         }
       }
@@ -1272,17 +1285,25 @@ function crossfilter() {
 
     // Returns the bottom K selected records based on this dimension's order.
     // Note: observes this dimension's filter, unlike group and groupAll.
-    function bottom(k) {
+    function bottom(k, bottom_offset) {
       var array = [],
           i,
-          j;
+          j,
+          toSkip = 0;
+
+      if(bottom_offset && bottom_offset > 0) toSkip = bottom_offset;
 
       if(iterable) {
-        // Add empty rows at the top
+        // Add row with empty iterable column at the top
         for(i = 0; i < iterablesEmptyRows.length && k > 0; i++) {
           if(filters.zero(j = iterablesEmptyRows[i])) {
-            array.push(data[j]);
-            --k;
+            if(toSkip > 0) {
+              //skip matching row
+              --toSkip;
+            } else {
+              array.push(data[j]);
+              --k;
+            }
           }
         }
       }
@@ -1291,8 +1312,13 @@ function crossfilter() {
 
       while (i < hi0 && k > 0) {
         if (filters.zero(j = index[i])) {
-          array.push(data[j]);
-          --k;
+          if(toSkip > 0) {
+            //skip matching row
+            --toSkip;
+          } else {
+            array.push(data[j]);
+            --k;
+          }
         }
         i++;
       }
