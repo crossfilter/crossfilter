@@ -42,5 +42,9 @@
   },
   "scripts": {
     "test": "./node_modules/.bin/vows"
-  }
+  },
+  "files": [
+    "src",
+    "index.js"
+  ]
 }
