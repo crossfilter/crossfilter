@@ -42,5 +42,10 @@
   },
   "scripts": {
     "test": "./node_modules/.bin/vows"
-  }
+  },
+  "files": [
+    "index.js",
+    "crossfilter.js",
+    "crossfilter.min.js"
+  ]
 }
