@@ -17,3 +17,9 @@ function crossfilter_filterRange(bisect, range) {
 function crossfilter_filterAll(values) {
   return [0, values.length];
 }
+
+module.exports = {
+  filterExact: crossfilter_filterExact,
+  filterRange: crossfilter_filterRange,
+  filterAll: crossfilter_filterAll
+};
