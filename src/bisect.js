@@ -1,6 +1,4 @@
-var bisect = crossfilter.bisect = bisect_by(crossfilter_identity);
-
-bisect.by = bisect_by;
+var crossfilter_identity = require('./identity');
 
 function bisect_by(f) {
 
@@ -42,3 +40,6 @@ function bisect_by(f) {
   bisectRight.left = bisectLeft;
   return bisectRight;
 }
+
+module.exports = bisect_by(crossfilter_identity);
+module.exports.by = bisect_by; // assign the raw function to the export as well

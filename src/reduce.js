@@ -17,3 +17,10 @@ function crossfilter_reduceSubtract(f) {
     return p - f(v);
   };
 }
+
+module.exports = {
+  reduceIncrement: crossfilter_reduceIncrement,
+  reduceDecrement: crossfilter_reduceDecrement,
+  reduceAdd: crossfilter_reduceAdd,
+  reduceSubtract: crossfilter_reduceSubtract
+};
