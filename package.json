@@ -45,7 +45,9 @@
     "vows": "0.7.0"
   },
   "scripts": {
-    "build": "browserify index.js --standalone crossfilter -o crossfilter.js",
+    "benchmark": "node test/benchmark.js",
+    "build": "browserify index.js --standalone crossfilter -o crossfilter.js && uglifyjs --screw-ie8 crossfilter.js -o crossfilter.min.js",
+    "clean": "rm -f crossfilter.js crossfilter.min.js",
     "test": "./node_modules/.bin/vows --verbose"
   },
   "files": [
