@@ -10,6 +10,7 @@ var insertionsort = require('./insertionsort');
 var permute = require('./permute');
 var quicksort = require('./quicksort');
 var xfilterReduce = require('./reduce');
+var packageJson = require('./../package.json'); // require own package.json for the version field
 
 // expose API exports
 exports.crossfilter = crossfilter;
@@ -19,6 +20,7 @@ exports.crossfilter.bisect = bisect;
 exports.crossfilter.insertionsort = insertionsort;
 exports.crossfilter.permute = permute;
 exports.crossfilter.quicksort = quicksort;
+exports.crossfilter.version = packageJson.version;
 
 function crossfilter() {
   var crossfilter = {
@@ -887,8 +889,8 @@ function crossfilter() {
             return
           }
           if (++k === groupCapacity) {
-            reIndex = crossfilter_arrayWiden(reIndex, groupWidth <<= 1);
-            groupIndex = crossfilter_arrayWiden(groupIndex, groupWidth);
+            reIndex = xfilterArray.arrayWiden(reIndex, groupWidth <<= 1);
+            groupIndex = xfilterArray.arrayWiden(groupIndex, groupWidth);
             groupCapacity = crossfilter_capacity(groupWidth);
           }
         }

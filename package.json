@@ -40,6 +40,7 @@
   "devDependencies": {
     "browserify": "^13.0.0",
     "d3": "3.5",
+    "package-json-versionify": "1.0.2",
     "uglify-js": "2.4.0",
     "vows": "0.7.0"
   },
