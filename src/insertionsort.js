@@ -1,6 +1,4 @@
-var insertionsort = crossfilter.insertionsort = insertionsort_by(crossfilter_identity);
-
-insertionsort.by = insertionsort_by;
+var crossfilter_identity = require('./identity');
 
 function insertionsort_by(f) {
 
@@ -16,3 +14,6 @@ function insertionsort_by(f) {
 
   return insertionsort;
 }
+
+module.exports = insertionsort_by(crossfilter_identity);
+module.exports.by = insertionsort_by;

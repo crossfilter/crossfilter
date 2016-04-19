@@ -1,9 +1,3 @@
-var crossfilter_array8 = crossfilter_arrayUntyped,
-    crossfilter_array16 = crossfilter_arrayUntyped,
-    crossfilter_array32 = crossfilter_arrayUntyped,
-    crossfilter_arrayLengthen = crossfilter_arrayLengthenUntyped,
-    crossfilter_arrayWiden = crossfilter_arrayWidenUntyped;
-
 if (typeof Uint8Array !== "undefined") {
   crossfilter_array8 = function(n) { return new Uint8Array(n); };
   crossfilter_array16 = function(n) { return new Uint16Array(n); };
@@ -150,7 +144,7 @@ crossfilter_bitarray.prototype.zeroExceptMask = function(n, mask) {
   var i, len;
   for (i = 0, len = this.subarrays; i < len; ++i) {
     if (this[i][n] & mask[i]) {
-      return false;      
+      return false;
     }
   }
   return true;
@@ -180,4 +174,13 @@ crossfilter_bitarray.prototype.onlyExcept = function(n, offset, zero, onlyOffset
     }
   }
   return true;
+};
+
+module.exports = {
+  array8: crossfilter_arrayUntyped,
+  array16: crossfilter_arrayUntyped,
+  array32: crossfilter_arrayUntyped,
+  arrayLengthen: crossfilter_arrayLengthenUntyped,
+  arrayWiden: crossfilter_arrayWidenUntyped,
+  bitarray: crossfilter_bitarray
 };

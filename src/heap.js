@@ -1,6 +1,4 @@
-var heap = crossfilter.heap = heap_by(crossfilter_identity);
-
-heap.by = heap_by;
+var crossfilter_identity = require('./identity');
 
 function heap_by(f) {
 
@@ -42,3 +40,6 @@ function heap_by(f) {
   heap.sort = sort;
   return heap;
 }
+
+module.exports = heap_by(crossfilter_identity);
+module.exports.by = heap_by;

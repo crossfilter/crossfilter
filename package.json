@@ -21,10 +21,12 @@
     {
       "name": "Gordon Woodhull",
       "url": "https://github.com/gordonwoodhull"
-    }, {
+    },
+    {
       "name": "Tanner Linsley",
       "url": "https://github.com/tannerlinsley"
-    }, {
+    },
+    {
       "name": "Ethan Jewett",
       "url": "https://github.com/esjewett"
     }
@@ -36,11 +38,21 @@
     "url": "http://github.com/crossfilter/crossfilter.git"
   },
   "devDependencies": {
+    "browserify": "^13.0.0",
     "d3": "3.5",
-    "vows": "0.7.0",
-    "uglify-js": "2.4.0"
+    "package-json-versionify": "1.0.2",
+    "uglify-js": "2.4.0",
+    "vows": "0.7.0"
   },
   "scripts": {
-    "test": "./node_modules/.bin/vows"
-  }
+    "benchmark": "node test/benchmark.js",
+    "build": "browserify index.js --standalone crossfilter -o crossfilter.js && uglifyjs --screw-ie8 crossfilter.js -o crossfilter.min.js",
+    "clean": "rm -f crossfilter.js crossfilter.min.js",
+    "test": "./node_modules/.bin/vows --verbose"
+  },
+  "files": [
+    "index.js",
+    "crossfilter.js",
+    "crossfilter.min.js"
+  ]
 }

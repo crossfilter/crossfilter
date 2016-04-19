@@ -12,3 +12,10 @@ Want to learn more? [See the wiki.](https://github.com/crossfilter/crossfilter/w
 
 * [Configurable Chart Collection (C3) - World Bank Example](http://drarmstr.github.io/c3/examples/#worldbank) - ([Source](http://drarmstr.github.io/c3/examples/#worldbank/source), [HTML](http://drarmstr.github.io/c3/examples/#worldbank/html))
 * [Dimensional Charting JavaScript Library (dc.js)](https://dc-js.github.io/dc.js/) - ([Source](https://dc-js.github.io/dc.js/docs/stock.html))
+
+## Development
+Install dependencies:
+ * `npm install`
+ * `npm install -g browserify uglify-js`
+
+Test changes with `npm test`. Build with `npm run build` for use in the browser. You may also want to benchmark your changes with `npm run benchmark`.
