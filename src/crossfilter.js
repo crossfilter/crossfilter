@@ -20,7 +20,7 @@ exports.crossfilter.bisect = bisect;
 exports.crossfilter.insertionsort = insertionsort;
 exports.crossfilter.permute = permute;
 exports.crossfilter.quicksort = quicksort;
-exports.crossfilter.version = packageJson.version;
+exports.crossfilter.version = packageJson.version; // please note use of "package-json-versionify" transform
 
 function crossfilter() {
   var crossfilter = {
