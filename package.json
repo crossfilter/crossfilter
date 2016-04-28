@@ -51,6 +51,7 @@
     "test": "./node_modules/.bin/vows --verbose"
   },
   "files": [
+    "src",
     "index.js",
     "crossfilter.js",
     "crossfilter.min.js"
