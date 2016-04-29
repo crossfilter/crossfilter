@@ -1,0 +1,28 @@
+{
+  "name": "crossfilter2",
+  "description": "Fast multidimensional filtering for coordinated views.",
+  "main": "crossfilter.min.js",
+  "license": "Apache-2.0",
+  "keywords": [
+    "analytics",
+    "visualization",
+    "crossfilter"
+  ],
+  "homepage": "https://github.com/crossfilter/crossfilter",
+  "moduleType": [
+    "globals",
+    "node"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "package.json",
+    "index.js",
+    "src",
+    "component.json",
+    "media",
+    "test",
+    "tests"
+  ]
+}
