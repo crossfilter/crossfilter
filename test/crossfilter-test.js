@@ -63,7 +63,11 @@ suite.addBatch({
         data.tip = data.dimension(function(d) { return d.tip; });
         data.total = data.dimension(function(d) { return d.total; });
         data.type = data.dimension(function(d) { return d.type; });
+        data.typeByString = data.dimension('type');
         data.tags = data.dimension(function(d) { return d.tags; }, true);
+        data.firstTag = data.dimension('tags[0]');
+        data.year = data.dimension('getYear');
+
       } catch (e) {
         console.log(e.stack);
       }
@@ -275,9 +279,25 @@ suite.addBatch({
     },
 
     "dimension": {
-      
+
       "accessor": function(data) {
         assert.equal(data.type.accessor({ type: "a type" }), "a type");
+      },
+
+      "stringAccessor": function(data) {
+        assert.equal(data.typeByString.accessor({ type: "a type" }), "a type");
+      },
+
+      "stringPathAccessor": function(data) {
+        assert.equal(data.firstTag.accessor({ tags: [2,4,5] }), 2);
+        assert.equal(data.firstTag.accessor({ tags: [4,5] }), 4);
+      },
+
+      "stringFunctionCallAccessor": function(data) {
+        function getYear() {
+          return new Date(this.date).getFullYear();
+        }
+        assert.equal(data.year.accessor({date: "2011-11-14T16:28:54Z", getYear: getYear }), 2011);
       },
 
       "top": {
@@ -297,7 +317,7 @@ suite.addBatch({
           assert.deepEqual(data.total.top(3, 1), [
             {date: "2011-11-14T20:49:07Z", quantity: 2, total: 290, tip: 200, type: "tab", tags: [2,4,5]},
             {date: "2011-11-14T21:18:48Z", quantity: 4, total: 270, tip: 0, type: "tab", tags: [1,2,3]},
-            {date: "2011-11-14T17:38:40Z", quantity: 2, total: 200, tip: 100, type: 'visa', tags: [2,4,5]} 
+            {date: "2011-11-14T17:38:40Z", quantity: 2, total: 200, tip: 100, type: 'visa', tags: [2,4,5]}
           ]);
           assert.deepEqual(data.date.top(3,10), [
             {date: "2011-11-14T22:30:22Z", quantity: 2, total: 89, tip: 0, type: "tab", tags: [1,3]},
@@ -345,7 +365,7 @@ suite.addBatch({
               {date: "2011-11-14T21:18:48Z", quantity: 4, total: 270, tip: 0, type: "tab", tags: [1,2,3]}
             ]);
             assert.deepEqual(data.total.top(2, 8), [
-              {date: '2011-11-14T21:26:30Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [2,4,5]}, 
+              {date: '2011-11-14T21:26:30Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [2,4,5]},
               {date: '2011-11-14T23:28:54Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [1,2,3]}
             ]);
             data.type.filterExact("visa");
@@ -367,7 +387,7 @@ suite.addBatch({
               {date: "2011-11-14T23:23:29Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]}
             ]);
             assert.deepEqual(data.date.top(2, 8), [
-              {date: '2011-11-14T22:30:22Z', quantity: 2, total: 89, tip: 0, type: 'tab', tags: [1,3]}, 
+              {date: '2011-11-14T22:30:22Z', quantity: 2, total: 89, tip: 0, type: 'tab', tags: [1,3]},
               {date: '2011-11-14T21:31:05Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [1,2,3]}
             ]);
             data.type.filterExact("visa");
@@ -466,7 +486,7 @@ suite.addBatch({
             ]);
             data.type.filterExact("tab");
             assert.deepEqual(data.total.bottom(2, 8), [
-              {date: '2011-11-14T17:52:02Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [2,3,4]}, 
+              {date: '2011-11-14T17:52:02Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [2,3,4]},
               {date: '2011-11-14T18:45:24Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [2,4,5]}
             ]);
             data.type.filterExact("visa");
@@ -488,7 +508,7 @@ suite.addBatch({
               {date: "2011-11-14T16:20:19Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,3]}
             ]);
             assert.deepEqual(data.date.bottom(2, 8), [
-              {date: '2011-11-14T17:33:46Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [1,2,3]}, 
+              {date: '2011-11-14T17:33:46Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [1,2,3]},
               {date: '2011-11-14T17:33:59Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [1,3]}
             ]);
             data.type.filterExact("visa");
@@ -2104,7 +2124,7 @@ suite.addBatch({
             }
           }
         },
-        
+
         "works for empty arrays in middle or end": function() {
           var data = crossfilter([
               {tags: [1,2,3]},
@@ -2158,7 +2178,7 @@ suite.addBatch({
         },
       },
     },
-      
+
     "isElementFiltered": {
       "Test if elements are filtered": function(data) {
         try {
@@ -2206,9 +2226,9 @@ suite.addBatch({
           data.quantity.filterAll();
           data.total.filterAll();
         }
-      },        
+      },
     },
-      
+
   }
 });
 
