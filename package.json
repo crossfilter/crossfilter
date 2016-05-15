@@ -37,6 +37,9 @@
     "type": "git",
     "url": "http://github.com/crossfilter/crossfilter.git"
   },
+  "dependencies": {
+    "lodash.result": "^4.4.0"
+  },
   "devDependencies": {
     "browserify": "^13.0.0",
     "d3": "3.5",

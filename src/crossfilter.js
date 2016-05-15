@@ -11,7 +11,7 @@ var permute = require('./permute');
 var quicksort = require('./quicksort');
 var xfilterReduce = require('./reduce');
 var packageJson = require('./../package.json'); // require own package.json for the version field
-
+var result = require('lodash.result');
 // expose API exports
 exports.crossfilter = crossfilter;
 exports.crossfilter.heap = xfilterHeap;
@@ -113,6 +113,12 @@ function crossfilter() {
 
   // Adds a new dimension with the specified value accessor function.
   function dimension(value, iterable) {
+
+    if (typeof value === 'string') {
+      var accessorPath = value;
+      value = function(d) { return result(d, accessorPath); };
+    }
+
     var dimension = {
       filter: filter,
       filterExact: filterExact,
