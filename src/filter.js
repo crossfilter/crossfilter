@@ -1,3 +1,5 @@
+'use strict';
+
 function crossfilter_filterExact(bisect, value) {
   return function(values) {
     var n = values.length;

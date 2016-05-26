@@ -1,3 +1,5 @@
+'use strict';
+
 var crossfilter_identity = require('./identity');
 
 function insertionsort_by(f) {

@@ -1,3 +1,5 @@
+'use strict';
+
 var crossfilter_identity = require('./identity');
 var xFilterHeap = require('./heap');
 
@@ -12,7 +14,6 @@ function heapselect_by(f) {
     var queue = new Array(k = Math.min(hi - lo, k)),
         min,
         i,
-        x,
         d;
 
     for (i = 0; i < k; ++i) queue[i] = a[lo++];
@@ -21,7 +22,7 @@ function heapselect_by(f) {
     if (lo < hi) {
       min = f(queue[0]);
       do {
-        if (x = f(d = a[lo]) > min) {
+        if (f(d = a[lo]) > min) {
           queue[0] = d;
           min = f(heap(queue, 0, k)[0]);
         }

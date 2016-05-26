@@ -43,6 +43,7 @@
   "devDependencies": {
     "browserify": "^13.0.0",
     "d3": "3.5",
+    "eslint": "2.10.2",
     "package-json-versionify": "1.0.2",
     "uglify-js": "2.4.0",
     "vows": "0.7.0"
@@ -51,12 +52,24 @@
     "benchmark": "node test/benchmark.js",
     "build": "browserify index.js -t package-json-versionify --standalone crossfilter -o crossfilter.js && uglifyjs --compress --mangle --screw-ie8 crossfilter.js -o crossfilter.min.js",
     "clean": "rm -f crossfilter.js crossfilter.min.js",
-    "test": "./node_modules/.bin/vows --verbose"
+    "test": "./node_modules/.bin/vows --verbose && eslint src/"
   },
   "files": [
     "src",
     "index.js",
     "crossfilter.js",
     "crossfilter.min.js"
-  ]
+  ],
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "globals": {
+      "Uint8Array": true,
+      "Uint16Array": true,
+      "Uint32Array": true
+    },
+    "extends": "eslint:recommended"
+  }
 }

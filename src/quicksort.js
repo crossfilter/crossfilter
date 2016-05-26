@@ -92,6 +92,7 @@ function quicksort_by(f) {
           // Note that in the latter case invariant 2 will be violated for a
           // short amount of time. The invariant will be restored when the
           // pivots are put into their final positions.
+          /* eslint no-constant-condition: 0 */
           while (true) {
             var greatValue = f(a[great]);
             if (greatValue > pivotValue1) {
@@ -134,6 +135,7 @@ function quicksort_by(f) {
       //   1. for x in ]left, less[ : x < pivot1
       //   2. for x in [less, k[ : pivot1 <= x && x <= pivot2
       //   3. for x in ]great, right[ : x > pivot2
+      (function () { // isolate scope
       for (var k = less; k <= great; k++) {
         var ek = a[k], xk = f(ek);
         if (xk < pivotValue1) {
@@ -170,6 +172,7 @@ function quicksort_by(f) {
           }
         }
       }
+      })(); // isolate scope
     }
 
     // Move pivots into their final positions.
@@ -202,6 +205,8 @@ function quicksort_by(f) {
     // The Android source however removes the pivot elements from the recursive
     // call if the second partition is too large (more than 2/3 of the list).
     if (less < i1 && great > i5) {
+
+      (function () { // isolate scope
       var lessValue, greatValue;
       while ((lessValue = f(a[less])) <= pivotValue1 && lessValue >= pivotValue1) ++less;
       while ((greatValue = f(a[great])) <= pivotValue2 && greatValue >= pivotValue2) --great;
@@ -232,8 +237,9 @@ function quicksort_by(f) {
           less++;
         } else {
           if (xk <= pivotValue2 && xk >= pivotValue2) {
+            /* eslint no-constant-condition: 0 */
             while (true) {
-              var greatValue = f(a[great]);
+              greatValue = f(a[great]);
               if (greatValue <= pivotValue2 && greatValue >= pivotValue2) {
                 great--;
                 if (great < k) break;
@@ -258,6 +264,8 @@ function quicksort_by(f) {
           }
         }
       }
+      })(); // isolate scope
+
     }
 
     // The second partition has now been cleared of pivot elements and looks
