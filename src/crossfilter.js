@@ -70,10 +70,12 @@ function crossfilter() {
     var newIndex = crossfilter_index(n, n),
         removed = [];
 
-    for (var index0 = 0, index1 = 0; index0 < n; ++index0) {
-      if (!filters.zero(index0)) newIndex[index0] = index1++;
-      else removed.push(index0);
-    }
+    (function () {
+        for (var i = 0, j = 0; i < n; ++i) {
+          if (!filters.zero(i)) newIndex[i] = j++;
+          else removed.push(i);
+        }
+    })(); // isolate scope
 
 
     // Remove all matching records from groups.
@@ -83,15 +85,15 @@ function crossfilter() {
     removeDataListeners.forEach(function(l) { l(newIndex); });
 
     // Remove old filters and data by overwriting.
-    for (var index2 = 0, index3 = 0; index2 < n; ++index2) {
-      if (!filters.zero(index2)) {
-        if (index2 !== index3) filters.copy(index3, index2), data[index3] = data[index2];
-        ++index2;
+    for (var i = 0, j = 0; i < n; ++i) {
+      if (!filters.zero(i)) {
+        if (i !== j) filters.copy(j, i), data[j] = data[i];
+        ++j;
       }
     }
 
-    data.length = n = index3;
-    filters.truncate(index3);
+    data.length = n = j;
+    filters.truncate(j);
     triggerOnChange('dataRemoved');
   }
 
