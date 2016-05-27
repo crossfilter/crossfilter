@@ -1,3 +1,5 @@
+'use strict';
+
 function crossfilter_reduceIncrement(p) {
   return p + 1;
 }
