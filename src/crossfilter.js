@@ -32,6 +32,7 @@ function crossfilter() {
     groupAll: groupAll,
     size: size,
     all: all,
+    allFiltered: allFiltered,
     onChange: onChange,
     isElementFiltered: isElementFiltered
   };
@@ -1326,6 +1327,21 @@ function crossfilter() {
   // Returns the raw row data contained in this crossfilter
   function all(){
     return data;
+  }
+
+  // Returns row data with all dimension filters applied
+  function allFiltered() {
+    var array = [],
+        i = 0;
+
+      while (i < n) {
+        if (filters.zero(i)) {
+          array.push(data[i]);
+        }
+        ++i;
+      }
+
+      return array;
   }
 
   function onChange(cb){
