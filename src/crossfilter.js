@@ -1334,11 +1334,10 @@ function crossfilter() {
     var array = [],
         i = 0;
 
-      while (i < n) {
+      for (i = 0; i < n; i++) {
         if (filters.zero(i)) {
           array.push(data[i]);
         }
-        ++i;
       }
 
       return array;
