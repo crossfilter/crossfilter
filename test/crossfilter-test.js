@@ -1252,6 +1252,31 @@ suite.addBatch({
       }
     },
 
+    "allFiltered": {
+      "returns the full data array if no filters applied": function(data) {
+        var raw = data.allFiltered();
+        assert.equal(raw.length, 43);
+      },
+      "is affected by all dimension filters": function(data) {
+        try {
+          data.quantity.filterExact(4);
+          var raw = data.allFiltered();
+          assert.equal(raw.length, 1);
+
+          data.quantity.filterExact(2);
+          var raw = data.allFiltered();
+          assert.equal(raw.length, 35);
+          
+          data.total.filterRange([190, 300]);
+          var raw = data.allFiltered();
+          assert.equal(raw.length, 18);
+        } finally {
+          data.quantity.filterAll();
+          data.total.filterAll();
+        }
+      }
+    },
+
     "add": {
       "increases the size of the crossfilter": function() {
         var data = crossfilter([]);
