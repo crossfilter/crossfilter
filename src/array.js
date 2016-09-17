@@ -138,7 +138,7 @@ crossfilter_bitarray.prototype.zeroExcept = function(n, offset, zero) {
   return true;
 };
 
-// Checks that all bits for the given indez are 0 except for the specified mask.
+// Checks that all bits for the given index are 0 except for the specified mask.
 // The mask should be an array of the same size as the filter subarrays width.
 crossfilter_bitarray.prototype.zeroExceptMask = function(n, mask) {
   var i, len;
