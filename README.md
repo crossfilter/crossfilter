@@ -12,7 +12,7 @@ Want to learn more? [See the wiki.](https://github.com/crossfilter/crossfilter/w
 
 ## Gallery of Community Examples
 
-* [Configurable Chart Collection (C3) - World Bank Example](http://drarmstr.github.io/c3/examples/#worldbank) - ([Source](http://drarmstr.github.io/c3/examples/#worldbank/source), [HTML](http://drarmstr.github.io/c3/examples/#worldbank/html))
+* [Configurable Chart Collection (C3) - World Bank Example](http://drarmstr.github.io/chartcollection/examples/#worldbank) - ([Source](http://drarmstr.github.io/chartcollection/examples/#worldbank/source), [HTML](http://drarmstr.github.io/chartcollection/examples/#worldbank/html))
 * [Dimensional Charting JavaScript Library (dc.js)](https://dc-js.github.io/dc.js/) - ([Source](https://dc-js.github.io/dc.js/docs/stock.html))
 
 ## Development
