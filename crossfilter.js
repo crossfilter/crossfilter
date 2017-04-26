@@ -1,7 +1,7 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.crossfilter = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports = require("./src/crossfilter").crossfilter;
 
-},{"./src/crossfilter":8}],2:[function(require,module,exports){
+},{"./src/crossfilter":6}],2:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -11,164 +11,6 @@ module.exports = require("./src/crossfilter").crossfilter;
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  */
-
-/** Used as references for various `Number` constants. */
-var INFINITY = 1 / 0;
-
-/** `Object#toString` result references. */
-var symbolTag = '[object Symbol]';
-
-/** Used to determine if values are of the language type `Object`. */
-var objectTypes = {
-  'function': true,
-  'object': true
-};
-
-/** Detect free variable `exports`. */
-var freeExports = (objectTypes[typeof exports] && exports && !exports.nodeType)
-  ? exports
-  : undefined;
-
-/** Detect free variable `module`. */
-var freeModule = (objectTypes[typeof module] && module && !module.nodeType)
-  ? module
-  : undefined;
-
-/** Detect free variable `global` from Node.js. */
-var freeGlobal = checkGlobal(freeExports && freeModule && typeof global == 'object' && global);
-
-/** Detect free variable `self`. */
-var freeSelf = checkGlobal(objectTypes[typeof self] && self);
-
-/** Detect free variable `window`. */
-var freeWindow = checkGlobal(objectTypes[typeof window] && window);
-
-/** Detect `this` as the global object. */
-var thisGlobal = checkGlobal(objectTypes[typeof this] && this);
-
-/**
- * Used as a reference to the global object.
- *
- * The `this` value is used if it's the global object to avoid Greasemonkey's
- * restricted `window` object, otherwise the `window` object is used.
- */
-var root = freeGlobal ||
-  ((freeWindow !== (thisGlobal && thisGlobal.window)) && freeWindow) ||
-    freeSelf || thisGlobal || Function('return this')();
-
-/**
- * Checks if `value` is a global object.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {null|Object} Returns `value` if it's a global object, else `null`.
- */
-function checkGlobal(value) {
-  return (value && value.Object === Object) ? value : null;
-}
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
- * of values.
- */
-var objectToString = objectProto.toString;
-
-/** Built-in value references. */
-var Symbol = root.Symbol;
-
-/** Used to convert symbols to primitives and strings. */
-var symbolProto = Symbol ? Symbol.prototype : undefined,
-    symbolToString = symbolProto ? symbolProto.toString : undefined;
-
-/**
- * The base implementation of `_.toString` which doesn't convert nullish
- * values to empty strings.
- *
- * @private
- * @param {*} value The value to process.
- * @returns {string} Returns the string.
- */
-function baseToString(value) {
-  // Exit early for strings to avoid a performance hit in some environments.
-  if (typeof value == 'string') {
-    return value;
-  }
-  if (isSymbol(value)) {
-    return symbolToString ? symbolToString.call(value) : '';
-  }
-  var result = (value + '');
-  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
-}
-
-/**
- * Checks if `value` is object-like. A value is object-like if it's not `null`
- * and has a `typeof` result of "object".
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
- * @example
- *
- * _.isObjectLike({});
- * // => true
- *
- * _.isObjectLike([1, 2, 3]);
- * // => true
- *
- * _.isObjectLike(_.noop);
- * // => false
- *
- * _.isObjectLike(null);
- * // => false
- */
-function isObjectLike(value) {
-  return !!value && typeof value == 'object';
-}
-
-/**
- * Checks if `value` is classified as a `Symbol` primitive or object.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is correctly classified,
- *  else `false`.
- * @example
- *
- * _.isSymbol(Symbol.iterator);
- * // => true
- *
- * _.isSymbol('abc');
- * // => false
- */
-function isSymbol(value) {
-  return typeof value == 'symbol' ||
-    (isObjectLike(value) && objectToString.call(value) == symbolTag);
-}
-
-module.exports = baseToString;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],3:[function(require,module,exports){
-(function (global){
-/**
- * lodash (Custom Build) <https://lodash.com/>
- * Build: `lodash modularize exports="npm" -o ./`
- * Copyright jQuery Foundation and other contributors <https://jquery.org/>
- * Released under MIT license <https://lodash.com/license>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- */
-var baseToString = require('lodash._basetostring');
 
 /** Used as the `TypeError` message for "Functions" methods. */
 var FUNC_ERROR_TEXT = 'Expected a function';
@@ -176,16 +18,23 @@ var FUNC_ERROR_TEXT = 'Expected a function';
 /** Used to stand-in for `undefined` hash values. */
 var HASH_UNDEFINED = '__lodash_hash_undefined__';
 
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0;
+
 /** `Object#toString` result references. */
 var funcTag = '[object Function]',
-    genTag = '[object GeneratorFunction]';
+    genTag = '[object GeneratorFunction]',
+    symbolTag = '[object Symbol]';
 
 /** Used to match property names within property paths. */
-var rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]/g;
+var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
+    reIsPlainProp = /^\w*$/,
+    reLeadingDot = /^\./,
+    rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
 
 /**
  * Used to match `RegExp`
- * [syntax characters](http://ecma-international.org/ecma-262/6.0/#sec-patterns).
+ * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
  */
 var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
 
@@ -195,53 +44,25 @@ var reEscapeChar = /\\(\\)?/g;
 /** Used to detect host constructors (Safari). */
 var reIsHostCtor = /^\[object .+?Constructor\]$/;
 
-/** Used to determine if values are of the language type `Object`. */
-var objectTypes = {
-  'function': true,
-  'object': true
-};
-
-/** Detect free variable `exports`. */
-var freeExports = (objectTypes[typeof exports] && exports && !exports.nodeType)
-  ? exports
-  : undefined;
-
-/** Detect free variable `module`. */
-var freeModule = (objectTypes[typeof module] && module && !module.nodeType)
-  ? module
-  : undefined;
-
 /** Detect free variable `global` from Node.js. */
-var freeGlobal = checkGlobal(freeExports && freeModule && typeof global == 'object' && global);
+var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
 
 /** Detect free variable `self`. */
-var freeSelf = checkGlobal(objectTypes[typeof self] && self);
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
 
-/** Detect free variable `window`. */
-var freeWindow = checkGlobal(objectTypes[typeof window] && window);
-
-/** Detect `this` as the global object. */
-var thisGlobal = checkGlobal(objectTypes[typeof this] && this);
+/** Used as a reference to the global object. */
+var root = freeGlobal || freeSelf || Function('return this')();
 
 /**
- * Used as a reference to the global object.
- *
- * The `this` value is used if it's the global object to avoid Greasemonkey's
- * restricted `window` object, otherwise the `window` object is used.
- */
-var root = freeGlobal ||
-  ((freeWindow !== (thisGlobal && thisGlobal.window)) && freeWindow) ||
-    freeSelf || thisGlobal || Function('return this')();
-
-/**
- * Checks if `value` is a global object.
+ * Gets the value at `key` of `object`.
  *
  * @private
- * @param {*} value The value to check.
- * @returns {null|Object} Returns `value` if it's a global object, else `null`.
+ * @param {Object} [object] The object to query.
+ * @param {string} key The key of the property to get.
+ * @returns {*} Returns the property value.
  */
-function checkGlobal(value) {
-  return (value && value.Object === Object) ? value : null;
+function getValue(object, key) {
+  return object == null ? undefined : object[key];
 }
 
 /**
@@ -265,17 +86,27 @@ function isHostObject(value) {
 
 /** Used for built-in method references. */
 var arrayProto = Array.prototype,
+    funcProto = Function.prototype,
     objectProto = Object.prototype;
 
+/** Used to detect overreaching core-js shims. */
+var coreJsData = root['__core-js_shared__'];
+
+/** Used to detect methods masquerading as native. */
+var maskSrcKey = (function() {
+  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
+  return uid ? ('Symbol(src)_1.' + uid) : '';
+}());
+
 /** Used to resolve the decompiled source of functions. */
-var funcToString = Function.prototype.toString;
+var funcToString = funcProto.toString;
 
 /** Used to check objects for own properties. */
 var hasOwnProperty = objectProto.hasOwnProperty;
 
 /**
  * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
  * of values.
  */
 var objectToString = objectProto.toString;
@@ -287,11 +118,16 @@ var reIsNative = RegExp('^' +
 );
 
 /** Built-in value references. */
-var splice = arrayProto.splice;
+var Symbol = root.Symbol,
+    splice = arrayProto.splice;
 
 /* Built-in method references that are verified to be native. */
 var Map = getNative(root, 'Map'),
     nativeCreate = getNative(Object, 'create');
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol ? Symbol.prototype : undefined,
+    symbolToString = symbolProto ? symbolProto.toString : undefined;
 
 /**
  * Creates a hash object.
@@ -601,7 +437,7 @@ MapCache.prototype.set = mapCacheSet;
  * Gets the index at which the `key` is found in `array` of key-value pairs.
  *
  * @private
- * @param {Array} array The array to search.
+ * @param {Array} array The array to inspect.
  * @param {*} key The key to search for.
  * @returns {number} Returns the index of the matched value, else `-1`.
  */
@@ -613,6 +449,53 @@ function assocIndexOf(array, key) {
     }
   }
   return -1;
+}
+
+/**
+ * The base implementation of `_.isNative` without bad shim checks.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a native function,
+ *  else `false`.
+ */
+function baseIsNative(value) {
+  if (!isObject(value) || isMasked(value)) {
+    return false;
+  }
+  var pattern = (isFunction(value) || isHostObject(value)) ? reIsNative : reIsHostCtor;
+  return pattern.test(toSource(value));
+}
+
+/**
+ * The base implementation of `_.toString` which doesn't convert nullish
+ * values to empty strings.
+ *
+ * @private
+ * @param {*} value The value to process.
+ * @returns {string} Returns the string.
+ */
+function baseToString(value) {
+  // Exit early for strings to avoid a performance hit in some environments.
+  if (typeof value == 'string') {
+    return value;
+  }
+  if (isSymbol(value)) {
+    return symbolToString ? symbolToString.call(value) : '';
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+
+/**
+ * Casts `value` to a path array if it's not one.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @returns {Array} Returns the cast property path array.
+ */
+function castPath(value) {
+  return isArray(value) ? value : stringToPath(value);
 }
 
 /**
@@ -639,8 +522,29 @@ function getMapData(map, key) {
  * @returns {*} Returns the function if it's native, else `undefined`.
  */
 function getNative(object, key) {
-  var value = object[key];
-  return isNative(value) ? value : undefined;
+  var value = getValue(object, key);
+  return baseIsNative(value) ? value : undefined;
+}
+
+/**
+ * Checks if `value` is a property name and not a property path.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {Object} [object] The object to query keys on.
+ * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
+ */
+function isKey(value, object) {
+  if (isArray(value)) {
+    return false;
+  }
+  var type = typeof value;
+  if (type == 'number' || type == 'symbol' || type == 'boolean' ||
+      value == null || isSymbol(value)) {
+    return true;
+  }
+  return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
+    (object != null && value in Object(object));
 }
 
 /**
@@ -658,6 +562,17 @@ function isKeyable(value) {
 }
 
 /**
+ * Checks if `func` has its source masked.
+ *
+ * @private
+ * @param {Function} func The function to check.
+ * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+ */
+function isMasked(func) {
+  return !!maskSrcKey && (maskSrcKey in func);
+}
+
+/**
  * Converts `string` to a property path array.
  *
  * @private
@@ -665,12 +580,32 @@ function isKeyable(value) {
  * @returns {Array} Returns the property path array.
  */
 var stringToPath = memoize(function(string) {
+  string = toString(string);
+
   var result = [];
-  toString(string).replace(rePropName, function(match, number, quote, string) {
+  if (reLeadingDot.test(string)) {
+    result.push('');
+  }
+  string.replace(rePropName, function(match, number, quote, string) {
     result.push(quote ? string.replace(reEscapeChar, '$1') : (number || match));
   });
   return result;
 });
+
+/**
+ * Converts `value` to a string key if it's not a string or symbol.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @returns {string|symbol} Returns the key.
+ */
+function toKey(value) {
+  if (typeof value == 'string' || isSymbol(value)) {
+    return value;
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
 
 /**
  * Converts `func` to its source code.
@@ -701,7 +636,7 @@ function toSource(func) {
  * **Note:** The cache is exposed as the `cache` property on the memoized
  * function. Its creation may be customized by replacing the `_.memoize.Cache`
  * constructor with one whose instances implement the
- * [`Map`](http://ecma-international.org/ecma-262/6.0/#sec-properties-of-the-map-prototype-object)
+ * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
  * method interface of `delete`, `get`, `has`, and `set`.
  *
  * @static
@@ -760,7 +695,7 @@ memoize.Cache = MapCache;
 
 /**
  * Performs a
- * [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
  * comparison between two values to determine if they are equivalent.
  *
  * @static
@@ -772,8 +707,8 @@ memoize.Cache = MapCache;
  * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
  * @example
  *
- * var object = { 'user': 'fred' };
- * var other = { 'user': 'fred' };
+ * var object = { 'a': 1 };
+ * var other = { 'a': 1 };
  *
  * _.eq(object, object);
  * // => true
@@ -795,206 +730,14 @@ function eq(value, other) {
 }
 
 /**
- * Checks if `value` is classified as a `Function` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is correctly classified,
- *  else `false`.
- * @example
- *
- * _.isFunction(_);
- * // => true
- *
- * _.isFunction(/abc/);
- * // => false
- */
-function isFunction(value) {
-  // The use of `Object#toString` avoids issues with the `typeof` operator
-  // in Safari 8 which returns 'object' for typed array and weak map constructors,
-  // and PhantomJS 1.9 which returns 'function' for `NodeList` instances.
-  var tag = isObject(value) ? objectToString.call(value) : '';
-  return tag == funcTag || tag == genTag;
-}
-
-/**
- * Checks if `value` is the
- * [language type](http://www.ecma-international.org/ecma-262/6.0/#sec-ecmascript-language-types)
- * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an object, else `false`.
- * @example
- *
- * _.isObject({});
- * // => true
- *
- * _.isObject([1, 2, 3]);
- * // => true
- *
- * _.isObject(_.noop);
- * // => true
- *
- * _.isObject(null);
- * // => false
- */
-function isObject(value) {
-  var type = typeof value;
-  return !!value && (type == 'object' || type == 'function');
-}
-
-/**
- * Checks if `value` is a native function.
- *
- * @static
- * @memberOf _
- * @since 3.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a native function,
- *  else `false`.
- * @example
- *
- * _.isNative(Array.prototype.push);
- * // => true
- *
- * _.isNative(_);
- * // => false
- */
-function isNative(value) {
-  if (!isObject(value)) {
-    return false;
-  }
-  var pattern = (isFunction(value) || isHostObject(value)) ? reIsNative : reIsHostCtor;
-  return pattern.test(toSource(value));
-}
-
-/**
- * Converts `value` to a string. An empty string is returned for `null`
- * and `undefined` values. The sign of `-0` is preserved.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to process.
- * @returns {string} Returns the string.
- * @example
- *
- * _.toString(null);
- * // => ''
- *
- * _.toString(-0);
- * // => '-0'
- *
- * _.toString([1, 2, 3]);
- * // => '1,2,3'
- */
-function toString(value) {
-  return value == null ? '' : baseToString(value);
-}
-
-module.exports = stringToPath;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"lodash._basetostring":2}],4:[function(require,module,exports){
-/**
- * lodash (Custom Build) <https://lodash.com/>
- * Build: `lodash modularize exports="npm" -o ./`
- * Copyright jQuery Foundation and other contributors <https://jquery.org/>
- * Released under MIT license <https://lodash.com/license>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- */
-var stringToPath = require('lodash._stringtopath');
-
-/** Used as references for various `Number` constants. */
-var INFINITY = 1 / 0;
-
-/** `Object#toString` result references. */
-var funcTag = '[object Function]',
-    genTag = '[object GeneratorFunction]',
-    symbolTag = '[object Symbol]';
-
-/** Used to match property names within property paths. */
-var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
-    reIsPlainProp = /^\w*$/;
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
- * of values.
- */
-var objectToString = objectProto.toString;
-
-/**
- * Casts `value` to a path array if it's not one.
- *
- * @private
- * @param {*} value The value to inspect.
- * @returns {Array} Returns the cast property path array.
- */
-function castPath(value) {
-  return isArray(value) ? value : stringToPath(value);
-}
-
-/**
- * Checks if `value` is a property name and not a property path.
- *
- * @private
- * @param {*} value The value to check.
- * @param {Object} [object] The object to query keys on.
- * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
- */
-function isKey(value, object) {
-  if (isArray(value)) {
-    return false;
-  }
-  var type = typeof value;
-  if (type == 'number' || type == 'symbol' || type == 'boolean' ||
-      value == null || isSymbol(value)) {
-    return true;
-  }
-  return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
-    (object != null && value in Object(object));
-}
-
-/**
- * Converts `value` to a string key if it's not a string or symbol.
- *
- * @private
- * @param {*} value The value to inspect.
- * @returns {string|symbol} Returns the key.
- */
-function toKey(value) {
-  if (typeof value == 'string' || isSymbol(value)) {
-    return value;
-  }
-  var result = (value + '');
-  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
-}
-
-/**
  * Checks if `value` is classified as an `Array` object.
  *
  * @static
  * @memberOf _
  * @since 0.1.0
- * @type {Function}
  * @category Lang
  * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is correctly classified,
- *  else `false`.
+ * @returns {boolean} Returns `true` if `value` is an array, else `false`.
  * @example
  *
  * _.isArray([1, 2, 3]);
@@ -1019,8 +762,7 @@ var isArray = Array.isArray;
  * @since 0.1.0
  * @category Lang
  * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is correctly classified,
- *  else `false`.
+ * @returns {boolean} Returns `true` if `value` is a function, else `false`.
  * @example
  *
  * _.isFunction(_);
@@ -1031,15 +773,14 @@ var isArray = Array.isArray;
  */
 function isFunction(value) {
   // The use of `Object#toString` avoids issues with the `typeof` operator
-  // in Safari 8 which returns 'object' for typed array and weak map constructors,
-  // and PhantomJS 1.9 which returns 'function' for `NodeList` instances.
+  // in Safari 8-9 which returns 'object' for typed array and other constructors.
   var tag = isObject(value) ? objectToString.call(value) : '';
   return tag == funcTag || tag == genTag;
 }
 
 /**
  * Checks if `value` is the
- * [language type](http://www.ecma-international.org/ecma-262/6.0/#sec-ecmascript-language-types)
+ * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
  * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
  *
  * @static
@@ -1103,8 +844,7 @@ function isObjectLike(value) {
  * @since 4.0.0
  * @category Lang
  * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is correctly classified,
- *  else `false`.
+ * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
  * @example
  *
  * _.isSymbol(Symbol.iterator);
@@ -1116,6 +856,31 @@ function isObjectLike(value) {
 function isSymbol(value) {
   return typeof value == 'symbol' ||
     (isObjectLike(value) && objectToString.call(value) == symbolTag);
+}
+
+/**
+ * Converts `value` to a string. An empty string is returned for `null`
+ * and `undefined` values. The sign of `-0` is preserved.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to process.
+ * @returns {string} Returns the string.
+ * @example
+ *
+ * _.toString(null);
+ * // => ''
+ *
+ * _.toString(-0);
+ * // => '-0'
+ *
+ * _.toString([1, 2, 3]);
+ * // => '1,2,3'
+ */
+function toString(value) {
+  return value == null ? '' : baseToString(value);
 }
 
 /**
@@ -1171,22 +936,23 @@ function result(object, path, defaultValue) {
 
 module.exports = result;
 
-},{"lodash._stringtopath":3}],5:[function(require,module,exports){
-module.exports={"version":"1.4.0-alpha.05"}
-},{}],6:[function(require,module,exports){
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],3:[function(require,module,exports){
+module.exports={"version":"1.4.0"}
+},{}],4:[function(require,module,exports){
 if (typeof Uint8Array !== "undefined") {
-  crossfilter_array8 = function(n) { return new Uint8Array(n); };
-  crossfilter_array16 = function(n) { return new Uint16Array(n); };
-  crossfilter_array32 = function(n) { return new Uint32Array(n); };
+  var crossfilter_array8 = function(n) { return new Uint8Array(n); };
+  var crossfilter_array16 = function(n) { return new Uint16Array(n); };
+  var crossfilter_array32 = function(n) { return new Uint32Array(n); };
 
-  crossfilter_arrayLengthen = function(array, length) {
+  var crossfilter_arrayLengthen = function(array, length) {
     if (array.length >= length) return array;
     var copy = new array.constructor(length);
     copy.set(array);
     return copy;
   };
 
-  crossfilter_arrayWiden = function(array, width) {
+  var crossfilter_arrayWiden = function(array, width) {
     var copy;
     switch (width) {
       case 16: copy = crossfilter_array16(array.length); break;
@@ -1361,7 +1127,9 @@ module.exports = {
   bitarray: crossfilter_bitarray
 };
 
-},{}],7:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
+'use strict';
+
 var crossfilter_identity = require('./identity');
 
 function bisect_by(f) {
@@ -1408,7 +1176,9 @@ function bisect_by(f) {
 module.exports = bisect_by(crossfilter_identity);
 module.exports.by = bisect_by; // assign the raw function to the export as well
 
-},{"./identity":12}],8:[function(require,module,exports){
+},{"./identity":10}],6:[function(require,module,exports){
+'use strict';
+
 var xfilterArray = require('./array');
 var xfilterFilter = require('./filter');
 var crossfilter_identity = require('./identity');
@@ -1441,8 +1211,9 @@ function crossfilter() {
     groupAll: groupAll,
     size: size,
     all: all,
+    allFiltered: allFiltered,
     onChange: onChange,
-    isElementFiltered: isElementFiltered,
+    isElementFiltered: isElementFiltered
   };
 
   var data = [], // the records
@@ -1478,9 +1249,10 @@ function crossfilter() {
   function removeData() {
     var newIndex = crossfilter_index(n, n),
         removed = [];
-    for (var i = 0, j = 0; i < n; ++i) {
-      if (!filters.zero(i)) newIndex[i] = j++;
-      else removed.push(i);
+
+    for (var index1 = 0, index2 = 0; index1 < n; ++index1) {
+      if (!filters.zero(index1)) newIndex[index1] = index2++;
+      else removed.push(index1);
     }
 
     // Remove all matching records from groups.
@@ -1490,15 +1262,15 @@ function crossfilter() {
     removeDataListeners.forEach(function(l) { l(newIndex); });
 
     // Remove old filters and data by overwriting.
-    for (var i = 0, j = 0; i < n; ++i) {
-      if (!filters.zero(i)) {
-        if (i !== j) filters.copy(j, i), data[j] = data[i];
-        ++j;
+    for (var index3 = 0, index4 = 0; index3 < n; ++index3) {
+      if (!filters.zero(index3)) {
+        if (index3 !== index4) filters.copy(index4, index3), data[index4] = data[index3];
+        ++index4;
       }
     }
 
-    data.length = n = j;
-    filters.truncate(j);
+    data.length = n = index4;
+    filters.truncate(index4);
     triggerOnChange('dataRemoved');
   }
 
@@ -1552,15 +1324,12 @@ function crossfilter() {
         id, // unique ID for this dimension (reused when dimensions are disposed)
         values, // sorted, cached array
         index, // value rank ↦ object id
-        oldValues, // temporary array storing previously-added values
-        oldIndex, // temporary array storing previously-added index
         newValues, // temporary array storing newly-added values
         newIndex, // temporary array storing newly-added index
         iterablesIndexCount,
         newIterablesIndexCount,
         iterablesIndexFilterStatus,
         newIterablesIndexFilterStatus,
-        oldIterablesIndexFilterStatus,
         iterablesEmptyRows,
         sort = quicksort.by(function(i) { return newValues[i]; }),
         refilter = xfilterFilter.filterAll, // for recomputing filter
@@ -1569,7 +1338,8 @@ function crossfilter() {
         dimensionGroups = [],
         lo0 = 0,
         hi0 = 0,
-        t = 0;
+        t = 0,
+        k;
 
     // Updating a dimension is a two-stage process. First, we must update the
     // associated filters for the newly-added records. Once all dimensions have
@@ -1604,8 +1374,8 @@ function crossfilter() {
         j = 0;
         k = [];
 
-        for (i = 0; i < newData.length; i++) {
-          for(j = 0, k = value(newData[i]); j < k.length; j++) {
+        for (var i0 = 0; i0 < newData.length; i0++) {
+          for(j = 0, k = value(newData[i0]); j < k.length; j++) {
             t++;
           }
         }
@@ -1616,18 +1386,18 @@ function crossfilter() {
         iterablesEmptyRows = [];
         var unsortedIndex = crossfilter_range(t);
 
-        for (l = 0, i = 0; i < newData.length; i++) {
-          k = value(newData[i])
+        for (var l = 0, index1 = 0; index1 < newData.length; index1++) {
+          k = value(newData[index1])
           //
           if(!k.length){
-            newIterablesIndexCount[i] = 0;
-            iterablesEmptyRows.push(i);
+            newIterablesIndexCount[index1] = 0;
+            iterablesEmptyRows.push(index1);
             continue;
           }
-          newIterablesIndexCount[i] = k.length
+          newIterablesIndexCount[index1] = k.length
           for (j = 0; j < k.length; j++) {
             newValues.push(k[j]);
-            unsortedIndex[l] = i;
+            unsortedIndex[l] = index1;
             l++;
           }
         }
@@ -1657,20 +1427,20 @@ function crossfilter() {
       // Bisect newValues to determine which new records are selected.
       var bounds = refilter(newValues), lo1 = bounds[0], hi1 = bounds[1];
       if (refilterFunction) {
-        for (i = 0; i < n1; ++i) {
-          if (!refilterFunction(newValues[i], i)) {
-            filters[offset][newIndex[i] + n0] |= one;
-            if(iterable) newIterablesIndexFilterStatus[i] = 1;
+        for (var index2 = 0; index2 < n1; ++index2) {
+          if (!refilterFunction(newValues[index2], index2)) {
+            filters[offset][newIndex[index2] + n0] |= one;
+            if(iterable) newIterablesIndexFilterStatus[index2] = 1;
           }
         }
       } else {
-        for (i = 0; i < lo1; ++i) {
-          filters[offset][newIndex[i] + n0] |= one;
-          if(iterable) newIterablesIndexFilterStatus[i] = 1;
+        for (var index3 = 0; index3 < lo1; ++index3) {
+          filters[offset][newIndex[index3] + n0] |= one;
+          if(iterable) newIterablesIndexFilterStatus[index3] = 1;
         }
-        for (i = hi1; i < n1; ++i) {
-          filters[offset][newIndex[i] + n0] |= one;
-          if(iterable) newIterablesIndexFilterStatus[i] = 1;
+        for (var index4 = hi1; index4 < n1; ++index4) {
+          filters[offset][newIndex[index4] + n0] |= one;
+          if(iterable) newIterablesIndexFilterStatus[index4] = 1;
         }
       }
 
@@ -1690,9 +1460,11 @@ function crossfilter() {
 
       var oldValues = values,
         oldIndex = index,
-        oldIterablesIndexFilterStatus = iterablesIndexFilterStatus
-        i0 = 0,
+        oldIterablesIndexFilterStatus = iterablesIndexFilterStatus,
+        old_n0,
         i1 = 0;
+
+      i0 = 0;
 
       if(iterable){
         old_n0 = n0
@@ -1715,30 +1487,31 @@ function crossfilter() {
       }
 
       // Merge the old and new sorted values, and old and new index.
-      for (i = 0; i0 < n0 && i1 < n1; ++i) {
+      var index5 = 0;
+      for (; i0 < n0 && i1 < n1; ++index5) {
         if (oldValues[i0] < newValues[i1]) {
-          values[i] = oldValues[i0];
-          if(iterable) iterablesIndexFilterStatus[i] = oldIterablesIndexFilterStatus[i0];
-          index[i] = oldIndex[i0++];
+          values[index5] = oldValues[i0];
+          if(iterable) iterablesIndexFilterStatus[index5] = oldIterablesIndexFilterStatus[i0];
+          index[index5] = oldIndex[i0++];
         } else {
-          values[i] = newValues[i1];
-          if(iterable) iterablesIndexFilterStatus[i] = oldIterablesIndexFilterStatus[i1];
-          index[i] = newIndex[i1++] + (iterable ? old_n0 : n0);
+          values[index5] = newValues[i1];
+          if(iterable) iterablesIndexFilterStatus[index5] = oldIterablesIndexFilterStatus[i1];
+          index[index5] = newIndex[i1++] + (iterable ? old_n0 : n0);
         }
       }
 
       // Add any remaining old values.
-      for (; i0 < n0; ++i0, ++i) {
-        values[i] = oldValues[i0];
-        if(iterable) iterablesIndexFilterStatus[i] = oldIterablesIndexFilterStatus[i0];
-        index[i] = oldIndex[i0];
+      for (; i0 < n0; ++i0, ++index5) {
+        values[index5] = oldValues[i0];
+        if(iterable) iterablesIndexFilterStatus[index5] = oldIterablesIndexFilterStatus[i0];
+        index[index5] = oldIndex[i0];
       }
 
       // Add any remaining new values.
-      for (; i1 < n1; ++i1, ++i) {
-        values[i] = newValues[i1];
-        if(iterable) iterablesIndexFilterStatus[i] = oldIterablesIndexFilterStatus[i1];
-        index[i] = newIndex[i1] + (iterable ? old_n0 : n0);
+      for (; i1 < n1; ++i1, ++index5) {
+        values[index5] = newValues[i1];
+        if(iterable) iterablesIndexFilterStatus[index5] = oldIterablesIndexFilterStatus[i1];
+        index[index5] = newIndex[i1] + (iterable ? old_n0 : n0);
       }
 
       // Bisect again to recompute lo0 and hi0.
@@ -2132,7 +1905,8 @@ function crossfilter() {
           update = crossfilter_null,
           reset = crossfilter_null,
           resetNeeded = true,
-          groupAll = key === crossfilter_null;
+          groupAll = key === crossfilter_null,
+          n0old;
 
       if (arguments.length < 1) key = crossfilter_identity;
 
@@ -2204,7 +1978,8 @@ function crossfilter() {
             reIndex[i0] = k;
 
             // Retrieve the next old key.
-            if (g0 = oldGroups[++i0]) x0 = g0.key;
+            g0 = oldGroups[++i0];
+            if (g0) x0 = g0.key;
           } else {
             g = {key: x1, value: initial()}, x = x1;
           }
@@ -2253,9 +2028,9 @@ function crossfilter() {
 
         // Fill in gaps with empty arrays where there may have been rows with empty iterables
         if(iterable){
-          for (i = 0; i < n; i++) {
-            if(!groupIndex[i]){
-              groupIndex[i] = []
+          for (var index1 = 0; index1 < n; index1++) {
+            if(!groupIndex[index1]){
+              groupIndex[index1] = [];
             }
           }
         }
@@ -2341,7 +2116,7 @@ function crossfilter() {
 
           if (k > 1) {
             // Reindex the group index using seenGroups to find the new index.
-            for (var i = 0; i < j; ++i) groupIndex[i] = seenGroups[groupIndex[i]];
+            for (var index2 = 0; index2 < j; ++index2) groupIndex[index2] = seenGroups[groupIndex[index2]];
           } else {
             groupIndex = null;
           }
@@ -2351,7 +2126,7 @@ function crossfilter() {
               : reset = update = crossfilter_null;
         } else if (k === 1) {
           if (groupAll) return;
-          for (var i = 0; i < n; ++i) if (!filters.zero(i)) return;
+          for (var index3 = 0; index3 < n; ++index3) if (!filters.zero(index3)) return;
           groups = [], k = 0;
           filterListeners[filterListeners.indexOf(update)] =
           update = reset = crossfilter_null;
@@ -2733,8 +2508,23 @@ function crossfilter() {
     return data;
   }
 
+  // Returns row data with all dimension filters applied
+  function allFiltered() {
+    var array = [],
+        i = 0;
+
+      for (i = 0; i < n; i++) {
+        if (filters.zero(i)) {
+          array.push(data[i]);
+        }
+      }
+
+      return array;
+  }
+
   function onChange(cb){
     if(typeof cb !== 'function'){
+      /* eslint no-console: 0 */
       console.warn('onChange callback parameter must be a function!');
       return;
     }
@@ -2777,7 +2567,9 @@ function crossfilter_capacity(w) {
       : 0x100000000;
 }
 
-},{"./../package.json":5,"./array":6,"./bisect":7,"./filter":9,"./heap":10,"./heapselect":11,"./identity":12,"./insertionsort":13,"./null":14,"./permute":15,"./quicksort":16,"./reduce":17,"./zero":18,"lodash.result":4}],9:[function(require,module,exports){
+},{"./../package.json":3,"./array":4,"./bisect":5,"./filter":7,"./heap":8,"./heapselect":9,"./identity":10,"./insertionsort":11,"./null":12,"./permute":13,"./quicksort":14,"./reduce":15,"./zero":16,"lodash.result":2}],7:[function(require,module,exports){
+'use strict';
+
 function crossfilter_filterExact(bisect, value) {
   return function(values) {
     var n = values.length;
@@ -2804,7 +2596,9 @@ module.exports = {
   filterAll: crossfilter_filterAll
 };
 
-},{}],10:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
+'use strict';
+
 var crossfilter_identity = require('./identity');
 
 function heap_by(f) {
@@ -2851,7 +2645,9 @@ function heap_by(f) {
 module.exports = heap_by(crossfilter_identity);
 module.exports.by = heap_by;
 
-},{"./identity":12}],11:[function(require,module,exports){
+},{"./identity":10}],9:[function(require,module,exports){
+'use strict';
+
 var crossfilter_identity = require('./identity');
 var xFilterHeap = require('./heap');
 
@@ -2866,7 +2662,6 @@ function heapselect_by(f) {
     var queue = new Array(k = Math.min(hi - lo, k)),
         min,
         i,
-        x,
         d;
 
     for (i = 0; i < k; ++i) queue[i] = a[lo++];
@@ -2875,7 +2670,7 @@ function heapselect_by(f) {
     if (lo < hi) {
       min = f(queue[0]);
       do {
-        if (x = f(d = a[lo]) > min) {
+        if (f(d = a[lo]) > min) {
           queue[0] = d;
           min = f(heap(queue, 0, k)[0]);
         }
@@ -2891,14 +2686,18 @@ function heapselect_by(f) {
 module.exports = heapselect_by(crossfilter_identity);
 module.exports.by = heapselect_by; // assign the raw function to the export as well
 
-},{"./heap":10,"./identity":12}],12:[function(require,module,exports){
+},{"./heap":8,"./identity":10}],10:[function(require,module,exports){
+'use strict';
+
 function crossfilter_identity(d) {
   return d;
 }
 
 module.exports = crossfilter_identity;
 
-},{}],13:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
+'use strict';
+
 var crossfilter_identity = require('./identity');
 
 function insertionsort_by(f) {
@@ -2919,14 +2718,18 @@ function insertionsort_by(f) {
 module.exports = insertionsort_by(crossfilter_identity);
 module.exports.by = insertionsort_by;
 
-},{"./identity":12}],14:[function(require,module,exports){
+},{"./identity":10}],12:[function(require,module,exports){
+'use strict';
+
 function crossfilter_null() {
   return null;
 }
 
 module.exports = crossfilter_null;
 
-},{}],15:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
+'use strict';
+
 function permute(array, index, deep) {
   for (var i = 0, n = index.length, copy = deep ? JSON.parse(JSON.stringify(array)) : new Array(n); i < n; ++i) {
     copy[i] = array[index[i]];
@@ -2936,7 +2739,7 @@ function permute(array, index, deep) {
 
 module.exports = permute;
 
-},{}],16:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var crossfilter_identity = require('./identity');
 var xFilterInsertionsort = require('./insertionsort');
 
@@ -3031,6 +2834,7 @@ function quicksort_by(f) {
           // Note that in the latter case invariant 2 will be violated for a
           // short amount of time. The invariant will be restored when the
           // pivots are put into their final positions.
+          /* eslint no-constant-condition: 0 */
           while (true) {
             var greatValue = f(a[great]);
             if (greatValue > pivotValue1) {
@@ -3073,6 +2877,7 @@ function quicksort_by(f) {
       //   1. for x in ]left, less[ : x < pivot1
       //   2. for x in [less, k[ : pivot1 <= x && x <= pivot2
       //   3. for x in ]great, right[ : x > pivot2
+      (function () { // isolate scope
       for (var k = less; k <= great; k++) {
         var ek = a[k], xk = f(ek);
         if (xk < pivotValue1) {
@@ -3109,6 +2914,7 @@ function quicksort_by(f) {
           }
         }
       }
+      })(); // isolate scope
     }
 
     // Move pivots into their final positions.
@@ -3141,6 +2947,8 @@ function quicksort_by(f) {
     // The Android source however removes the pivot elements from the recursive
     // call if the second partition is too large (more than 2/3 of the list).
     if (less < i1 && great > i5) {
+
+      (function () { // isolate scope
       var lessValue, greatValue;
       while ((lessValue = f(a[less])) <= pivotValue1 && lessValue >= pivotValue1) ++less;
       while ((greatValue = f(a[great])) <= pivotValue2 && greatValue >= pivotValue2) --great;
@@ -3171,8 +2979,9 @@ function quicksort_by(f) {
           less++;
         } else {
           if (xk <= pivotValue2 && xk >= pivotValue2) {
+            /* eslint no-constant-condition: 0 */
             while (true) {
-              var greatValue = f(a[great]);
+              greatValue = f(a[great]);
               if (greatValue <= pivotValue2 && greatValue >= pivotValue2) {
                 great--;
                 if (great < k) break;
@@ -3197,6 +3006,8 @@ function quicksort_by(f) {
           }
         }
       }
+      })(); // isolate scope
+
     }
 
     // The second partition has now been cleared of pivot elements and looks
@@ -3223,7 +3034,9 @@ var quicksort_sizeThreshold = 32;
 module.exports = quicksort_by(crossfilter_identity);
 module.exports.by = quicksort_by;
 
-},{"./identity":12,"./insertionsort":13}],17:[function(require,module,exports){
+},{"./identity":10,"./insertionsort":11}],15:[function(require,module,exports){
+'use strict';
+
 function crossfilter_reduceIncrement(p) {
   return p + 1;
 }
@@ -3251,7 +3064,9 @@ module.exports = {
   reduceSubtract: crossfilter_reduceSubtract
 };
 
-},{}],18:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
+'use strict';
+
 function crossfilter_zero() {
   return 0;
 }
