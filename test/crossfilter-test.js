@@ -1594,7 +1594,7 @@ suite.addBatch({
         "returns the top k records by value, in descending order": function(data) {
           var top = data.tags.top(3)
           assert.equal(top.length, 3)
-
+          
           assert.equal(Math.max.apply(null, top[0].tags), 5)
           assert.equal(Math.max.apply(null, top[1].tags), 5)
           assert.equal(Math.max.apply(null, top[2].tags), 5)
@@ -2202,6 +2202,131 @@ suite.addBatch({
           }
         },
       },
+    },
+    "iterable add": {
+      topic: function() {
+        var firstSet = [
+          {name: "alpha", quantity: 1, tags: [1, 2]},
+          {name: "bravo", quantity: 2, tags: [1]},
+          {name: "charlie", quantity: 1, tags: []}
+        ];
+        var secondSet = [
+          {name: "delta", quantity: 0, tags: [2]},
+          {name: "echo", quantity: 3, tags: []}
+        ];
+        var data = crossfilter();
+        data.tags = data.dimension(function(d) { return d.tags; }, true);
+        data.quantity = data.dimension(function(d) { return d.quantity });
+        data.add(firstSet);
+        data.add(secondSet);
+        return data;
+      },
+      "top": {
+        "returns the top k records by value, in descending order": function(data) {
+          var top = data.tags.top(7);
+          assert.equal(top.length, 6);
+          assert.equal(Math.max.apply(null, top[0].tags), 2);
+          assert.equal(Math.max.apply(null, top[1].tags), 2);
+          assert.equal(Math.min.apply(null, top[2].tags), 1);
+          assert.equal(Math.min.apply(null, top[3].tags), 1);
+          assert.equal(top[4].tags.length, 0);
+          assert.equal(top[5].tags.length, 0);
+        },
+        "observes the associated dimension's filters": function(data) {
+          try {
+            data.tags.filterExact(2);
+
+            var top = data.tags.top(3);
+            assert.equal(top.length, 2);
+            assert.equal(top[0].tags.indexOf(2) > -1, true);
+            assert.equal(top[1].tags.indexOf(2) > -1, true);
+
+          } finally {
+            data.tags.filterAll();
+          }
+        },
+        "others observe the associated dimension's filters": function(data) {
+          try {
+            data.tags.filterExact(2);
+
+            var top = data.quantity.top(3);
+            assert.equal(top.length, 2);
+            assert.equal(top[0].tags.indexOf(2) > -1, true);
+            assert.equal(top[1].tags.indexOf(2) > -1, true);
+
+          } finally {
+            data.tags.filterAll();
+          }
+        },
+        "observes other dimensions' filters": function(data) {
+          try {
+            data.quantity.filterExact(1);
+
+            var top = data.tags.top(4);
+            assert.equal(top.length, 3);
+            assert.equal(top[0].name, "alpha");
+            assert.equal(top[1].name, "alpha");
+            assert.equal(top[2].name, "charlie");
+          } finally {
+            data.quantity.filterAll();
+          }
+        }
+      },
+      "bottom": {
+        "returns the bottom k records by value, in descending order": function(data) {
+          var bottom = data.tags.bottom(7);
+          assert.equal(bottom.length, 6);
+          assert.equal(bottom[0].tags.length, 0);
+          assert.equal(bottom[1].tags.length, 0);
+          assert.equal(Math.min.apply(null, bottom[2].tags), 1);
+          assert.equal(Math.min.apply(null, bottom[3].tags), 1);
+          assert.equal(Math.max.apply(null, bottom[4].tags), 2);
+          assert.equal(Math.max.apply(null, bottom[5].tags), 2);
+        }
+      },
+      "force order when adding": {
+        topic: function() {
+          var firstSet = [
+            {name: "alpha", quantity: 1, tags: [1, 2]},
+            {name: "bravo", quantity: 2, tags: []},
+          ];
+          var secondSet = [
+            {name: "charlie", quantity: 0, tags: [3, 4]},
+            {name: "delta", quantity: 0, tags: [2, 3]},
+            {name: "echo", quantity: 3, tags: [4, 5]}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.quantity = data.dimension(function(d) { return d.quantity });
+          data.add(firstSet);
+          data.add(secondSet);
+          return data;
+        },
+        "others observe the associated dimension's filters": function(data) {
+          try {
+            data.tags.filterFunction(function(d) { return d === 1; });
+
+            var top = data.quantity.top(2);
+            assert.equal(top.length, 1);
+            assert.equal(top[0].tags.indexOf(1) > -1, true);
+
+          } finally {
+            data.tags.filterAll();
+          }
+        },
+        "observes other dimensions' filters": function(data) {
+          try {
+            data.quantity.filterFunction(function(d) { return d === 1; });
+
+            var top = data.tags.top(3);
+            assert.equal(top.length, 2);
+            assert.equal(top[0].name, "alpha");
+            assert.equal(top[1].name, "alpha");
+          } finally {
+            data.quantity.filterAll();
+          }
+        }
+      }
     },
 
     "isElementFiltered": {
