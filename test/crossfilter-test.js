@@ -1218,6 +1218,29 @@ suite.addBatch({
           all.dispose();
           data.add([3, 4, 5]);
           assert.isFalse(callback);
+        },
+        "does not detach other reduce listeners": function() {
+          var data = crossfilter([0, 1, 2]),
+              callback, // indicates a reduce has occurred in this group
+              other = data.dimension(function(d) { return d; }),
+              all = data.groupAll(),
+              all2 = data.groupAll().reduce(function() { callback = true; }, function() { callback = true; }, function() {});
+          all2.value(); // force this group to be reduced when filters change
+          callback = false;
+          all.dispose();
+          other.filterRange([1, 2]);
+          assert.isTrue(callback);
+        },
+        "does not detach other add listeners": function() {
+          var data = crossfilter([0, 1, 2]),
+              callback, // indicates data has been added and triggered a reduce
+              all = data.groupAll(),
+              all2 = data.groupAll().reduce(function() { callback = true; }, function() { callback = true; }, function() {});
+          all2.value(); // force this group to be reduced when data is added
+          callback = false;
+          all.dispose();
+          data.add([3, 4, 5]);
+          assert.isTrue(callback);
         }
       }
     },
