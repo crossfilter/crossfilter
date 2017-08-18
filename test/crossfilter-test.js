@@ -2326,6 +2326,51 @@ suite.addBatch({
             data.quantity.filterAll();
           }
         }
+      },
+      "group": {
+        topic: function() {
+          var firstSet = [
+            {name: "alpha", quantity: 1, tags: [1, 3]},
+            {name: "bravo", quantity: 0, tags: [1, 3]},
+          ];
+          var secondSet = [
+            {name: "charlie", quantity: 0, tags: [2]},
+            {name: "delta", quantity: 2, tags: [2, 3]},
+            {name: "echo", quantity: 2, tags: [4]}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.quantity = data.dimension(function(d) { return d.quantity; });
+          data.tagGroup = data.tags.group();
+          data.add(firstSet);
+          data.add(secondSet);
+          return data;
+        },
+        "records added correctly": function(data) {
+          var top = data.tagGroup.top(5);
+          assert.equal(top.length, 4);
+          assert.equal(top[0].value, 3);
+          assert.equal(top[1].value, 2);
+          assert.equal(top[2].value, 2);
+          assert.equal(top[3].value, 1);
+          assert.equal(top[0].key, 3);
+          assert.equal(top[3].key, 4)
+        },
+        "observes other dimensions' filters": function(data) {
+          try {
+            data.quantity.filterFunction(function(d) { return d === 0; });
+            var top = data.tagGroup.top(5);
+            assert.equal(top.length, 4);
+            assert.equal(top[0].value, 1);
+            assert.equal(top[0].value, 1);
+            assert.equal(top[1].value, 1);
+            assert.equal(top[2].value, 1);
+            assert.equal(top[3].value, 0);
+            assert.equal(top[3].key, 4);
+          } finally {
+            data.quantity.filterAll();
+          }
+        }
       }
     },
 

@@ -859,7 +859,11 @@ function crossfilter() {
         // update the group index of all the old records.
         if(k > i0){
           if(iterable){
-            groupIndex = permute(groupIndex, reIndex, true)
+            for (i0 = 0; i0 < n0old; ++i0) {
+              for (index1 = 0; index1 < groupIndex[i0].length; index1++) {
+                groupIndex[i0][index1] = reIndex[groupIndex[i0][index1]];
+              }
+            }
           }
           else{
             for (i0 = 0; i0 < n0; ++i0) {
