@@ -14,6 +14,10 @@ var quicksort = require('./quicksort');
 var xfilterReduce = require('./reduce');
 var packageJson = require('./../package.json'); // require own package.json for the version field
 var result = require('lodash.result');
+
+// constants
+var REMOVED_INDEX = -1;
+
 // expose API exports
 exports.crossfilter = crossfilter;
 exports.crossfilter.heap = xfilterHeap;
@@ -66,14 +70,24 @@ function crossfilter() {
     return crossfilter;
   }
 
-  // Removes all records that match the current filters.
-  function removeData() {
-    var newIndex = crossfilter_index(n, n),
-        removed = [];
+  // Removes all records that match the current filters, or if a predicate function is passed,
+  // removes all records matching the predicate (ignoring filters).
+  function removeData(predicate) {
+    var // Mapping from old record indexes to new indexes (after records removed)
+        newIndex = crossfilter_index(n, n),
+        removed = [],
+        usePred = typeof predicate === 'function',
+        shouldRemove = function (i) {
+          return usePred ? predicate(data[i], i) : filters.zero(i)
+        };
 
     for (var index1 = 0, index2 = 0; index1 < n; ++index1) {
-      if (!filters.zero(index1)) newIndex[index1] = index2++;
-      else removed.push(index1);
+      if ( shouldRemove(index1) ) {
+        removed.push(index1);
+        newIndex[index1] = REMOVED_INDEX;
+      } else {
+        newIndex[index1] = index2++;
+      }
     }
 
     // Remove all matching records from groups.
@@ -84,7 +98,7 @@ function crossfilter() {
 
     // Remove old filters and data by overwriting.
     for (var index3 = 0, index4 = 0; index3 < n; ++index3) {
-      if (!filters.zero(index3)) {
+      if ( newIndex[index3] !== REMOVED_INDEX ) {
         if (index3 !== index4) filters.copy(index4, index3), data[index4] = data[index3];
         ++index4;
       }
@@ -144,7 +158,7 @@ function crossfilter() {
         offset, // offset into the filters arrays
         id, // unique ID for this dimension (reused when dimensions are disposed)
         values, // sorted, cached array
-        index, // value rank ↦ object id
+        index, // maps sorted value index -> record index (in data)
         newValues, // temporary array storing newly-added values
         newIndex, // temporary array storing newly-added index
         iterablesIndexCount,
@@ -345,10 +359,12 @@ function crossfilter() {
     }
 
     function removeData(reIndex) {
-      for (var i = 0, j = 0, k; i < n; ++i) {
-        if (!filters.zero(k = index[i])) {
+      // Rewrite our index, overwriting removed values
+      for (var i = 0, j = 0, oldDataIndex; i < n; ++i) {
+        oldDataIndex = index[i];
+        if (reIndex[oldDataIndex] !== REMOVED_INDEX) {
           if (i !== j) values[j] = values[i];
-          index[j] = reIndex[k];
+          index[j] = reIndex[oldDataIndex];
           ++j;
         }
       }
@@ -908,7 +924,7 @@ function crossfilter() {
         }
       }
 
-      function removeData() {
+      function removeData(reIndex) {
         if (k > 1) {
           var oldK = k,
               oldGroups = groups,
@@ -917,7 +933,7 @@ function crossfilter() {
           // Filter out non-matches by copying matching group index entries to
           // the beginning of the array.
           for (var i = 0, j = 0; i < n; ++i) {
-            if (!filters.zero(i)) {
+            if (reIndex[i] !== REMOVED_INDEX) {
               seenGroups[groupIndex[j] = groupIndex[i]] = 1;
               ++j;
             }
@@ -946,7 +962,7 @@ function crossfilter() {
               : reset = update = crossfilter_null;
         } else if (k === 1) {
           if (groupAll) return;
-          for (var index3 = 0; index3 < n; ++index3) if (!filters.zero(index3)) return;
+          for (var index3 = 0; index3 < n; ++index3) if (reIndex[index3] !== REMOVED_INDEX) return;
           groups = [], k = 0;
           filterListeners[filterListeners.indexOf(update)] =
           update = reset = crossfilter_null;
