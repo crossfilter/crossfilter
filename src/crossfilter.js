@@ -790,7 +790,7 @@ function crossfilter() {
         // Also, make sure that groupIndex exists and is long enough.
         groups = new Array(k), k = 0;
         if(iterable){
-          groupIndex = k0 > 1 ? groupIndex : [];
+          groupIndex = k0 ? groupIndex : [];
         }
         else{
           groupIndex = k0 > 1 ? xfilterArray.arrayLengthen(groupIndex, n) : crossfilter_index(n, groupCapacity);
@@ -895,7 +895,7 @@ function crossfilter() {
         // and therefore no groups to update or reset. Note that we also must
         // change the registered listener to point to the new method.
         j = filterListeners.indexOf(update);
-        if (k > 1) {
+        if (k > 1 || iterable) {
           update = updateMany;
           reset = resetMany;
         } else {
