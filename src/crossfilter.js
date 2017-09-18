@@ -386,7 +386,7 @@ function crossfilter() {
 
       if (refilterFunction) {
         refilterFunction = null;
-        filterIndexFunction(function(d, i) { return lo1 <= i && i < hi1; }, bounds[0] === 0 && bounds[1] === index.length);
+        filterIndexFunction(function(d, i) { return lo1 <= i && i < hi1; }, bounds[0] === 0 && bounds[1] === values.length);
         lo0 = lo1;
         hi0 = hi1;
         return dimension;
@@ -466,7 +466,7 @@ function crossfilter() {
         removed = newRemoved;
 
         // Now handle empty rows.
-        if(bounds[0] === 0 && bounds[1] === index.length) {
+        if(bounds[0] === 0 && bounds[1] === values.length) {
           for(i = 0; i < iterablesEmptyRows.length; i++) {
             if((filters[offset][k = iterablesEmptyRows[i]] & one)) {
               // Was not in the filter, so set the filter and add
@@ -528,8 +528,8 @@ function crossfilter() {
 
       filterIndexFunction(f, false);
       
-      lo0 = 0;
-      hi0 = n;
+      var bounds = refilter(values);
+      lo0 = bounds[0], hi0 = bounds[1];
 
       return dimension;
     }
@@ -542,7 +542,7 @@ function crossfilter() {
           removed = [],
           valueIndexAdded = [],
           valueIndexRemoved = [],
-          indexLength = index.length;
+          indexLength = values.length;
 
       if(!iterable) {
         for (i = 0; i < indexLength; ++i) {
