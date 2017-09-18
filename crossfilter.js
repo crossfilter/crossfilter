@@ -938,7 +938,7 @@ module.exports = result;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],3:[function(require,module,exports){
-module.exports={"version":"1.4.0"}
+module.exports={"version":"1.4.2"}
 },{}],4:[function(require,module,exports){
 if (typeof Uint8Array !== "undefined") {
   var crossfilter_array8 = function(n) { return new Uint8Array(n); };
@@ -2038,7 +2038,11 @@ function crossfilter() {
         // update the group index of all the old records.
         if(k > i0){
           if(iterable){
-            groupIndex = permute(groupIndex, reIndex, true)
+            for (i0 = 0; i0 < n0old; ++i0) {
+              for (index1 = 0; index1 < groupIndex[i0].length; index1++) {
+                groupIndex[i0][index1] = reIndex[groupIndex[i0][index1]];
+              }
+            }
           }
           else{
             for (i0 = 0; i0 < n0; ++i0) {
@@ -2488,9 +2492,9 @@ function crossfilter() {
     // Removes this group and associated event listeners.
     function dispose() {
       var i = filterListeners.indexOf(update);
-      if (i >= 0) filterListeners.splice(i);
+      if (i >= 0) filterListeners.splice(i, 1);
       i = dataListeners.indexOf(add);
-      if (i >= 0) dataListeners.splice(i);
+      if (i >= 0) dataListeners.splice(i, 1);
       return group;
     }
 
