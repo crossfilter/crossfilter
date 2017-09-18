@@ -1309,9 +1309,9 @@ function crossfilter() {
     // Removes this group and associated event listeners.
     function dispose() {
       var i = filterListeners.indexOf(update);
-      if (i >= 0) filterListeners.splice(i);
+      if (i >= 0) filterListeners.splice(i, 1);
       i = dataListeners.indexOf(add);
-      if (i >= 0) dataListeners.splice(i);
+      if (i >= 0) dataListeners.splice(i, 1);
       return group;
     }
 
