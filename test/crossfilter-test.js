@@ -1815,7 +1815,7 @@ suite.addBatch({
             var group = data.tags.groupAll().reduceCount();
             data.total.filterRange([200, Infinity]);
             data.total.filterFunction(function(d) { return "0"; });
-            assert.equal(group.value(), 43);
+            assert.equal(group.value(), 119);
             data.total.filterFunction(function(d) { return ""; });
             assert.equal(group.value(), 0);
           } finally {
@@ -1826,9 +1826,9 @@ suite.addBatch({
           try {
             var group = data.tags.groupAll().reduceCount();
             data.total.filterFunction(function(d) { return d === 90; });
-            assert.equal(group.value(), 13);
+            assert.equal(group.value(), 33);
             data.total.filterFunction(function(d) { return d === 91; });
-            assert.equal(group.value(), 1);
+            assert.equal(group.value(), 3);
           } finally {
             data.total.filterAll();
           }
@@ -2114,10 +2114,18 @@ suite.addBatch({
               data.val.filter(2);
               data.remove();
               assert.deepEqual(data.val.groupSumLength.all(), [
-                { key: 6, value: 4 }
+                { key: 3, value: 3 },
+                { key: 4, value: 3 },
+                { key: 5, value: 6 },
+                { key: 6, value: 4 },
+                { key: 7, value: 3 }
               ]);
               assert.deepEqual(data.val.groupSumEach.all(), [
-                { key: 6, value: 4 }
+                { key: 3, value: 3 },
+                { key: 4, value: 3 },
+                { key: 5, value: 6 },
+                { key: 6, value: 4 },
+                { key: 7, value: 3 }
               ]);
 
               data.val.filterAll();
