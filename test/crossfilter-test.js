@@ -1462,6 +1462,148 @@ suite.addBatch({
         assert.deepEqual(data.foo.top(Infinity), []);
       }
     },
+
+    "remove with predicate": {
+      topic: function() {
+        var data = crossfilter();
+        data.foo = data.dimension(function(d) { return d.foo; });
+        data.foo.div2 = data.foo.group(function(value) { return Math.floor(value / 2); });
+        data.foo.positive = data.foo.group(function(value) { return value > 0 | 0; });
+        data.allSum = data.groupAll().reduceSum(function(d) { return d.foo });
+        return data;
+      },
+      "removing a record works for a group with cardinality one": function(data) {
+        data.add([{foo: 1}, {foo: 1.1}, {foo: 1.2}]);
+        data.remove(function (d) {
+          return d.foo === 1.1;
+        });
+        assert.deepEqual(data.all(), [{foo: 1}, {foo: 1.2}]);
+        data.remove(function () {
+          return true;
+        });
+        assert.deepEqual(data.foo.top(Infinity), []);
+      },
+      "removing a record works for another group with cardinality one": function(data) {
+        data.add([{foo: 0}, {foo: -1}]);
+        assert.deepEqual(data.foo.positive.all(), [{key: 0, value: 2}]);
+        data.remove(function (d,i) {
+          return d.foo === 0;
+        });
+        assert.deepEqual(data.foo.positive.all(), [{key: 0, value: 1}]);
+        assert.deepEqual(data.foo.top(Infinity), [{foo: -1}]);
+        data.remove(function () {
+          return true;
+        });
+        assert.deepEqual(data.foo.top(Infinity), []);
+      },
+      "removing a record updates dimension": function(data) {
+        data.add([{foo: 1}, {foo: 2}]);
+        data.remove(function (d) {
+          return d.foo === 1;
+        });
+        assert.deepEqual(data.foo.top(Infinity), [{foo: 2}]);
+        data.remove(function () {
+          return true;
+        });
+        assert.deepEqual(data.foo.top(Infinity), []);
+      },
+      "removing records updates group": function(data) {
+        data.add([{foo: 1}, {foo: 2}, {foo: 3}]);
+        assert.deepEqual(data.foo.top(Infinity), [{foo: 3}, {foo: 2}, {foo: 1}]);
+        assert.deepEqual(data.foo.div2.all(), [{key: 0, value: 1}, {key: 1, value: 2}]);
+        data.remove(function (d) {
+          return d.foo < 3;
+        });
+        assert.deepEqual(data.foo.top(Infinity), [{foo: 3}]);
+        assert.deepEqual(data.foo.div2.all(), [{key: 1, value: 1}]);
+        data.remove(function () {
+          return true;
+        });
+        assert.deepEqual(data.foo.top(Infinity), []);
+        assert.deepEqual(data.foo.div2.all(), []);
+      },
+      "can remove records while filtering": function(data) {
+        data.add([{foo: 1}, {foo: 2}, {foo: 3}]);
+
+        assert.equal(data.allSum.value(), 6);
+        assert.deepEqual(data.foo.positive.all(), [
+          { key: 1, value: 3 }
+        ]);
+
+        data.foo.filter(2);
+        assert.equal(data.allSum.value(), 2);
+
+        data.remove(function (d) {
+          return d.foo === 3;
+        });
+        assert.equal(data.allSum.value(), 2);
+        assert.deepEqual(data.foo.positive.all(), [
+          { key: 1, value: 2 }
+        ]);
+
+        data.remove(function (d) {
+          return d.foo === 2;
+        });
+        assert.equal(data.allSum.value(), 0);
+
+        data.foo.filterAll();
+        assert.equal(data.allSum.value(), 1);
+
+        data.remove(function () {
+          return true;
+        });
+        assert.deepEqual(data.foo.top(Infinity), []);
+      },
+      "can remove records while filtering on iterable dimension": function(data) {
+        var data2 = crossfilter();
+        var fooDimension = data2.dimension(function(d) { return d.foo; }, true);
+        data2.add([
+          {foo: [1, 2, 3], bar: 1},
+          {foo: [1, 2   ], bar: 2},
+          {foo: [   2, 3], bar: 4}
+        ]);
+        var fooGroup = fooDimension.group();
+        var allBarSum = data2.groupAll().reduceSum(function (d) { return d.bar });
+        var fooBarSum = fooDimension.group().reduceSum(function (d) { return d.bar });
+
+        assert.equal(allBarSum.value(), 7);
+        assert.deepEqual(fooGroup.all(), [
+          { key: 1, value: 2 },
+          { key: 2, value: 3 },
+          { key: 3, value: 2 }
+        ]);
+        assert.deepEqual(fooBarSum.all(), [
+          { key: 1, value: 3 },
+          { key: 2, value: 7 },
+          { key: 3, value: 5 }
+        ]);
+
+        fooDimension.filter(3);
+        assert.equal(allBarSum.value(), 5);
+
+        data2.remove(function (d) {
+          return d.foo.indexOf(1) >= 0;
+        });
+        assert.equal(allBarSum.value(), 4);
+        assert.deepEqual(fooGroup.all(), [
+          { key: 2, value: 1 },
+          { key: 3, value: 1 }
+        ]);
+        assert.deepEqual(fooBarSum.all(), [
+          { key: 2, value: 4 },
+          { key: 3, value: 4 }
+        ]);
+
+        fooDimension.filterAll();
+        assert.equal(allBarSum.value(), 4);
+
+        data2.remove(function () {
+          return true;
+        });
+        assert.deepEqual(fooDimension.top(Infinity), []);
+      }
+    },
+
     "onChange": {
       "topic": function(){
         var data = crossfilter(testData);

@@ -99,6 +99,16 @@ for (var i = 0, n = 35, k = 0; i < n; ++i) {
 console.log("Filtering by amount: " + formatNumber((Date.now() - then) / k) + "ms/op.");
 amount.filterAll();
 
+
+// Removal by predicate
+then = Date.now();
+payments.remove(function (d,i) {
+  return i % 10 === 1;
+});
+console.log("Removing " + totalSize / 10 + " records: " + formatNumber(Date.now() - then) + "ms.");
+
+
+
 console.log("");
 console.log("Day of Week:");
 x.domain([0, days.top(1)[0].value]);
