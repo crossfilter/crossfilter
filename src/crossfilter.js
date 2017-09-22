@@ -361,30 +361,35 @@ function crossfilter() {
     function removeData(reIndex) {
       if (iterable) {
         for (var i0 = 0, i1 = 0; i0 < iterablesEmptyRows.length; i0++) {
-          if (!filters.zero(iterablesEmptyRows[i0])) {
+          if (reIndex[iterablesEmptyRows[i0]] !== REMOVED_INDEX) {
             iterablesEmptyRows[i1] = reIndex[iterablesEmptyRows[i0]];
             i1++;
           }
         }
         iterablesEmptyRows.length = i1;
         for (i0 = 0, i1 = 0; i0 < n; i0++) {
-          if (!filters.zero(i0)) {
-            iterablesIndexCount[reIndex[i0]] = iterablesIndexCount[i0];
+          if (reIndex[i0] !== REMOVED_INDEX) {
+            if (i1 !== i0) iterablesIndexCount[i1] = iterablesIndexCount[i0];
             i1++;
           }
         }
         iterablesIndexCount.length = i1;
       }
       // Rewrite our index, overwriting removed values
-      for (var i = 0, j = 0, oldDataIndex; i < n; ++i) {
+      var n0 = values.length;
+      for (var i = 0, j = 0, oldDataIndex; i < n0; ++i) {
         oldDataIndex = index[i];
         if (reIndex[oldDataIndex] !== REMOVED_INDEX) {
           if (i !== j) values[j] = values[i];
           index[j] = reIndex[oldDataIndex];
+          if (iterable) {
+            iterablesIndexFilterStatus[j] = iterablesIndexFilterStatus[i];
+          }
           ++j;
         }
       }
       values.length = j;
+      if (iterable) iterablesIndexFilterStatus.length = j;
       while (j < n0) index[j++] = 0;
 
       // Bisect again to recompute lo0 and hi0.
@@ -964,7 +969,7 @@ function crossfilter() {
             }
           } else {
             for (i = 0, j = 0; i < n; ++i) {
-              if (!filters.zero(i)) {
+              if (reIndex[i] !== REMOVED_INDEX) {
                 groupIndex[j] = groupIndex[i];
                 for (i0 = 0; i0 < groupIndex[j].length; i0++) {
                   seenGroups[groupIndex[j][i0]] = 1;
