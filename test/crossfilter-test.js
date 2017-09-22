@@ -1815,7 +1815,7 @@ suite.addBatch({
             var group = data.tags.groupAll().reduceCount();
             data.total.filterRange([200, Infinity]);
             data.total.filterFunction(function(d) { return "0"; });
-            assert.equal(group.value(), 43);
+            assert.equal(group.value(), 119);
             data.total.filterFunction(function(d) { return ""; });
             assert.equal(group.value(), 0);
           } finally {
@@ -1826,9 +1826,9 @@ suite.addBatch({
           try {
             var group = data.tags.groupAll().reduceCount();
             data.total.filterFunction(function(d) { return d === 90; });
-            assert.equal(group.value(), 13);
+            assert.equal(group.value(), 33);
             data.total.filterFunction(function(d) { return d === 91; });
-            assert.equal(group.value(), 1);
+            assert.equal(group.value(), 3);
           } finally {
             data.total.filterAll();
           }
@@ -2114,10 +2114,18 @@ suite.addBatch({
               data.val.filter(2);
               data.remove();
               assert.deepEqual(data.val.groupSumLength.all(), [
-                { key: 6, value: 4 }
+                { key: 3, value: 3 },
+                { key: 4, value: 3 },
+                { key: 5, value: 6 },
+                { key: 6, value: 4 },
+                { key: 7, value: 3 }
               ]);
               assert.deepEqual(data.val.groupSumEach.all(), [
-                { key: 6, value: 4 }
+                { key: 3, value: 3 },
+                { key: 4, value: 3 },
+                { key: 5, value: 6 },
+                { key: 6, value: 4 },
+                { key: 7, value: 3 }
               ]);
 
               data.val.filterAll();
@@ -2393,10 +2401,455 @@ suite.addBatch({
           } finally {
             data.quantity.filterAll();
           }
+        },
+        "one tag with one empty": function() {
+          var set = [
+            {name: "alpha", quantity: 2, tags: [1]},
+            {name: "bravo", quantity: 1, tags: []}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.tagGroup = data.tags.group();
+          data.add(set);
+          assert.deepEqual(data.tagGroup.all(), [
+            {key: 1, value: 1}
+          ]);
+        },
+        "one tag then add empty": function() {
+          var firstSet = [
+            {name: "alpha", quantity: 2, tags: [1]}
+          ];
+          var secondSet = [
+            {name: "bravo", quantity: 1, tags: []}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.quantity = data.dimension(function(d) {return d.quantity; });
+          data.tagGroup = data.tags.group();
+          data.add(firstSet);
+          data.add(secondSet);
+          assert.deepEqual(data.tagGroup.all(), [
+            {key: 1, value: 1}
+          ]);
+        },
+        "empty tag then add one tag": function() {
+          var firstSet = [
+            {name: "alpha", quantity: 2, tags: []}
+          ];
+          var secondSet = [
+            {name: "bravo", quantity: 1, tags: [1]}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.quantity = data.dimension(function(d) {return d.quantity; });
+          data.tagGroup = data.tags.group();
+          data.add(firstSet);
+          data.add(secondSet);
+          assert.deepEqual(data.tagGroup.all(), [
+            {key: 1, value: 1}
+          ]);
+        },
+        "one tag then add one more tag": function() {
+          var firstSet = [
+            {name: "alpha", quantity: 2, tags: [1]}
+          ];
+          var secondSet = [
+            {name: "bravo", quantity: 1, tags: [2]}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.quantity = data.dimension(function(d) {return d.quantity; });
+          data.tagGroup = data.tags.group();
+          data.add(firstSet);
+          data.add(secondSet);
+          assert.deepEqual(data.tagGroup.all(), [
+            {key: 1, value: 1},
+            {key: 2, value: 1}
+          ]);
         }
       }
     },
-
+    "iterable remove" : {
+      "dimension": {
+        "other dimension filtered remove": function() {
+          var set = [
+            {name: "alpha", quantity: 1, tags: [1, 3]},
+            {name: "bravo", quantity: 0, tags: [1, 3]},
+            {name: "charlie", quantity: 3, tags: [2]},
+            {name: "delta", quantity: 3, tags: [2, 3]},
+            {name: "echo", quantity: 2, tags: [4]},
+            {name: "foxtrot", quantity: 1, tags: []}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.quantity = data.dimension(function(d) {return d.quantity; });
+          data.add(set);
+          data.quantity.filterExact(3);
+          data.remove();
+          data.quantity.filterAll();
+          var top = data.tags.top(7);
+          assert.equal(top.length, 6);
+          assert.equal(Math.max.apply(null, top[0].tags), 4);
+          assert.equal(Math.max.apply(null, top[1].tags), 3);
+          assert.equal(Math.min.apply(null, top[1].tags), 1);
+          assert.equal(Math.max.apply(null, top[2].tags), 3);
+          assert.equal(Math.min.apply(null, top[2].tags), 1);
+          assert.equal(Math.max.apply(null, top[3].tags), 3);
+          assert.equal(Math.min.apply(null, top[3].tags), 1);
+          assert.equal(Math.max.apply(null, top[4].tags), 3);
+          assert.equal(Math.min.apply(null, top[4].tags), 1);
+          assert.equal(top[5].tags.length, 0);
+        },
+        "self filterExact remove": function() {
+          var set = [
+            {name: "alpha", quantity: 1, tags: [1, 3]},
+            {name: "bravo", quantity: 0, tags: [1, 3]},
+            {name: "charlie", quantity: 3, tags: [2]},
+            {name: "delta", quantity: 3, tags: [2, 3]},
+            {name: "echo", quantity: 2, tags: [4]},
+            {name: "foxtrot", quantity: 1, tags: []}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.add(set);
+          data.tags.filterExact(2);
+          data.remove();
+          data.tags.filterAll();
+          var top = data.tags.top(7);
+          assert.equal(top.length, 6);
+          assert.equal(Math.max.apply(null, top[0].tags), 4);
+          assert.equal(Math.max.apply(null, top[1].tags), 3);
+          assert.equal(Math.min.apply(null, top[1].tags), 1);
+          assert.equal(Math.max.apply(null, top[2].tags), 3);
+          assert.equal(Math.min.apply(null, top[2].tags), 1);
+          assert.equal(Math.max.apply(null, top[3].tags), 3);
+          assert.equal(Math.min.apply(null, top[3].tags), 1);
+          assert.equal(Math.max.apply(null, top[4].tags), 3);
+          assert.equal(Math.min.apply(null, top[4].tags), 1);
+          assert.equal(top[5].tags.length, 0);
+        },
+        "self filterFunction remove": function() {
+          var set = [
+            {name: "alpha", quantity: 1, tags: [1, 3]},
+            {name: "bravo", quantity: 0, tags: [1, 3]},
+            {name: "charlie", quantity: 3, tags: [2]},
+            {name: "delta", quantity: 3, tags: [2, 3]},
+            {name: "echo", quantity: 2, tags: [4]},
+            {name: "foxtrot", quantity: 1, tags: []}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.add(set);
+          data.tags.filterFunction(function(d) { return d === 2; });
+          data.remove();
+          data.tags.filterAll();
+          var top = data.tags.top(7);
+          assert.equal(top.length, 6);
+          assert.equal(Math.max.apply(null, top[0].tags), 4);
+          assert.equal(Math.max.apply(null, top[1].tags), 3);
+          assert.equal(Math.min.apply(null, top[1].tags), 1);
+          assert.equal(Math.max.apply(null, top[2].tags), 3);
+          assert.equal(Math.min.apply(null, top[2].tags), 1);
+          assert.equal(Math.max.apply(null, top[3].tags), 3);
+          assert.equal(Math.min.apply(null, top[3].tags), 1);
+          assert.equal(Math.max.apply(null, top[4].tags), 3);
+          assert.equal(Math.min.apply(null, top[4].tags), 1);
+          assert.equal(top[5].tags.length, 0);
+        },
+        "other dimension filtered then self filterFunction remove": function() {
+          var set = [
+            {name: "alpha", quantity: 1, tags: [1, 3]},
+            {name: "bravo", quantity: 0, tags: [1, 3]},
+            {name: "charlie", quantity: 3, tags: [2]},
+            {name: "delta", quantity: 3, tags: [2, 3]},
+            {name: "echo", quantity: 2, tags: [4]},
+            {name: "foxtrot", quantity: 1, tags: []}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.quantity = data.dimension(function(d) { return d.quantity; });
+          data.add(set);
+          data.quantity.filterExact(3);
+          data.remove();
+          data.quantity.filterAll();
+          data.tags.filterFunction(function(d) { return d === 1; });
+          data.remove();
+          data.tags.filterAll();
+          assert.deepEqual(data.tags.top(3), [
+            {name: "echo", quantity: 2, tags: [4]},
+            {name: "foxtrot", quantity: 1, tags: []}
+          ]);
+        },
+        "remove then add": function() {
+          var firstSet = [
+            {name: "alpha", quantity: 1, tags: [1, 3]},
+            {name: "bravo", quantity: 0, tags: [1, 3]},
+            {name: "charlie", quantity: 3, tags: [2]},
+            {name: "delta", quantity: 3, tags: [2, 3]},
+            {name: "echo", quantity: 2, tags: [4]},
+            {name: "foxtrot", quantity: 1, tags: []}
+          ];
+          var secondSet = [
+            {name: "golf", quantity: 3, tags: [1]}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.quantity = data.dimension(function(d) { return d.quantity; });
+          data.add(firstSet);
+          data.quantity.filterExact(3);
+          data.remove();
+          data.quantity.filterAll();
+          data.tags.filterFunction(function(d) { return d === 1; });
+          data.remove();
+          data.tags.filterAll();
+          data.add(secondSet);
+          assert.deepEqual(data.tags.top(3), [
+            {name: "echo", quantity: 2, tags: [4]},
+            {name: "golf", quantity: 3, tags: [1]},
+            {name: "foxtrot", quantity: 1, tags: []}
+          ]);
+        },
+        "filter then remove empty tag to only one tag": function() {
+          var set = [
+            {name: "alpha", quantity: 2, tags: [1]},
+            {name: "bravo", quantity: 1, tags: []}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.quantity = data.dimension(function(d) {return d.quantity; });
+          data.add(set);
+          data.quantity.filterExact(1);
+          data.remove();
+          data.quantity.filterAll();
+          assert.deepEqual(data.tags.top(2), [
+            {name: "alpha", quantity: 2, tags: [1]}
+          ]);
+        },
+        "filter remove one tag to only empty tag": function() {
+          var set = [
+            {name: "alpha", quantity: 2, tags: [1]},
+            {name: "bravo", quantity: 1, tags: []}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.quantity = data.dimension(function(d) {return d.quantity; });
+          data.add(set);
+          data.quantity.filterExact(2);
+          data.remove();
+          data.quantity.filterAll();
+          assert.deepEqual(data.tags.top(2), [
+            {name: "bravo", quantity: 1, tags: []}
+          ]);
+        },
+        "remove multiple tag, add single tag, others observer filter": function() {
+          var firstSet = [
+            {name: "alpha", quantity: 2, tags: [1]},
+            {name: "bravo", quantity: 1, tags: [2, 3]}
+          ];
+          var secondSet = [
+            {name: "charlie", quantity: 3, tags: [4]}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.quantity = data.dimension(function(d) {return d.quantity; });
+          data.add(firstSet);
+          data.quantity.filterExact(1);
+          data.remove();
+          data.quantity.filterAll();
+          data.add(secondSet);
+          data.tags.filterExact(1);
+          assert.deepEqual(data.quantity.top(2), [
+            {name: "alpha", quantity: 2, tags: [1]},
+          ]);
+        }
+      },
+      "group": {
+        "other dimension filtered remove": function() {
+          var set = [
+            {name: "alpha", quantity: 1, tags: [1, 3]},
+            {name: "bravo", quantity: 0, tags: [1, 3]},
+            {name: "charlie", quantity: 3, tags: [2]},
+            {name: "delta", quantity: 3, tags: [2, 3]},
+            {name: "echo", quantity: 2, tags: [4]},
+            {name: "foxtrot", quantity: 1, tags: []}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.quantity = data.dimension(function(d) { return d.quantity; });
+          data.tagGroup = data.tags.group();
+          data.add(set);
+          data.quantity.filterExact(3);
+          var top2 = data.tagGroup.top(5);
+          data.remove();
+          data.quantity.filterAll();
+          assert.deepEqual(data.tagGroup.all(), [
+            {key: 1, value: 2},
+            {key: 3, value: 2},
+            {key: 4, value: 1}
+          ]);
+        },
+        "self filterExact remove": function() {
+          var set = [
+            {name: "alpha", quantity: 1, tags: [1, 3]},
+            {name: "bravo", quantity: 0, tags: [1, 3]},
+            {name: "charlie", quantity: 3, tags: [2]},
+            {name: "delta", quantity: 3, tags: [2, 3]},
+            {name: "echo", quantity: 2, tags: [4]},
+            {name: "foxtrot", quantity: 1, tags: []}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.tagGroup = data.tags.group();
+          data.add(set);
+          data.tags.filterExact(2);
+          data.remove();
+          data.tags.filterAll();
+          assert.deepEqual(data.tagGroup.all(), [
+            {key: 1, value: 2},
+            {key: 3, value: 2},
+            {key: 4, value: 1}
+          ]);
+        },
+        "self filterFunction remove": function() {
+          var set = [
+            {name: "alpha", quantity: 1, tags: [1, 3]},
+            {name: "bravo", quantity: 0, tags: [1, 3]},
+            {name: "charlie", quantity: 3, tags: [2]},
+            {name: "delta", quantity: 3, tags: [2, 3]},
+            {name: "echo", quantity: 2, tags: [4]},
+            {name: "foxtrot", quantity: 1, tags: []}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.tagGroup = data.tags.group();
+          data.add(set);
+          data.tags.filterFunction(function(d) { return d === 2; });
+          data.remove();
+          data.tags.filterAll();
+          assert.deepEqual(data.tagGroup.all(), [
+            {key: 1, value: 2},
+            {key: 3, value: 2},
+            {key: 4, value: 1}
+          ]);
+        },
+        "other dimension filtered then self filterFunction remove": function() {
+          var set = [
+            {name: "alpha", quantity: 1, tags: [1, 3]},
+            {name: "bravo", quantity: 0, tags: [1, 3]},
+            {name: "charlie", quantity: 3, tags: [2]},
+            {name: "delta", quantity: 3, tags: [2, 3]},
+            {name: "echo", quantity: 2, tags: [4]},
+            {name: "foxtrot", quantity: 1, tags: []}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.quantity = data.dimension(function(d) { return d.quantity; });
+          data.tagGroup = data.tags.group();
+          data.add(set);
+          data.quantity.filterExact(3);
+          data.remove();
+          data.quantity.filterAll();
+          data.tags.filterFunction(function(d) { return d === 1; });
+          data.remove();
+          data.tags.filterAll();
+          assert.deepEqual(data.tagGroup.all(), [
+            {key: 4, value: 1}
+          ]);
+        },
+        "filter then remove to one tag with one empty": function() {
+          var set = [
+            {name: "alpha", quantity: 2, tags: [1]},
+            {name: "bravo", quantity: 1, tags: []},
+            {name: "charlie", quantity: 0, tags: [2]}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.quantity = data.dimension(function(d) {return d.quantity; });
+          data.tagGroup = data.tags.group();
+          data.add(set);
+          data.quantity.filterExact(0);
+          data.remove();
+          data.quantity.filterAll();
+          assert.deepEqual(data.tagGroup.all(), [
+            {key: 1, value: 1}
+          ]);
+        },
+        "filter then remove empty tag to only one tag": function() {
+          var set = [
+            {name: "alpha", quantity: 2, tags: [1]},
+            {name: "bravo", quantity: 1, tags: []}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.quantity = data.dimension(function(d) {return d.quantity; });
+          data.tagGroup = data.tags.group();
+          data.add(set);
+          data.quantity.filterExact(1);
+          data.remove();
+          data.quantity.filterAll();
+          assert.deepEqual(data.tagGroup.all(), [
+            {key: 1, value: 1}
+          ]);
+        },
+        "filter then remove one tag to only empty tag": function() {
+          var set = [
+            {name: "alpha", quantity: 2, tags: [1]},
+            {name: "bravo", quantity: 1, tags: []}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.quantity = data.dimension(function(d) {return d.quantity; });
+          data.tagGroup = data.tags.group();
+          data.add(set);
+          data.quantity.filterExact(2);
+          data.remove();
+          data.quantity.filterAll();
+          assert.deepEqual(data.tagGroup.all(), []);
+        },
+        "remove then add one tag back": function() {
+          var firstSet = [
+            {name: "alpha", quantity: 2, tags: [1]},
+            {name: "bravo", quantity: 1, tags: []}
+          ];
+          var secondSet = [
+            {name: "alpha", quantity: 2, tags: [1]}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.quantity = data.dimension(function(d) {return d.quantity; });
+          data.tagGroup = data.tags.group();
+          data.add(firstSet);
+          data.quantity.filterExact(2);
+          data.remove();
+          data.quantity.filterAll();
+          data.add(secondSet);
+          assert.deepEqual(data.tagGroup.all(), [
+            {key: 1, value: 1}
+          ]);
+        },
+        "remove then add empty tag back": function() {
+          var firstSet = [
+            {name: "alpha", quantity: 2, tags: [1]},
+            {name: "bravo", quantity: 1, tags: []}
+          ];
+          var secondSet = [
+            {name: "bravo", quantity: 1, tags: []}
+          ];
+          var data = crossfilter();
+          data.tags = data.dimension(function(d) { return d.tags; }, true);
+          data.quantity = data.dimension(function(d) {return d.quantity; });
+          data.tagGroup = data.tags.group();
+          data.add(firstSet);
+          data.quantity.filterExact(1);
+          data.remove();
+          data.quantity.filterAll();
+          data.add(secondSet);
+          assert.deepEqual(data.tagGroup.all(), [
+            {key: 1, value: 1}
+          ]);
+        },
+      }
+    },
     "isElementFiltered": {
       "Test if elements are filtered": function(data) {
         try {

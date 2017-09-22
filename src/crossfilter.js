@@ -345,15 +345,32 @@ function crossfilter() {
     }
 
     function removeData(reIndex) {
-      for (var i = 0, j = 0, k; i < n; ++i) {
+      if (iterable) {
+        for (var i0 = 0, i1 = 0; i0 < iterablesEmptyRows.length; i0++) {
+          if (!filters.zero(iterablesEmptyRows[i0])) {
+            iterablesEmptyRows[i1] = reIndex[iterablesEmptyRows[i0]];
+            i1++;
+          }
+        }
+        iterablesEmptyRows.length = i1;
+        for (i0 = 0, i1 = 0; i0 < n; i0++) {
+          if (!filters.zero(i0)) {
+            iterablesIndexCount[reIndex[i0]] = iterablesIndexCount[i0];
+            i1++;
+          }
+        }
+        iterablesIndexCount.length = i1;
+      }
+      for (var i = 0, j = 0, k, n0 = values.length; i < n0; ++i) {
         if (!filters.zero(k = index[i])) {
           if (i !== j) values[j] = values[i];
           index[j] = reIndex[k];
+          if (iterable) iterablesIndexFilterStatus[j] = iterablesIndexFilterStatus[i];
           ++j;
         }
       }
       values.length = j;
-      while (j < n) index[j++] = 0;
+      while (j < n0) index[j++] = 0;
 
       // Bisect again to recompute lo0 and hi0.
       var bounds = refilter(values);
@@ -369,7 +386,7 @@ function crossfilter() {
 
       if (refilterFunction) {
         refilterFunction = null;
-        filterIndexFunction(function(d, i) { return lo1 <= i && i < hi1; }, bounds[0] === 0 && bounds[1] === index.length);
+        filterIndexFunction(function(d, i) { return lo1 <= i && i < hi1; }, bounds[0] === 0 && bounds[1] === values.length);
         lo0 = lo1;
         hi0 = hi1;
         return dimension;
@@ -449,7 +466,7 @@ function crossfilter() {
         removed = newRemoved;
 
         // Now handle empty rows.
-        if(bounds[0] === 0 && bounds[1] === index.length) {
+        if(bounds[0] === 0 && bounds[1] === values.length) {
           for(i = 0; i < iterablesEmptyRows.length; i++) {
             if((filters[offset][k = iterablesEmptyRows[i]] & one)) {
               // Was not in the filter, so set the filter and add
@@ -510,9 +527,9 @@ function crossfilter() {
       refilter = xfilterFilter.filterAll;
 
       filterIndexFunction(f, false);
-
-      lo0 = 0;
-      hi0 = n;
+      
+      var bounds = refilter(values);
+      lo0 = bounds[0], hi0 = bounds[1];
 
       return dimension;
     }
@@ -525,7 +542,7 @@ function crossfilter() {
           removed = [],
           valueIndexAdded = [],
           valueIndexRemoved = [],
-          indexLength = index.length;
+          indexLength = values.length;
 
       if(!iterable) {
         for (i = 0; i < indexLength; ++i) {
@@ -773,7 +790,7 @@ function crossfilter() {
         // Also, make sure that groupIndex exists and is long enough.
         groups = new Array(k), k = 0;
         if(iterable){
-          groupIndex = k0 > 1 ? groupIndex : [];
+          groupIndex = k0 ? groupIndex : [];
         }
         else{
           groupIndex = k0 > 1 ? xfilterArray.arrayLengthen(groupIndex, n) : crossfilter_index(n, groupCapacity);
@@ -878,7 +895,7 @@ function crossfilter() {
         // and therefore no groups to update or reset. Note that we also must
         // change the registered listener to point to the new method.
         j = filterListeners.indexOf(update);
-        if (k > 1) {
+        if (k > 1 || iterable) {
           update = updateMany;
           reset = resetMany;
         } else {
@@ -913,17 +930,32 @@ function crossfilter() {
       }
 
       function removeData() {
-        if (k > 1) {
+        if (k > 1 || iterable) {
           var oldK = k,
               oldGroups = groups,
-              seenGroups = crossfilter_index(oldK, oldK);
+              seenGroups = crossfilter_index(oldK, oldK),
+              i,
+              i0,
+              j;
 
           // Filter out non-matches by copying matching group index entries to
           // the beginning of the array.
-          for (var i = 0, j = 0; i < n; ++i) {
-            if (!filters.zero(i)) {
-              seenGroups[groupIndex[j] = groupIndex[i]] = 1;
-              ++j;
+          if (!iterable) {
+            for (i = 0, j = 0; i < n; ++i) {
+              if (!filters.zero(i)) {
+                seenGroups[groupIndex[j] = groupIndex[i]] = 1;
+                ++j;
+              }
+            }
+          } else {
+            for (i = 0, j = 0; i < n; ++i) {
+              if (!filters.zero(i)) {
+                groupIndex[j] = groupIndex[i];
+                for (i0 = 0; i0 < groupIndex[j].length; i0++) {
+                  seenGroups[groupIndex[j][i0]] = 1;
+                }
+                ++j;
+              }
             }
           }
 
@@ -938,13 +970,21 @@ function crossfilter() {
             }
           }
 
-          if (k > 1) {
+          if (k > 1 || iterable) {
             // Reindex the group index using seenGroups to find the new index.
-            for (var index2 = 0; index2 < j; ++index2) groupIndex[index2] = seenGroups[groupIndex[index2]];
+            if (!iterable) {
+              for (i = 0; i < j; ++i) groupIndex[i] = seenGroups[groupIndex[i]];
+            } else {
+              for (i = 0; i < j; ++i) {
+                for (i0 = 0; i0 < groupIndex[i].length; ++i0) {
+                  groupIndex[i][i0] = seenGroups[groupIndex[i][i0]];
+                }
+              }
+            }
           } else {
             groupIndex = null;
           }
-          filterListeners[filterListeners.indexOf(update)] = k > 1
+          filterListeners[filterListeners.indexOf(update)] = k > 1 || iterable
               ? (reset = resetMany, update = updateMany)
               : k === 1 ? (reset = resetOne, update = updateOne)
               : reset = update = crossfilter_null;
