@@ -31,6 +31,27 @@ declare namespace CrossFilter2 {
         }
     }
 
+    export interface Bisection<T> {
+        (array: T[], value: T, lo: number, hi: number): number;
+    }
+
+    export interface Bisector<T> extends Bisection<T> {
+        left: Bisection<T>
+        right: Bisection<T>
+    }
+
+    export interface Heap<T> {
+        (array: T[], lo: number, hi: number): T[];
+        sort(array: T[], lo: number, hi: number): T[];
+    }
+
+    export interface HeapSelect<T> {
+        (array: T[], lo: number, hi: number, k: number): T[];
+    }
+
+    export interface Sort<T> {
+        (array: T[], lo: number, hi: number): T[];
+    }
 
     export interface CrossFilter<T> {
         add(records: T[]): CrossFilter<T>;
@@ -48,21 +69,21 @@ declare namespace CrossFilter2 {
     export interface Dimension<T> {
         filter(range: any): any; // returns Array?
         filterExact(value: any): any; // value most likely either string or number? Returns Array?
-        filterRange(range: Array<T>): any; // returns Array?
+        filterRange(range: T[]): any; // returns Array?
         filterFunction(funct: Function): any;
         filterAll(): any; // returns Array?
-        top(k: number, offset?: number): Array<T>;
-        bottom(k: number, offset?: number): Array<T>;
+        top(k: number, offset?: number): T[];
+        bottom(k: number, offset?: number): T[];
         group(groupValue: Function): Group<T>;
         groupAll(): any;
-        dispose(): Array<T>;
-        remove(): Array<T>;
+        dispose(): T[];
+        remove(): T[];
         accessor: any;
         id: Function;
     }
 
     export interface Group<T> {
-        top(k: number): Array<T>;
+        top(k: number): T[];
         all(): Array<Group<T>>; // return groups?
         reduce(add: any, remove: any, initial: any): Group<T>;
         reduceCount(): Group<T>;
