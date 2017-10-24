@@ -47,6 +47,7 @@
     "eslint": "2.10.2",
     "package-json-versionify": "1.0.2",
     "semver": "^5.3.0",
+    "sinon": "^4.0.2",
     "uglify-js": "2.4.0",
     "vows": "0.7.0"
   },
