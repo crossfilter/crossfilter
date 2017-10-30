@@ -1,5 +1,6 @@
 var vows = require("vows"),
     assert = require("assert"),
+    sinon = require("sinon"),
     d3 = require("d3"),
     crossfilter = require("../");
 
@@ -1047,6 +1048,20 @@ suite.addBatch({
             group.dispose();
             data.add([3, 4, 5]);
             assert.isFalse(callback);
+          },
+          "removes reference to group from dimension": function() {
+            var data = crossfilter([0, 1, 2]),
+                dimension = data.dimension(function(d) { return d; }),
+                group = dimension
+                  .group(function(d) { return d; }),
+                originalGroupDispose = group.dispose;
+
+            sinon.spy(group, "dispose")
+
+            group.dispose();
+            dimension.dispose();
+
+            assert.strictEqual(group.dispose.callCount, 1);
           }
         }
       },

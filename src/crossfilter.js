@@ -1222,6 +1222,8 @@ function crossfilter() {
         if (i >= 0) indexListeners.splice(i, 1);
         i = removeDataListeners.indexOf(removeData);
         if (i >= 0) removeDataListeners.splice(i, 1);
+        i = dimensionGroups.indexOf(group);
+        if (i >= 0) dimensionGroups.splice(i, 1);
         return group;
       }
 
