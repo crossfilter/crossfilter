@@ -43,6 +43,8 @@ function crossfilter() {
 
   var data = [], // the records
       n = 0, // the number of records; data.length
+      filterValue, // the value used for filtering (value, array, function or undefined)
+      filterValuePresent, // true if filterValue contains something
       filters, // 1 is filtered out
       filterListeners = [], // when the filters change
       dataListeners = [], // when data is added
@@ -143,6 +145,8 @@ function crossfilter() {
       filterRange: filterRange,
       filterFunction: filterFunction,
       filterAll: filterAll,
+      currentFilter: currentFilter,
+      hasCurrentFilter: hasCurrentFilter,
       top: top,
       bottom: bottom,
       group: group,
@@ -527,22 +531,31 @@ function crossfilter() {
 
     // Filters this dimension to select the exact value.
     function filterExact(value) {
+      filterValue = value;
+      filterValuePresent = true;
       return filterIndexBounds((refilter = xfilterFilter.filterExact(bisect, value))(values));
     }
 
     // Filters this dimension to select the specified range [lo, hi].
     // The lower bound is inclusive, and the upper bound is exclusive.
     function filterRange(range) {
+      filterValue = range;
+      filterValuePresent = true;
       return filterIndexBounds((refilter = xfilterFilter.filterRange(bisect, range))(values));
     }
 
     // Clears any filters on this dimension.
     function filterAll() {
+      filterValue = undefined;
+      filterValuePresent = false;
       return filterIndexBounds((refilter = xfilterFilter.filterAll)(values));
     }
 
     // Filters this dimension using an arbitrary function.
     function filterFunction(f) {
+      filterValue = f;
+      filterValuePresent = true;
+      
       refilterFunction = f;
       refilter = xfilterFilter.filterAll;
 
@@ -646,6 +659,14 @@ function crossfilter() {
 
       filterListeners.forEach(function(l) { l(one, offset, added, removed); });
       triggerOnChange('filtered');
+    }
+    
+    function currentFilter() {
+      return filterValue;
+    }
+    
+    function hasCurrentFilter() {
+      return filterValuePresent;
     }
 
     // Returns the top K selected records based on this dimension's order.
