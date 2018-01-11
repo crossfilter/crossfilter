@@ -683,9 +683,11 @@ suite.addBatch({
         "reflect the currently applied filter": function (data) {
           try {
 
+            var v, w;
+
             // filter:
 
-            var v = 2;
+            v = 2;
             data.quantity.filterExact(v);
             assert.strictEqual(data.quantity.currentFilter(), v);
             assert.isTrue(data.quantity.hasCurrentFilter());
@@ -723,8 +725,21 @@ suite.addBatch({
             assert.isUndefined(data.quantity.currentFilter());
             assert.isTrue(data.quantity.hasCurrentFilter());
 
+            // filter on multiple dimensions:
+
+            v = [1, 2], w = 3;
+            data.quantity.filterExact(v);
+            data.tags.filterExact(w);
+            assert.strictEqual(data.quantity.currentFilter(), v);
+            assert.isTrue(data.quantity.hasCurrentFilter());
+            assert.strictEqual(data.tags.currentFilter(), w);
+            assert.isTrue(data.tags.hasCurrentFilter());
+            assert.isUndefined(data.total.currentFilter());
+            assert.isFalse(data.total.hasCurrentFilter());
+
           } finally {
             data.quantity.filterAll();
+            data.tags.filterAll();
           }
         }
       },

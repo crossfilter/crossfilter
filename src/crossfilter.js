@@ -43,8 +43,6 @@ function crossfilter() {
 
   var data = [], // the records
       n = 0, // the number of records; data.length
-      filterValue, // the value used for filtering (value, array, function or undefined)
-      filterValuePresent, // true if filterValue contains something
       filters, // 1 is filtered out
       filterListeners = [], // when the filters change
       dataListeners = [], // when data is added
@@ -173,6 +171,8 @@ function crossfilter() {
         sort = quicksort.by(function(i) { return newValues[i]; }),
         refilter = xfilterFilter.filterAll, // for recomputing filter
         refilterFunction, // the custom filter function in use
+        filterValue, // the value used for filtering (value, array, function or undefined)
+        filterValuePresent, // true if filterValue contains something
         indexListeners = [], // when data is added
         dimensionGroups = [],
         lo0 = 0,
