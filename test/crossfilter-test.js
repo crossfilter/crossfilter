@@ -678,6 +678,72 @@ suite.addBatch({
         }
       },
 
+      // TODO "undefined" chosen as empty value since "null" is a legitimate value, but this is not consistent with the filter() method
+      "currentFilter/hasCurrentFilter": {
+        "reflect the currently applied filter": function (data) {
+          try {
+
+            var v, w;
+
+            // filter:
+
+            v = 2;
+            data.quantity.filterExact(v);
+            assert.strictEqual(data.quantity.currentFilter(), v);
+            assert.isTrue(data.quantity.hasCurrentFilter());
+
+            v = [2, 3];
+            data.quantity.filterRange(v);
+            assert.strictEqual(data.quantity.currentFilter(), v);
+            assert.isTrue(data.quantity.hasCurrentFilter());
+
+            v = function (d) { return d == 1; };
+            data.quantity.filterFunction(v);
+            assert.strictEqual(data.quantity.currentFilter(), v);
+            assert.isTrue(data.quantity.hasCurrentFilter());
+
+            // no filter:
+
+            data.quantity.filterAll();
+            assert.isUndefined(data.quantity.currentFilter());
+            assert.isFalse(data.quantity.hasCurrentFilter());
+
+            // special values:
+
+            // falsy
+            data.quantity.filterExact(0);
+            assert.isZero(data.quantity.currentFilter());
+            assert.isTrue(data.quantity.hasCurrentFilter());
+
+            // null: explicitly allowed by spec since naturally orderable
+            data.quantity.filterExact(null);
+            assert.isNull(data.quantity.currentFilter());
+            assert.isTrue(data.quantity.hasCurrentFilter());
+
+            // undefined: not orderable, should not be used as filter, but no error is thrown so check behavior anyway
+            data.quantity.filterExact(undefined);
+            assert.isUndefined(data.quantity.currentFilter());
+            assert.isTrue(data.quantity.hasCurrentFilter());
+
+            // filter on multiple dimensions:
+
+            v = [1, 2], w = 3;
+            data.quantity.filterExact(v);
+            data.tags.filterExact(w);
+            assert.strictEqual(data.quantity.currentFilter(), v);
+            assert.isTrue(data.quantity.hasCurrentFilter());
+            assert.strictEqual(data.tags.currentFilter(), w);
+            assert.isTrue(data.tags.hasCurrentFilter());
+            assert.isUndefined(data.total.currentFilter());
+            assert.isFalse(data.total.hasCurrentFilter());
+
+          } finally {
+            data.quantity.filterAll();
+            data.tags.filterAll();
+          }
+        }
+      },
+
       "groupAll (count, the default)": {
         topic: function(data) {
           data.quantity.count = data.quantity.groupAll();
