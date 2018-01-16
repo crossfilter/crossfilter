@@ -34,6 +34,7 @@
   ],
   "homepage": "http://crossfilter.github.com/crossfilter/",
   "main": "./index.js",
+  "types": "./index.d.ts",
   "repository": {
     "type": "git",
     "url": "http://github.com/crossfilter/crossfilter.git"
