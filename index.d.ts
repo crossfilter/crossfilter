@@ -1,4 +1,8 @@
-declare namespace Crossfilter2 {
+export = crossfilter;
+
+declare function crossfilter<T>(records?: T[]): crossfilter.Crossfilter<T>;
+
+declare namespace crossfilter {
   export type ComparableValue = string | number | boolean;
 
   export interface ComparableObject {
@@ -13,8 +17,6 @@ declare namespace Crossfilter2 {
     record: TRecord,
   ) => TValue;
 
-  export type NumberSelector<T> = (record: T) => number;
-
   export type FilterValue =
     | NaturallyOrderedValue
     | [NaturallyOrderedValue, NaturallyOrderedValue]
@@ -25,27 +27,31 @@ declare namespace Crossfilter2 {
     value: number;
   }
 
-  export interface Group<T, TKey extends NaturallyOrderedValue> {
+  export interface Group<T, TKey extends NaturallyOrderedValue, TReduce extends NaturallyOrderedValue> {
     top(k: number): Array<Grouping<TKey>>;
     all(): Array<Grouping<TKey>>;
     reduce(
-      add: (p: number, v: T) => number,
-      remove: (p: number, v: T) => number,
-      initial: () => number,
-    ): Group<T, TKey>;
-    reduceCount(): Group<T, TKey>;
-    reduceSum(selector: NumberSelector<T>): Group<T, TKey>;
-    order(selector: NumberSelector<T>): Group<T, TKey>;
-    orderNatural(): Group<T, TKey>;
+      add: (p: T, v: TReduce, nf: boolean) => TReduce,
+      remove: (p: T, v: TReduce, nf: boolean) => TReduce,
+      initial: () => TReduce,
+    ): Group<T, TKey, TReduce>;
+    reduceCount(): Group<T, TKey, TReduce>;
+    reduceSum(selector: (record: T) => number): Group<T, TKey, TReduce>;
+    order(selector: (value: TReduce) => NaturallyOrderedValue): Group<T, TKey, TReduce>;
+    orderNatural(): Group<T, TKey, TReduce>;
     size(): number;
-    dispose(): Group<T, TKey>;
+    dispose(): Group<T, TKey, TReduce>;
   }
 
-  export interface GroupAll<T> {
-    reduce(add: (p: number, v: T) => number, remove: (p: number, v: T) => number, initial: () => number): GroupAll<T>;
-    reduceCount(): GroupAll<T>;
-    reduceSum(selector: NumberSelector<T>): GroupAll<T>;
-    dispose(): GroupAll<T>;
+  export interface GroupAll<T, TReduce extends NaturallyOrderedValue> {
+    reduce(
+      add: (p: T, v: TReduce, nf: boolean) => TReduce,
+      remove: (p: T, v: TReduce, nf: boolean) => TReduce,
+      initial: () => TReduce,
+    ): GroupAll<T, TReduce>;
+    reduceCount(): GroupAll<T, TReduce>;
+    reduceSum(selector: (record: T) => number): GroupAll<T, TReduce>;
+    dispose(): GroupAll<T, TReduce>;
     value(): number;
   }
 
@@ -57,8 +63,10 @@ declare namespace Crossfilter2 {
     filterAll(): Dimension<TRecord, TValue>;
     top(k: number, offset?: number): TRecord[];
     bottom(k: number, offset?: number): TRecord[];
-    group(groupValue?: (value: TValue) => NaturallyOrderedValue): Group<TRecord, TValue>;
-    groupAll(): GroupAll<TRecord>;
+    group<TReduce extends NaturallyOrderedValue>(
+      groupValue?: (value: TValue) => NaturallyOrderedValue,
+    ): Group<TRecord, TValue, TReduce>;
+    groupAll<TReduce extends NaturallyOrderedValue>(): GroupAll<TRecord, TReduce>;
     dispose(): Dimension<TRecord, TValue>;
     accessor(record: TRecord): NaturallyOrderedValue;
     id(): number;
@@ -77,7 +85,7 @@ declare namespace Crossfilter2 {
       selector: OrderedValueSelector<T, TValue>,
       isArray?: boolean,
     ): Dimension<T, TValue>;
-    groupAll(): GroupAll<T>;
+    groupAll<TReduce extends NaturallyOrderedValue>(): GroupAll<T, TReduce>;
     size(): number;
     all(): T[];
     allFiltered(): T[];
@@ -101,35 +109,37 @@ declare namespace Crossfilter2 {
     right: Bisection<T>;
   }
 
-  export interface CrossfilterStatic {
-    <T>(records?: T[]): Crossfilter<T>;
-    version: string;
-    heap: {
-      <T>(records: T[], lo: number, hi: number): T[];
-      by<T>(selector: OrderedValueSelector<T>): Heap<T>;
-    };
-    heapselect: {
-      <T>(records: T[], lo: number, hi: number, k: number): T[];
-      by<T>(selector: OrderedValueSelector<T>): HeapSelector<T>;
-    };
-    bisect: {
-      <T>(records: T[], record: T, lo: number, hi: number): number;
-      by<T>(selector: OrderedValueSelector<T>): Bisector<T>;
-    };
-    insertionsort: {
-      <T>(records: T[], lo: number, hi: number): T[];
-      by<T>(selector: OrderedValueSelector<T>): Sorter<T>;
-    };
-    quicksort: {
-      <T>(records: T[], lo: number, hi: number): T[];
-      by<T>(selector: OrderedValueSelector<T>): Sorter<T>;
-    };
-    size(): number;
-    permute<T>(records: T[], index: number[], deep: number): T[];
-  }
-}
+  export const version: string;
 
-declare module 'crossfilter2' {
-  const crossfilter: Crossfilter2.CrossfilterStatic;
-  export = crossfilter;
+  namespace heap {
+    export function by<T>(selector: OrderedValueSelector<T>): Heap<T>;
+  }
+
+  export function heap<T>(records: T[], lo: number, hi: number): T[];
+
+  namespace heapselect {
+    export function by<T>(selector: OrderedValueSelector<T>): HeapSelector<T>;
+  }
+
+  export function heapselect<T>(records: T[], lo: number, hi: number, k: number): T[];
+
+  namespace bisect {
+    export function by<T>(selector: OrderedValueSelector<T>): Bisector<T>;
+  }
+
+  export function bisect<T>(records: T[], record: T, lo: number, hi: number): number;
+
+  namespace insertionsort {
+    export function by<T>(selector: OrderedValueSelector<T>): Sorter<T>;
+  }
+
+  export function insertionsort<T>(records: T[], lo: number, hi: number): T[];
+
+  namespace quicksort {
+    export function by<T>(selector: OrderedValueSelector<T>): Sorter<T>;
+  }
+
+  export function quicksort<T>(records: T[], lo: number, hi: number): T[];
+
+  export function permute<T>(records: T[], index: number[], deep: number): T[];
 }
