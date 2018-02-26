@@ -22,37 +22,37 @@ declare namespace crossfilter {
     | [NaturallyOrderedValue, NaturallyOrderedValue]
     | Predicate<NaturallyOrderedValue>;
 
-  export interface Grouping<TKey extends NaturallyOrderedValue> {
+  export interface Grouping<TKey extends NaturallyOrderedValue, TValue> {
     key: TKey;
-    value: number;
+    value: TValue;
   }
 
-  export interface Group<T, TKey extends NaturallyOrderedValue, TReduce extends NaturallyOrderedValue> {
-    top(k: number): Array<Grouping<TKey>>;
-    all(): Array<Grouping<TKey>>;
+  export interface Group<TRecord, TKey extends NaturallyOrderedValue, TValue> {
+    top(k: number): Array<Grouping<TKey, TValue>>;
+    all(): Array<Grouping<TKey, TValue>>;
     reduce(
-      add: (p: T, v: TReduce, nf: boolean) => TReduce,
-      remove: (p: T, v: TReduce, nf: boolean) => TReduce,
-      initial: () => TReduce,
-    ): Group<T, TKey, TReduce>;
-    reduceCount(): Group<T, TKey, TReduce>;
-    reduceSum(selector: (record: T) => number): Group<T, TKey, TReduce>;
-    order(selector: (value: TReduce) => NaturallyOrderedValue): Group<T, TKey, TReduce>;
-    orderNatural(): Group<T, TKey, TReduce>;
+      add: (p: TValue, v: TRecord, nf: boolean) => TValue,
+      remove: (p: TValue, v: TRecord, nf: boolean) => TValue,
+      initial: () => TValue,
+    ): Group<TRecord, TKey, TValue>;
+    reduceCount(): Group<TRecord, TKey, TValue>;
+    reduceSum(selector: (record: TRecord) => number): Group<TRecord, TKey, TValue>;
+    order(selector: (value: TValue) => NaturallyOrderedValue): Group<TRecord, TKey, TValue>;
+    orderNatural(): Group<TRecord, TKey, TValue>;
     size(): number;
-    dispose(): Group<T, TKey, TReduce>;
+    dispose(): Group<TRecord, TKey, TValue>;
   }
 
-  export interface GroupAll<T, TReduce extends NaturallyOrderedValue> {
+  export interface GroupAll<TRecord, TValue> {
     reduce(
-      add: (p: T, v: TReduce, nf: boolean) => TReduce,
-      remove: (p: T, v: TReduce, nf: boolean) => TReduce,
-      initial: () => TReduce,
-    ): GroupAll<T, TReduce>;
-    reduceCount(): GroupAll<T, TReduce>;
-    reduceSum(selector: (record: T) => number): GroupAll<T, TReduce>;
-    dispose(): GroupAll<T, TReduce>;
-    value(): number;
+      add: (p: TValue, v: TRecord, nf: boolean) => TValue,
+      remove: (p: TValue, v: TRecord, nf: boolean) => TValue,
+      initial: () => TValue,
+    ): GroupAll<TRecord, TValue>;
+    reduceCount(): GroupAll<TRecord, TValue>;
+    reduceSum(selector: (record: TRecord) => number): GroupAll<TRecord, TValue>;
+    dispose(): GroupAll<TRecord, TValue>;
+    value(): TValue;
   }
 
   export interface Dimension<TRecord, TValue extends NaturallyOrderedValue> {
@@ -61,12 +61,14 @@ declare namespace crossfilter {
     filterRange(range: [TValue, TValue]): Dimension<TRecord, TValue>;
     filterFunction(predicate: Predicate<TValue>): Dimension<TRecord, TValue>;
     filterAll(): Dimension<TRecord, TValue>;
+    currentFilter(): FilterValue | undefined;
+    hasCurrentFilter(): boolean;
     top(k: number, offset?: number): TRecord[];
     bottom(k: number, offset?: number): TRecord[];
-    group<TReduce extends NaturallyOrderedValue>(
+    group<TGroupValue>(
       groupValue?: (value: TValue) => NaturallyOrderedValue,
-    ): Group<TRecord, TValue, TReduce>;
-    groupAll<TReduce extends NaturallyOrderedValue>(): GroupAll<TRecord, TReduce>;
+    ): Group<TRecord, TValue, TGroupValue>;
+    groupAll<TGroupValue>(): GroupAll<TRecord, TGroupValue>;
     dispose(): Dimension<TRecord, TValue>;
     accessor(record: TRecord): NaturallyOrderedValue;
     id(): number;
@@ -85,7 +87,7 @@ declare namespace crossfilter {
       selector: OrderedValueSelector<T, TValue>,
       isArray?: boolean,
     ): Dimension<T, TValue>;
-    groupAll<TReduce extends NaturallyOrderedValue>(): GroupAll<T, TReduce>;
+    groupAll<TGroupValue>(): GroupAll<T, TGroupValue>;
     size(): number;
     all(): T[];
     allFiltered(): T[];
