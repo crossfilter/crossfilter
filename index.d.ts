@@ -61,6 +61,8 @@ declare namespace crossfilter {
     filterRange(range: [TValue, TValue]): Dimension<TRecord, TValue>;
     filterFunction(predicate: Predicate<TValue>): Dimension<TRecord, TValue>;
     filterAll(): Dimension<TRecord, TValue>;
+    currentFilter(): FilterValue | undefined;
+    hasCurrentFilter(): boolean;
     top(k: number, offset?: number): TRecord[];
     bottom(k: number, offset?: number): TRecord[];
     group<TGroupValue>(
