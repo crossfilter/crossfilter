@@ -32,7 +32,7 @@
       "url": "https://github.com/esjewett"
     }
   ],
-  "homepage": "http://crossfilter.github.com/crossfilter/",
+  "homepage": "https://crossfilter.github.io/crossfilter/",
   "main": "./index.js",
   "types": "./index.d.ts",
   "repository": {
