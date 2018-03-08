@@ -1378,6 +1378,23 @@ suite.addBatch({
           data.quantity.filterAll();
           data.total.filterAll();
         }
+      },
+      "is affected by all dimensions filters, except those in ignore_dimensions": function(data) {
+        try {
+          data.quantity.filterExact(2);
+          var raw = data.allFiltered([data.quantity]);
+          assert.equal(raw.length, 43);
+
+          data.total.filterRange([190, 300]);
+          raw = data.allFiltered([data.total]);
+          assert.equal(raw.length, 35);
+
+          raw = data.allFiltered([data.quantity, data.total]);
+          assert.equal(raw.length, 43);
+        } finally {
+          data.quantity.filterAll();
+          data.total.filterAll();
+        }
       }
     },
 
