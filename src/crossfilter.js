@@ -109,23 +109,26 @@ function crossfilter() {
     triggerOnChange('dataRemoved');
   }
 
+  function maskForDimensions(dimensions) {
+    var n,
+        d,
+        len,
+        id,
+        mask = Array(filters.subarrays);
+    for (n = 0; n < filters.subarrays; n++) { mask[n] = ~0; }
+    for (d = 0, len = dimensions.length; d < len; d++) {
+      // The top bits of the ID are the subarray offset and the lower bits are the bit
+      // offset of the "one" mask.
+      id = dimensions[d].id();
+      mask[id >> 7] &= ~(0x1 << (id & 0x3f));
+    }
+    return mask;
+  }
+
   // Return true if the data element at index i is filtered IN.
   // Optionally, ignore the filters of any dimensions in the ignore_dimensions list.
   function isElementFiltered(i, ignore_dimensions) {
-    var n,
-        d,
-        id,
-        len,
-        mask = Array(filters.subarrays);
-    for (n = 0; n < filters.subarrays; n++) { mask[n] = ~0; }
-    if (ignore_dimensions) {
-      for (d = 0, len = ignore_dimensions.length; d < len; d++) {
-        // The top bits of the ID are the subarray offset and the lower bits are the bit
-        // offset of the "one" mask.
-        id = ignore_dimensions[d].id();
-        mask[id >> 7] &= ~(0x1 << (id & 0x3f));
-      }
-    }
+    var mask = maskForDimensions(ignore_dimensions || []);
     return filters.zeroExceptMask(i,mask);
   }
 
@@ -1415,13 +1418,14 @@ function crossfilter() {
     return data;
   }
 
-  // Returns row data with all dimension filters applied
-  function allFiltered() {
+  // Returns row data with all dimension filters applied, except for filters in ignore_dimensions
+  function allFiltered(ignore_dimensions) {
     var array = [],
-        i = 0;
+        i = 0,
+        mask = maskForDimensions(ignore_dimensions || []);
 
       for (i = 0; i < n; i++) {
-        if (filters.zero(i)) {
+        if (filters.zeroExceptMask(i, mask)) {
           array.push(data[i]);
         }
       }
