@@ -65,9 +65,9 @@ declare namespace crossfilter {
     hasCurrentFilter(): boolean;
     top(k: number, offset?: number): TRecord[];
     bottom(k: number, offset?: number): TRecord[];
-    group<TGroupValue>(
-      groupValue?: (value: TValue) => NaturallyOrderedValue,
-    ): Group<TRecord, TValue, TGroupValue>;
+    group<TKey extends NaturallyOrderedValue, TGroupValue extends NaturallyOrderedValue>(
+      groupValue?: (value: TValue) => TKey,
+    ): Group<TRecord, Tkey, TGroupValue>;
     groupAll<TGroupValue>(): GroupAll<TRecord, TGroupValue>;
     dispose(): Dimension<TRecord, TValue>;
     accessor(record: TRecord): NaturallyOrderedValue;
