@@ -1,6 +1,6 @@
 {
   "name": "crossfilter2",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "description": "Fast multidimensional filtering for coordinated views.",
   "license": "Apache-2.0",
   "keywords": [
@@ -35,6 +35,7 @@
   "homepage": "https://crossfilter.github.io/crossfilter/",
   "main": "./index.js",
   "types": "./index.d.ts",
+  "unpkg": "./crossfilter.min.js",
   "repository": {
     "type": "git",
     "url": "http://github.com/crossfilter/crossfilter.git"
