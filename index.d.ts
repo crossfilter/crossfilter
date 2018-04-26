@@ -1,4 +1,4 @@
-export = crossfilter;
+export default crossfilter;
 
 declare function crossfilter<T>(records?: T[]): crossfilter.Crossfilter<T>;
 
