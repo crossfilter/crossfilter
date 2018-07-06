@@ -91,7 +91,7 @@ declare namespace crossfilter {
     size(): number;
     all(): T[];
     allFiltered(): T[];
-    onChange(callback: (type: EventType) => void): void;
+    onChange(callback: (type: EventType) => void): () => void;
     isElementFiltered(index: number, ignoreDimensions?: number[]): boolean;
   }
 
