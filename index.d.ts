@@ -30,13 +30,13 @@ declare namespace crossfilter {
   export interface Group<TRecord, TKey extends NaturallyOrderedValue, TValue> {
     top(k: number): Array<Grouping<TKey, TValue>>;
     all(): Array<Grouping<TKey, TValue>>;
-    reduce(
+    reduce<TValue>(
       add: (p: TValue, v: TRecord, nf: boolean) => TValue,
       remove: (p: TValue, v: TRecord, nf: boolean) => TValue,
       initial: () => TValue,
     ): Group<TRecord, TKey, TValue>;
     reduceCount(): Group<TRecord, TKey, TValue>;
-    reduceSum(selector: (record: TRecord) => number): Group<TRecord, TKey, TValue>;
+    reduceSum<TValue>(selector: (record: TRecord) => number): Group<TRecord, TKey, TValue>;
     order(selector: (value: TValue) => NaturallyOrderedValue): Group<TRecord, TKey, TValue>;
     orderNatural(): Group<TRecord, TKey, TValue>;
     size(): number;
@@ -44,13 +44,13 @@ declare namespace crossfilter {
   }
 
   export interface GroupAll<TRecord, TValue> {
-    reduce(
+    reduce<TValue>(
       add: (p: TValue, v: TRecord, nf: boolean) => TValue,
       remove: (p: TValue, v: TRecord, nf: boolean) => TValue,
       initial: () => TValue,
     ): GroupAll<TRecord, TValue>;
     reduceCount(): GroupAll<TRecord, TValue>;
-    reduceSum(selector: (record: TRecord) => number): GroupAll<TRecord, TValue>;
+    reduceSum<TValue>(selector: (record: TRecord) => number): GroupAll<TRecord, TValue>;
     dispose(): GroupAll<TRecord, TValue>;
     value(): TValue;
   }
