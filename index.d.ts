@@ -74,7 +74,7 @@ declare namespace crossfilter {
     id(): number;
   }
 
-  export const enum EventType {
+  export enum EventType {
     DATA_ADDED = 'dataAdded',
     DATA_REMOVED = 'dataRemoved',
     FILTERED = 'filtered',
