@@ -6,9 +6,7 @@ import cr_zero from './zero';
 import xfilterHeapselect from './heapselect';
 import xfilterHeap from './heap';
 import bisect from './bisect';
-import insertionsort from './insertionsort';
 import permute from './permute';
-import quicksort from './quicksort';
 import xfilterReduce from './reduce';
 import result from './result';
 
@@ -18,9 +16,7 @@ var REMOVED_INDEX = -1;
 crossfilter.heap = xfilterHeap;
 crossfilter.heapselect = xfilterHeapselect;
 crossfilter.bisect = bisect;
-crossfilter.insertionsort = insertionsort;
 crossfilter.permute = permute;
-crossfilter.quicksort = quicksort;
 export default crossfilter;
 
 function crossfilter() {
@@ -164,7 +160,12 @@ function crossfilter() {
         iterablesIndexCount,
         iterablesIndexFilterStatus,
         iterablesEmptyRows = [],
-        sort = quicksort.by(function(i) { return newValues[i]; }),
+        sortRange = function(n) {
+          return cr_range(n).sort(function(A, B) {
+            var a = newValues[A], b = newValues[B];
+            return a < b ? -1 : a > b ? 1 : A - B;
+          });
+        },
         refilter = xfilterFilter.filterAll, // for recomputing filter
         refilterFunction, // the custom filter function in use
         filterValue, // the value used for filtering (value, array, function or undefined)
@@ -239,7 +240,7 @@ function crossfilter() {
         }
 
         // Create the Sort map used to sort both the values and the valueToData indices
-        var sortMap = sort(cr_range(t), 0, t);
+        var sortMap = sortRange(t);
 
         // Use the sortMap to sort the newValues
         newValues = permute(newValues, sortMap);
@@ -252,7 +253,7 @@ function crossfilter() {
       } else{
         // Permute new values into natural order using a standard sorted index.
         newValues = newData.map(value);
-        newIndex = sort(cr_range(n1), 0, n1);
+        newIndex = sortRange(n1);
         newValues = permute(newValues, newIndex);
       }
 

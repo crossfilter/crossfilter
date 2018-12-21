@@ -132,17 +132,5 @@ declare namespace crossfilter {
 
   export function bisect<T>(records: T[], record: T, lo: number, hi: number): number;
 
-  namespace insertionsort {
-    export function by<T>(selector: OrderedValueSelector<T>): Sorter<T>;
-  }
-
-  export function insertionsort<T>(records: T[], lo: number, hi: number): T[];
-
-  namespace quicksort {
-    export function by<T>(selector: OrderedValueSelector<T>): Sorter<T>;
-  }
-
-  export function quicksort<T>(records: T[], lo: number, hi: number): T[];
-
   export function permute<T>(records: T[], index: number[], deep: number): T[];
 }
