@@ -8,9 +8,7 @@ var crossfilter_zero = require('./zero');
 var xfilterHeapselect = require('./heapselect');
 var xfilterHeap = require('./heap');
 var bisect = require('./bisect');
-var insertionsort = require('./insertionsort');
 var permute = require('./permute');
-var quicksort = require('./quicksort');
 var xfilterReduce = require('./reduce');
 var packageJson = require('./../package.json'); // require own package.json for the version field
 var result = require('lodash.result');
@@ -23,9 +21,7 @@ exports.crossfilter = crossfilter;
 exports.crossfilter.heap = xfilterHeap;
 exports.crossfilter.heapselect = xfilterHeapselect;
 exports.crossfilter.bisect = bisect;
-exports.crossfilter.insertionsort = insertionsort;
 exports.crossfilter.permute = permute;
-exports.crossfilter.quicksort = quicksort;
 exports.crossfilter.version = packageJson.version; // please note use of "package-json-versionify" transform
 
 function crossfilter() {
@@ -171,7 +167,12 @@ function crossfilter() {
         iterablesIndexFilterStatus,
         newIterablesIndexFilterStatus,
         iterablesEmptyRows = [],
-        sort = quicksort.by(function(i) { return newValues[i]; }),
+        sortRange = function(n) {
+          return crossfilter_range(n).sort(function(A, B) {
+            var a = newValues[A], b = newValues[B];
+            return a < b ? -1 : a > b ? 1 : A - B;
+          });
+        },
         refilter = xfilterFilter.filterAll, // for recomputing filter
         refilterFunction, // the custom filter function in use
         filterValue, // the value used for filtering (value, array, function or undefined)
@@ -244,7 +245,7 @@ function crossfilter() {
         }
 
         // Create the Sort map used to sort both the values and the valueToData indices
-        var sortMap = sort(crossfilter_range(t), 0, t);
+        var sortMap = sortRange(t);
 
         // Use the sortMap to sort the newValues
         newValues = permute(newValues, sortMap);
@@ -257,7 +258,7 @@ function crossfilter() {
       } else{
         // Permute new values into natural order using a standard sorted index.
         newValues = newData.map(value);
-        newIndex = sort(crossfilter_range(n1), 0, n1);
+        newIndex = sortRange(n1);
         newValues = permute(newValues, newIndex);
       }
 
