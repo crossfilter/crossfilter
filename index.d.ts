@@ -9,7 +9,9 @@ declare namespace crossfilter {
     valueOf(): ComparableValue;
   }
 
-  export type NaturallyOrderedValue = ComparableValue | ComparableObject;
+  export type ComparableArray = ComparableValue[] | ComparableObject[];
+
+  export type NaturallyOrderedValue = ComparableValue | ComparableObject | ComparableArray;
 
   export type Predicate<T> = (record: T) => boolean;
 
