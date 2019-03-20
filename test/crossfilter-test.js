@@ -2062,6 +2062,16 @@ suite.addBatch({
             data.total.filterAll();
           }
         },
+        "respects truthy values when data contains empty array": function(data) {
+          try {
+            data.tags.filterFunction(d => d === 'hello');
+            assert.equal(data.date.top(Infinity).length, 1);
+            data.tags.filterFunction(d => true);
+            assert.equal(data.date.top(Infinity).length, testData.length);
+          } finally {
+            data.tags.filterAll();
+          }
+        },
         "groups on the first dimension are updated correctly": function(data) {
           try {
             var group = data.tags.groupAll().reduceCount();
