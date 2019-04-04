@@ -111,7 +111,6 @@ crossfilter_bitarray.prototype.truncate = function(n) {
     for (var j = this.length - 1; j >= n; j--) {
       this[i][j] = 0;
     }
-    this[i].length = n;
   }
   this.length = n;
 };
