@@ -13,7 +13,8 @@ declare namespace crossfilter {
 
   export type Predicate<T> = (record: T) => boolean;
 
-  export type OrderedValueSelector<TRecord, TValue extends NaturallyOrderedValue = NaturallyOrderedValue> = (
+  export type TSelectorValue = NaturallyOrderedValue | NaturallyOrderedValue[];
+  export type OrderedValueSelector<TRecord, TValue extends TSelectorValue = NaturallyOrderedValue> = (
     record: TRecord,
   ) => TValue;
 
@@ -84,7 +85,7 @@ declare namespace crossfilter {
     add(records: T[]): Crossfilter<T>;
     remove(predicate?: Predicate<T>): void;
     dimension<TValue extends NaturallyOrderedValue>(
-      selector: OrderedValueSelector<T, TValue>,
+      selector: OrderedValueSelector<T, TValue | TValue[]>,
       isArray?: boolean,
     ): Dimension<T, TValue>;
     groupAll<TGroupValue>(): GroupAll<T, TGroupValue>;
