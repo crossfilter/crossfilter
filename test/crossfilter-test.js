@@ -738,23 +738,19 @@ suite.addBatch({
             // toggle:
 
             data.quantity.filterToggle(2);
-            assert.equal(typeof (v = data.quantity.currentFilter()), 'function');
-            assert.deepEqual(data.quantity.currentFilter().values, [2]);
+            assert.deepEqual(data.quantity.currentFilter(), [2]);
             assert.isTrue(data.quantity.hasCurrentFilter());
 
             data.quantity.filterToggle(3);
-            assert.strictEqual(data.quantity.currentFilter(), v)
-            assert.deepEqual(data.quantity.currentFilter().values, [2, 3]);
+            assert.deepEqual(data.quantity.currentFilter(), [2, 3]);
             assert.isTrue(data.quantity.hasCurrentFilter());
 
             data.quantity.filterToggle(2);
-            assert.strictEqual(data.quantity.currentFilter(), v)
-            assert.deepEqual(data.quantity.currentFilter().values, [3]);
+            assert.deepEqual(data.quantity.currentFilter(), [3]);
             assert.isTrue(data.quantity.hasCurrentFilter());
 
             data.quantity.filterToggle(3);
-            assert.strictEqual(data.quantity.currentFilter(), v)
-            assert.deepEqual(data.quantity.currentFilter().values, []);
+            assert.deepEqual(data.quantity.currentFilter(), []);
             assert.isTrue(data.quantity.hasCurrentFilter());
 
             // no filter:

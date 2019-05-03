@@ -557,7 +557,7 @@ function crossfilter() {
 
     // Filters this dimension by toggling exact values.
     function filterToggle(value) {
-      if (filterValue === filterToggled) {
+      if (refilterFunction === filterToggled) {
         var i = toggleValues.indexOf(value);
         if (i < 0) {
             toggleValues.push(value);
@@ -565,10 +565,12 @@ function crossfilter() {
             toggleValues.splice(i, 1);
         }
       } else {
-        filterToggled.values = toggleValues = [value];
+        toggleValues = [value];
       }
       // TODO: Rewrite without filterFunction
-      return filterFunction(filterToggled);
+      filterFunction(filterToggled);
+      filterValue = toggleValues;
+      return dimension;
     }
 
     var toggleValues;
