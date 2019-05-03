@@ -99,6 +99,25 @@ for (var i = 0, n = 35, k = 0; i < n; ++i) {
 console.log("Filtering by amount: " + formatNumber((Date.now() - then) / k) + "ms/op.");
 amount.filterAll();
 
+// Simulate toggling by amount.
+then = Date.now();
+n = Math.sqrt(totalSize);
+var amountsToToggle = d3.range(n).map(function() {
+  return Math.floor(paymentRecords[Math.floor(Math.random() * totalSize)].amount);
+});
+for (var i = 0, k = 0; i < amountsToToggle.length; i++) {
+  amount.filterToggle(amountsToToggle[i]);
+  updateDisplay();
+}
+console.log("Toggling by amount: " + formatNumber((Date.now() - then) / k) + "ms/op.");
+
+for (var i = 0, k = 0; i < amountsToToggle.length; i++) {
+  amount.filterToggle(amountsToToggle[i]);
+  updateDisplay();
+}
+console.log("Untoggling by amount: " + formatNumber((Date.now() - then) / k) + "ms/op.");
+amount.filterAll();
+
 
 // Removal by predicate
 then = Date.now();

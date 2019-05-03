@@ -143,6 +143,7 @@ function crossfilter() {
     var dimension = {
       filter: filter,
       filterExact: filterExact,
+      filterToggle: filterToggle,
       filterRange: filterRange,
       filterFunction: filterFunction,
       filterAll: filterAll,
@@ -552,6 +553,27 @@ function crossfilter() {
       filterValue = undefined;
       filterValuePresent = false;
       return filterIndexBounds((refilter = xfilterFilter.filterAll)(values));
+    }
+
+    // Filters this dimension by toggling exact values.
+    function filterToggle(value) {
+      if (filterValue === filterToggled) {
+        var i = toggleValues.indexOf(value);
+        if (i < 0) {
+            toggleValues.push(value);
+        } else {
+            toggleValues.splice(i, 1);
+        }
+      } else {
+        filterToggled.values = toggleValues = [value];
+      }
+      // TODO: Rewrite without filterFunction
+      return filterFunction(filterToggled);
+    }
+
+    var toggleValues;
+    function filterToggled(d) {
+      return !toggleValues.length || toggleValues.indexOf(d) >= 0;
     }
 
     // Filters this dimension using an arbitrary function.

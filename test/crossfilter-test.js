@@ -570,6 +570,39 @@ suite.addBatch({
         }
       },
 
+      "filterToggle": {
+        "toggles/untoggles records that match successive values exactly": function(data) {
+          try {
+            data.tip.filterToggle(200);
+            assert.deepEqual(data.date.bottom(3), [
+              {date: "2011-11-14T16:28:54Z", quantity: 1, total: 300, tip: 200, type: "visa", tags: [2,4,5]},
+              {date: "2011-11-14T20:49:07Z", quantity: 2, total: 290, tip: 200, type: "tab", tags: [2,4,5]}
+            ]);
+
+            data.tip.filterToggle(100);
+            assert.equal(data.tip.top(Infinity).length, 22);
+            assert.deepEqual(data.date.bottom(3), [
+              {date: "2011-11-14T16:17:54Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]},
+              {date: "2011-11-14T16:20:19Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,3]},
+              {date: "2011-11-14T16:28:54Z", quantity: 1, total: 300, tip: 200, type: "visa", tags: [2,4,5]}
+            ]);
+
+            data.tip.filterToggle(200);
+            assert.equal(data.tip.top(Infinity).length, 20);
+            assert.deepEqual(data.date.bottom(3), [
+              {date: "2011-11-14T16:17:54Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]},
+              {date: "2011-11-14T16:20:19Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,3]},
+              {date: "2011-11-14T17:29:52Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [-1, 0, 'hello', 'world']}
+            ]);
+
+            data.tip.filterToggle(100);
+            assert.equal(data.tip.top(Infinity).length, 43);
+          } finally {
+            data.tip.filterAll();
+          }
+        }
+      },
+
       "filterRange": {
         "selects records greater than or equal to the inclusive lower bound": function(data) {
           try {
@@ -700,6 +733,28 @@ suite.addBatch({
             v = function (d) { return d == 1; };
             data.quantity.filterFunction(v);
             assert.strictEqual(data.quantity.currentFilter(), v);
+            assert.isTrue(data.quantity.hasCurrentFilter());
+
+            // toggle:
+
+            data.quantity.filterToggle(2);
+            assert.equal(typeof (v = data.quantity.currentFilter()), 'function');
+            assert.deepEqual(data.quantity.currentFilter().values, [2]);
+            assert.isTrue(data.quantity.hasCurrentFilter());
+
+            data.quantity.filterToggle(3);
+            assert.strictEqual(data.quantity.currentFilter(), v)
+            assert.deepEqual(data.quantity.currentFilter().values, [2, 3]);
+            assert.isTrue(data.quantity.hasCurrentFilter());
+
+            data.quantity.filterToggle(2);
+            assert.strictEqual(data.quantity.currentFilter(), v)
+            assert.deepEqual(data.quantity.currentFilter().values, [3]);
+            assert.isTrue(data.quantity.hasCurrentFilter());
+
+            data.quantity.filterToggle(3);
+            assert.strictEqual(data.quantity.currentFilter(), v)
+            assert.deepEqual(data.quantity.currentFilter().values, []);
             assert.isTrue(data.quantity.hasCurrentFilter());
 
             // no filter:
