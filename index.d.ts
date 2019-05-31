@@ -30,7 +30,7 @@ declare namespace crossfilter {
 
   export interface Group<TRecord, TKey extends NaturallyOrderedValue, TValue> {
     top(k: number): Array<Grouping<TKey, TValue>>;
-    all(): Array<Grouping<TKey, TValue>>;
+    all(): ReadonlyArray<Grouping<TKey, TValue>>;
     reduce(
       add: (p: TValue, v: TRecord, nf: boolean) => TValue,
       remove: (p: TValue, v: TRecord, nf: boolean) => TValue,
@@ -90,7 +90,7 @@ declare namespace crossfilter {
     ): Dimension<T, TValue>;
     groupAll<TGroupValue>(): GroupAll<T, TGroupValue>;
     size(): number;
-    all(): T[];
+    all(): readonly T[];
     allFiltered(): T[];
     onChange(callback: (type: EventType) => void): () => void;
     isElementFiltered(index: number, ignoreDimensions?: number[]): boolean;
