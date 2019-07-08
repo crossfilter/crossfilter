@@ -1010,6 +1010,9 @@ crossfilter_bitarray.prototype.add = function() {
     w = this.width - (32 * i);
     one = ~m & -~m;
 
+    // corrects an overflow if the set bit is the 32th.
+    one = Math.abs(one);
+
     if (w >= 32 && !one) {
       continue;
     }
@@ -1053,7 +1056,6 @@ crossfilter_bitarray.prototype.truncate = function(n) {
     for (var j = this.length - 1; j >= n; j--) {
       this[i][j] = 0;
     }
-    this[i].length = n;
   }
   this.length = n;
 };
