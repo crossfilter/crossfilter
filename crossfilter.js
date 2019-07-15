@@ -1008,10 +1008,7 @@ crossfilter_bitarray.prototype.add = function() {
   for (i = 0, len = this.subarrays; i < len; ++i) {
     m = this.masks[i];
     w = this.width - (32 * i);
-    one = ~m & -~m;
-
-    // corrects an overflow if the set bit is the 32th.
-    one = Math.abs(one);
+    one = (~m & (m + 1)) >>> 0;
 
     if (w >= 32 && !one) {
       continue;
