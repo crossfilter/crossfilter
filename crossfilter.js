@@ -938,7 +938,7 @@ module.exports = result;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],3:[function(require,module,exports){
-module.exports={"version":"1.4.6"}
+module.exports={"version":"1.4.7"}
 },{}],4:[function(require,module,exports){
 if (typeof Uint8Array !== "undefined") {
   var crossfilter_array8 = function(n) { return new Uint8Array(n); };
@@ -1008,7 +1008,8 @@ crossfilter_bitarray.prototype.add = function() {
   for (i = 0, len = this.subarrays; i < len; ++i) {
     m = this.masks[i];
     w = this.width - (32 * i);
-    one = ~m & -~m;
+    // isolate the rightmost zero bit and return it as an unsigned int of 32 bits, if NaN or -1, return a 0 
+    one = (~m & (m + 1)) >>> 0;
 
     if (w >= 32 && !one) {
       continue;
@@ -1053,7 +1054,6 @@ crossfilter_bitarray.prototype.truncate = function(n) {
     for (var j = this.length - 1; j >= n; j--) {
       this[i][j] = 0;
     }
-    this[i].length = n;
   }
   this.length = n;
 };

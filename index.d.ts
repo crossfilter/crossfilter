@@ -13,7 +13,8 @@ declare namespace crossfilter {
 
   export type Predicate<T> = (record: T) => boolean;
 
-  export type OrderedValueSelector<TRecord, TValue extends NaturallyOrderedValue = NaturallyOrderedValue> = (
+  export type TSelectorValue = NaturallyOrderedValue | NaturallyOrderedValue[];
+  export type OrderedValueSelector<TRecord, TValue extends TSelectorValue = NaturallyOrderedValue> = (
     record: TRecord,
   ) => TValue;
 
@@ -29,7 +30,7 @@ declare namespace crossfilter {
 
   export interface Group<TRecord, TKey extends NaturallyOrderedValue, TValue> {
     top(k: number): Array<Grouping<TKey, TValue>>;
-    all(): Array<Grouping<TKey, TValue>>;
+    all(): ReadonlyArray<Grouping<TKey, TValue>>;
     reduce(
       add: (p: TValue, v: TRecord, nf: boolean) => TValue,
       remove: (p: TValue, v: TRecord, nf: boolean) => TValue,
@@ -84,12 +85,12 @@ declare namespace crossfilter {
     add(records: T[]): Crossfilter<T>;
     remove(predicate?: Predicate<T>): void;
     dimension<TValue extends NaturallyOrderedValue>(
-      selector: OrderedValueSelector<T, TValue>,
+      selector: OrderedValueSelector<T, TValue | TValue[]>,
       isArray?: boolean,
     ): Dimension<T, TValue>;
     groupAll<TGroupValue>(): GroupAll<T, TGroupValue>;
     size(): number;
-    all(): T[];
+    all(): readonly T[];
     allFiltered(): T[];
     onChange(callback: (type: EventType) => void): () => void;
     isElementFiltered(index: number, ignoreDimensions?: number[]): boolean;

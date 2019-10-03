@@ -66,7 +66,8 @@ crossfilter_bitarray.prototype.add = function() {
   for (i = 0, len = this.subarrays; i < len; ++i) {
     m = this.masks[i];
     w = this.width - (32 * i);
-    one = ~m & -~m;
+    // isolate the rightmost zero bit and return it as an unsigned int of 32 bits, if NaN or -1, return a 0 
+    one = (~m & (m + 1)) >>> 0;
 
     if (w >= 32 && !one) {
       continue;
