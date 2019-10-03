@@ -41,5 +41,7 @@ function heap_by(f) {
   return heap;
 }
 
-export default heap_by(identity);
-export const by = heap_by;
+const heap = heap_by(identity);
+heap.by = heap_by;
+
+export default heap;

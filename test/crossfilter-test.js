@@ -1,8 +1,9 @@
+import crossfilter from '../main.js';
+
 var vows = require("vows"),
     assert = require("assert"),
     sinon = require("sinon"),
-    d3 = require("d3"),
-    crossfilter = require("../");
+    d3 = require("d3");
 
 var suite = vows.describe("crossfilter");
 
@@ -974,14 +975,14 @@ suite.addBatch({
         "reduce": {
           "defaults to count": function(data) {
             assert.deepEqual(data.date.hours.top(1), [
-              {key: new Date(Date.UTC(2011, 10, 14, 17, 00, 00)), value: 9}
+              {key: new Date(Date.UTC(2011, 10, 14, 17, 0, 0)), value: 9}
             ]);
           },
           "determines the computed reduce value": function(data) {
             try {
               data.date.hours.reduceSum(function(d) { return d.total; });
               assert.deepEqual(data.date.hours.top(1), [
-                {key: new Date(Date.UTC(2011, 10, 14, 17, 00, 00)), value: 1240}
+                {key: new Date(Date.UTC(2011, 10, 14, 17, 0, 0)), value: 1240}
               ]);
             } finally {
               data.date.hours.reduceCount();
@@ -1046,18 +1047,18 @@ suite.addBatch({
         "top": {
           "returns the top k groups by reduce value, in descending order": function(data) {
             assert.deepEqual(data.date.hours.top(3), [
-              {key: new Date(Date.UTC(2011, 10, 14, 17, 00, 00)), value: 9},
-              {key: new Date(Date.UTC(2011, 10, 14, 16, 00, 00)), value: 7},
-              {key: new Date(Date.UTC(2011, 10, 14, 21, 00, 00)), value: 6}
+              {key: new Date(Date.UTC(2011, 10, 14, 17, 0, 0)), value: 9},
+              {key: new Date(Date.UTC(2011, 10, 14, 16, 0, 0)), value: 7},
+              {key: new Date(Date.UTC(2011, 10, 14, 21, 0, 0)), value: 6}
             ]);
           },
           "observes the specified order": function(data) {
             try {
               data.date.hours.order(function(v) { return -v; });
               assert.deepEqual(data.date.hours.top(3), [
-                {key: new Date(Date.UTC(2011, 10, 14, 20, 00, 00)), value: 2},
-                {key: new Date(Date.UTC(2011, 10, 14, 19, 00, 00)), value: 3},
-                {key: new Date(Date.UTC(2011, 10, 14, 18, 00, 00)), value: 5}
+                {key: new Date(Date.UTC(2011, 10, 14, 20, 0, 0)), value: 2},
+                {key: new Date(Date.UTC(2011, 10, 14, 19, 0, 0)), value: 3},
+                {key: new Date(Date.UTC(2011, 10, 14, 18, 0, 0)), value: 5}
               ]);
             } finally {
               data.date.hours.order(function(v) { return v; });
@@ -1068,7 +1069,7 @@ suite.addBatch({
         "order": {
           "defaults to the identity function": function(data) {
             assert.deepEqual(data.date.hours.top(1), [
-              {key: new Date(Date.UTC(2011, 10, 14, 17, 00, 00)), value: 9}
+              {key: new Date(Date.UTC(2011, 10, 14, 17, 0, 0)), value: 9}
             ]);
           },
           "is useful in conjunction with a compound reduce value": function(data) {
@@ -1079,7 +1080,7 @@ suite.addBatch({
                   function() { return {count: 0, total: 0}; })
                   .order(function(v) { return v.total; });
               assert.deepEqual(data.date.hours.top(1), [
-                {key: new Date(Date.UTC(2011, 10, 14, 17, 00, 00)), value: {count: 9, total: 1240}}
+                {key: new Date(Date.UTC(2011, 10, 14, 17, 0, 0)), value: {count: 9, total: 1240}}
               ]);
             } finally {
               data.date.hours.reduceCount().orderNatural();

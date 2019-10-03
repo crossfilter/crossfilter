@@ -1,1 +1,1 @@
-export './src/crossfilter';
+export { default } from  './src/crossfilter.js';

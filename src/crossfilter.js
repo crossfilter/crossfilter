@@ -16,15 +16,25 @@ import result from 'lodash.result';
 // constants
 var REMOVED_INDEX = -1;
 
-export {
-  heap: xfilterHeap,
-  heapselect: xfilterHeapselect,
-  bisect: bisect,
-  insertionsort: insertionsort,
-  permute: permute,
-  quicksort: quicksort,
-  version: version
-};
+// export {
+//   heap: xfilterHeap,
+//   heapselect: xfilterHeapselect,
+//   bisect: bisect,
+//   insertionsort: insertionsort,
+//   permute: permute,
+//   quicksort: quicksort,
+//   version: version
+// };
+// 
+crossfilter.heap = xfilterHeap;
+crossfilter.heapselect = xfilterHeapselect;
+crossfilter.bisect = bisect;
+crossfilter.insertionsort = insertionsort;
+crossfilter.permute = permute;
+crossfilter.quicksort = quicksort;
+crossfilter.version = version;
+
+export default crossfilter;
 
 // export { crossfilter };
 // exports.crossfilter.heap = xfilterHeap;

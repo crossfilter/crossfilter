@@ -50,15 +50,17 @@
     "eslint": "^6.5.1",
     "package-json-versionify": "1.0.2",
     "semver": "^5.3.0",
-    "sinon": "^4.0.2",
+    "sinon": "^7.5.0",
     "uglify-js": "2.4.0",
-    "vows": "0.8.2"
+    "vows": "0.8.2",
+    "esm": "3.2.25"
   },
   "scripts": {
     "benchmark": "node test/benchmark.js",
     "build": "browserify index.js -t package-json-versionify --standalone crossfilter -o crossfilter.js && uglifyjs --compress --mangle --screw-ie8 crossfilter.js -o crossfilter.min.js",
     "clean": "rm -f crossfilter.js crossfilter.min.js",
-    "test": "./node_modules/.bin/vows --verbose && eslint src/"
+    "__test": "./node_modules/.bin/vows --verbose && eslint src/",
+    "test": "node -r esm  ./node_modules/.bin/vows --verbose && eslint src/"
   },
   "files": [
     "src",

@@ -33,5 +33,11 @@ function heapselect_by(f) {
   return heapselect;
 }
 
-export default heapselect_by(identity);
-export const by = heapselect_by; // assign the raw function to the export as well
+
+const heap = heapselect_by(identity);
+heap.by = heapselect_by; // assign the raw function to the export as well
+
+export default heap;
+
+// export default heapselect_by(identity);
+// export const by = heapselect_by; // assign the raw function to the export as well

@@ -15,5 +15,7 @@ function insertionsort_by(f) {
   return insertionsort;
 }
 
-export default insertionsort_by(identity);
-export const by = insertionsort_by;
+const insertion = insertionsort_by(identity);
+insertion.by = insertionsort_by;
+
+export default insertion;

@@ -1,5 +1,6 @@
-var crossfilter = require("../"),
-    d3 = require("d3");
+import crossfilter from '../main.js';
+
+var d3 = require("d3");
 
 var then,
     then2;
