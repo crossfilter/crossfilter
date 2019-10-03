@@ -91,7 +91,7 @@ function crossfilter() {
   // removes all records matching the predicate (ignoring filters).
   function removeData(predicate) {
     var // Mapping from old record indexes to new indexes (after records removed)
-        newIndex = index(n, n),
+        newIndex = cr_index(n, n),
         removed = [],
         usePred = typeof predicate === 'function',
         shouldRemove = function (i) {
@@ -240,9 +240,9 @@ function crossfilter() {
         }
 
         newValues = [];
-        newIterablesIndexCount = range(newData.length);
-        newIterablesIndexFilterStatus = index(t,1);
-        var unsortedIndex = range(t);
+        newIterablesIndexCount = cr_range(newData.length);
+        newIterablesIndexFilterStatus = cr_index(t,1);
+        var unsortedIndex = cr_range(t);
 
         for (var l = 0, index1 = 0; index1 < newData.length; index1++) {
           k = value(newData[index1])
@@ -261,7 +261,7 @@ function crossfilter() {
         }
 
         // Create the Sort map used to sort both the values and the valueToData indices
-        var sortMap = sort(range(t), 0, t);
+        var sortMap = sort(cr_range(t), 0, t);
 
         // Use the sortMap to sort the newValues
         newValues = permute(newValues, sortMap);
@@ -274,7 +274,7 @@ function crossfilter() {
       } else{
         // Permute new values into natural order using a standard sorted index.
         newValues = newData.map(value);
-        newIndex = sort(range(n1), 0, n1);
+        newIndex = sort(cr_range(n1), 0, n1);
         newValues = permute(newValues, newIndex);
       }
 
@@ -332,8 +332,8 @@ function crossfilter() {
 
       // Otherwise, create new arrays into which to merge new and old.
       values = iterable ? new Array(n0 + n1) : new Array(n);
-      index = iterable ? new Array(n0 + n1) : index(n, n);
-      if(iterable) iterablesIndexFilterStatus = index(n0 + n1, 1);
+      index = iterable ? new Array(n0 + n1) : cr_index(n, n);
+      if(iterable) iterablesIndexFilterStatus = cr_index(n0 + n1, 1);
 
       // Concatenate the newIterablesIndexCount onto the old one.
       if(iterable) {
@@ -829,7 +829,7 @@ function crossfilter() {
         }
 
         var oldGroups = groups,
-            reIndex = iterable ? [] : index(k, groupCapacity),
+            reIndex = iterable ? [] : cr_index(k, groupCapacity),
             add = reduceAdd,
             remove = reduceRemove,
             initial = reduceInitial,
@@ -854,7 +854,7 @@ function crossfilter() {
           groupIndex = k0 ? groupIndex : [];
         }
         else{
-          groupIndex = k0 > 1 ? xfilterArray.arrayLengthen(groupIndex, n) : index(n, groupCapacity);
+          groupIndex = k0 > 1 ? xfilterArray.arrayLengthen(groupIndex, n) : cr_index(n, groupCapacity);
         }
 
 
@@ -994,7 +994,7 @@ function crossfilter() {
         if (k > 1 || iterable) {
           var oldK = k,
               oldGroups = groups,
-              seenGroups = index(oldK, oldK),
+              seenGroups = cr_index(oldK, oldK),
               i,
               i0,
               j;
@@ -1474,7 +1474,7 @@ function crossfilter() {
 }
 
 // Returns an array of size n, big enough to store ids up to m.
-function index(n, m) {
+function cr_index(n, m) {
   return (m < 0x101
       ? xfilterArray.array8 : m < 0x10001
       ? xfilterArray.array16
@@ -1482,8 +1482,8 @@ function index(n, m) {
 }
 
 // Constructs a new array of size n, with sequential values from 0 to n - 1.
-function range(n) {
-  var range = index(n, n);
+function cr_range(n) {
+  var range = cr_index(n, n);
   for (var i = -1; ++i < n;) range[i] = i;
   return range;
 }

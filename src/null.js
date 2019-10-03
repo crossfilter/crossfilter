@@ -1,4 +1,4 @@
-function cr_null() {
+const cr_null = () =>  {
   return null;
 }
 
