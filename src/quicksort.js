@@ -289,5 +289,9 @@ function quicksort_by(f) {
 
 var quicksort_sizeThreshold = 32;
 
-export default quicksort_by(identity);
-export const by = quicksort_by;
+const quicksort = quicksort_by(identity);
+quicksort.by = quicksort_by;
+
+export default quicksort;
+// export default quicksort_by(identity);
+// export const by = quicksort_by;

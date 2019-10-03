@@ -1,6 +1,7 @@
+import crossfilter from '../main.js';
+  
 var vows = require("vows"),
     assert = require("assert"),
-    crossfilter = require("../"),
     semver = require('semver');
 
 var suite = vows.describe("version");
