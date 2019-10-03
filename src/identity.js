@@ -1,5 +1,3 @@
-const identity = d => {
+export default d => {
   return d;
-}
-
-export default identity;
+};
