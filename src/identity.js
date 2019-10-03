@@ -1,7 +1,5 @@
-'use strict';
-
-function crossfilter_identity(d) {
+function identity(d) {
   return d;
 }
 
-module.exports = crossfilter_identity;
+export default identity;

@@ -1,7 +1,5 @@
-'use strict';
-
-var crossfilter_identity = require('./identity');
-var xFilterHeap = require('./heap');
+import identity from './identity';
+import xFilterHeap from './heap';
 
 function heapselect_by(f) {
   var heap = xFilterHeap.by(f);
@@ -35,5 +33,5 @@ function heapselect_by(f) {
   return heapselect;
 }
 
-module.exports = heapselect_by(crossfilter_identity);
-module.exports.by = heapselect_by; // assign the raw function to the export as well
+export default heapselect_by(identity);
+export const by = heapselect_by; // assign the raw function to the export as well

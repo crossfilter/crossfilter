@@ -1,5 +1,5 @@
-var crossfilter_identity = require('./identity');
-var xFilterInsertionsort = require('./insertionsort');
+import identity from './identity';
+import xFilterInsertionsort from './insertionsort';
 
 // Algorithm designed by Vladimir Yaroslavskiy.
 // Implementation based on the Dart project; see NOTICE and AUTHORS for details.
@@ -289,5 +289,5 @@ function quicksort_by(f) {
 
 var quicksort_sizeThreshold = 32;
 
-module.exports = quicksort_by(crossfilter_identity);
-module.exports.by = quicksort_by;
+export default quicksort_by(identity);
+export const by = quicksort_by;

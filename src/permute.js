@@ -1,5 +1,3 @@
-'use strict';
-
 function permute(array, index, deep) {
   for (var i = 0, n = index.length, copy = deep ? JSON.parse(JSON.stringify(array)) : new Array(n); i < n; ++i) {
     copy[i] = array[index[i]];
@@ -7,4 +5,4 @@ function permute(array, index, deep) {
   return copy;
 }
 
-module.exports = permute;
+export default permute;

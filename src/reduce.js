@@ -1,28 +1,26 @@
-'use strict';
-
-function crossfilter_reduceIncrement(p) {
+function reduceIncrement(p) {
   return p + 1;
 }
 
-function crossfilter_reduceDecrement(p) {
+function reduceDecrement(p) {
   return p - 1;
 }
 
-function crossfilter_reduceAdd(f) {
+function reduceAdd(f) {
   return function(p, v) {
     return p + +f(v);
   };
 }
 
-function crossfilter_reduceSubtract(f) {
+function reduceSubtract(f) {
   return function(p, v) {
     return p - f(v);
   };
 }
 
-module.exports = {
-  reduceIncrement: crossfilter_reduceIncrement,
-  reduceDecrement: crossfilter_reduceDecrement,
-  reduceAdd: crossfilter_reduceAdd,
-  reduceSubtract: crossfilter_reduceSubtract
+export default {
+  reduceIncrement: reduceIncrement,
+  reduceDecrement: reduceDecrement,
+  reduceAdd: reduceAdd,
+  reduceSubtract: reduceSubtract
 };

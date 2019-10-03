@@ -1,7 +1,5 @@
-'use strict';
-
-function crossfilter_zero() {
+function zero() {
   return 0;
 }
 
-module.exports = crossfilter_zero;
+export default zero;
