@@ -293,5 +293,3 @@ const q = quicksort_by(identity);
 q.by = quicksort_by;
 
 export default q;
-// export default quicksort_by(identity);
-// export const by = quicksort_by;

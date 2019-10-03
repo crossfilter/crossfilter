@@ -38,6 +38,3 @@ const h = heapselect_by(identity);
 h.by = heapselect_by; // assign the raw function to the export as well
 
 export default h;
-
-// export default heapselect_by(identity);
-// export const by = heapselect_by; // assign the raw function to the export as well

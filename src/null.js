@@ -1,5 +1,3 @@
-const cr_null = () =>  {
+export default () =>  {
   return null;
 }
-
-export default cr_null;

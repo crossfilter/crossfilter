@@ -1,5 +1,3 @@
-const zero = () => {
+export default () => {
   return 0;
 }
-
-export default zero;
