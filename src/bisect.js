@@ -41,5 +41,8 @@ function bisect_by(f) {
   return bisectRight;
 }
 
-export default bisect_by(identity);
-export const by = bisect_by; // assign the raw function to the export as well
+const bisect = bisect_by(identity);
+bisect.by = bisect_by; // assign the raw function to the export as well
+
+export default bisect;
+

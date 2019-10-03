@@ -1,11 +1,11 @@
-function filterExact(bisect, value) {
+const filterExact = (bisect, value) => {
   return function(values) {
     var n = values.length;
     return [bisect.left(values, value, 0, n), bisect.right(values, value, 0, n)];
   };
 }
 
-function filterRange(bisect, range) {
+const filterRange = (bisect, range) => {
   var min = range[0],
       max = range[1];
   return function(values) {
@@ -14,12 +14,12 @@ function filterRange(bisect, range) {
   };
 }
 
-function filterAll(values) {
+const filterAll = values => {
   return [0, values.length];
 }
 
 export default {
-  filterExact: filterExact,
-  filterRange: filterRange,
-  filterAll: filterAll
+  filterExact,
+  filterRange,
+  filterAll
 };

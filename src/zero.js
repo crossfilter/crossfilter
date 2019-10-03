@@ -1,4 +1,4 @@
-function zero() {
+const zero = () => {
   return 0;
 }
 

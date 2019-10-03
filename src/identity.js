@@ -1,4 +1,4 @@
-function identity(d) {
+const identity = d => {
   return d;
 }
 

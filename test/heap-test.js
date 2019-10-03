@@ -11,14 +11,14 @@ suite.addBatch({
       return crossfilter.heap;
     },
     "children are greater than or equal to parents": function(heap) {
-      var array = [6, 5, 3, 1, 8, 7, 2, 4]
+      var array = [6, 5, 3, 1, 8, 7, 2, 4],
           n = array.length;
       assert.strictEqual(heap(array, 0, n), array);
       assert.equal(array[0], 1);
       for (var i = 1; i < n; ++i) assert(array[i] >= array[i - 1 >> 1]);
     },
     "creates a heap from a subset of the array": function(heap) {
-      var array = [6, 5, 3, 1, 8, 7, 2, 4]
+      var array = [6, 5, 3, 1, 8, 7, 2, 4],
           n = 6;
       assert.strictEqual(heap(array, 0, n), array);
       assert.equal(array[0], 1);
