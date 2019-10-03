@@ -1,7 +1,5 @@
-'use strict';
-
-function crossfilter_null() {
+function cr_null() {
   return null;
 }
 
-module.exports = crossfilter_null;
+export default cr_null;

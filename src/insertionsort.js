@@ -1,6 +1,4 @@
-'use strict';
-
-var crossfilter_identity = require('./identity');
+import identity from './identity';
 
 function insertionsort_by(f) {
 
@@ -17,5 +15,5 @@ function insertionsort_by(f) {
   return insertionsort;
 }
 
-module.exports = insertionsort_by(crossfilter_identity);
-module.exports.by = insertionsort_by;
+export default insertionsort_by(identity);
+export const by = insertionsort_by;
