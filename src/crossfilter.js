@@ -1,8 +1,8 @@
 import xfilterArray from './array';
 import xfilterFilter from './filter';
-import identity from './identity';
+import cr_identity from './identity';
 import cr_null from './null';
-import zero from './zero';
+import cr_zero from './zero';
 import xfilterHeapselect from './heapselect';
 import xfilterHeap from './heap';
 import bisect from './bisect';
@@ -806,7 +806,7 @@ function crossfilter() {
           groupAll = key === cr_null,
           n0old;
 
-      if (arguments.length < 1) key = identity;
+      if (arguments.length < 1) key = cr_identity;
 
       // The group listens to the crossfilter for when any dimension changes, so
       // that it can update the associated reduce values. It must also listen to
@@ -1229,12 +1229,12 @@ function crossfilter() {
 
       // A convenience method for reducing by count.
       function reduceCount() {
-        return reduce(xfilterReduce.reduceIncrement, xfilterReduce.reduceDecrement, zero);
+        return reduce(xfilterReduce.reduceIncrement, xfilterReduce.reduceDecrement, cr_zero);
       }
 
       // A convenience method for reducing by sum(value).
       function reduceSum(value) {
-        return reduce(xfilterReduce.reduceAdd(value), xfilterReduce.reduceSubtract(value), zero);
+        return reduce(xfilterReduce.reduceAdd(value), xfilterReduce.reduceSubtract(value), cr_zero);
       }
 
       // Sets the reduce order, using the specified accessor.
@@ -1247,7 +1247,7 @@ function crossfilter() {
 
       // A convenience method for natural ordering by reduce value.
       function orderNatural() {
-        return order(identity);
+        return order(cr_identity);
       }
 
       // Returns the cardinality of this group, irrespective of any filters.
@@ -1399,12 +1399,12 @@ function crossfilter() {
 
     // A convenience method for reducing by count.
     function reduceCount() {
-      return reduce(xfilterReduce.reduceIncrement, xfilterReduce.reduceDecrement, zero);
+      return reduce(xfilterReduce.reduceIncrement, xfilterReduce.reduceDecrement, cr_zero);
     }
 
     // A convenience method for reducing by sum(value).
     function reduceSum(value) {
-      return reduce(xfilterReduce.reduceAdd(value), xfilterReduce.reduceSubtract(value), zero);
+      return reduce(xfilterReduce.reduceAdd(value), xfilterReduce.reduceSubtract(value), cr_zero);
     }
 
     // Returns the computed reduce value.
