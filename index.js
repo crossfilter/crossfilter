@@ -1,1 +1,1 @@
-module.exports = require("./src/crossfilter").crossfilter;
+module.exports = require("./src/index").crossfilter;

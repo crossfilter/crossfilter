@@ -33,7 +33,7 @@
     }
   ],
   "homepage": "https://crossfilter.github.io/crossfilter/",
-  "main": "./index.js",
+  "main": "./src/index.js",
   "module": "./index.js",
   "types": "./index.d.ts",
   "unpkg": "./crossfilter.min.js",
@@ -45,25 +45,27 @@
     "lodash.result": "^4.4.0"
   },
   "devDependencies": {
-    "browserify": "^13.0.0",
     "d3": "3.5",
     "eslint": "^6.5.1",
+    "esm": "3.2.25",
     "package-json-versionify": "1.0.2",
+    "rollup": "1",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-json": "4",
+    "rollup-plugin-node-resolve": "5",
+    "rollup-plugin-terser": "5",
     "semver": "^5.3.0",
     "sinon": "^7.5.0",
-    "uglify-js": "2.4.0",
-    "vows": "0.8.2",
-    "esm": "3.2.25"
+    "vows": "0.8.2"
   },
   "scripts": {
-    "benchmark": "node test/benchmark.js",
-    "build": "browserify index.js -t package-json-versionify --standalone crossfilter -o crossfilter.js && uglifyjs --compress --mangle --screw-ie8 crossfilter.js -o crossfilter.min.js",
+    "postpublish": "git push && git push --tags",
+    "benchmark": "node -r esm test/benchmark.js",
+    "build": "rollup -c rollup.config.js",
     "clean": "rm -f crossfilter.js crossfilter.min.js",
-    "__test": "./node_modules/.bin/vows --verbose && eslint src/",
     "test": "node -r esm  ./node_modules/.bin/vows --verbose && eslint src/"
   },
   "files": [
-    "src",
     "index.js",
     "index.d.ts",
     "crossfilter.js",
