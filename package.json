@@ -42,7 +42,7 @@
     "url": "http://github.com/crossfilter/crossfilter.git"
   },
   "dependencies": {
-    "lodash.result": "^4.4.0"
+    "@ranfdev/deepobj": "^1.0.2"
   },
   "devDependencies": {
     "d3": "3.5",
@@ -67,7 +67,7 @@
   },
   "files": [
     "index.js",
-    "main.js", 
+    "main.js",
     "src/**",
     "index.d.ts",
     "crossfilter.js",
