@@ -4,14 +4,13 @@ import cr_identity from './identity';
 import cr_null from './null';
 import cr_zero from './zero';
 import xfilterHeapselect from './heapselect';
-import xfilterHeap from './heap.js';
-import bisect from './bisect.js';
-import insertionsort from './insertionsort.js';
-import permute from './permute.js';
-import quicksort from './quicksort.js';
-import xfilterReduce from './reduce.js';
-// import { version } from './../package.json'; // require own package.json for the version field
-import result from 'lodash.result';
+import xfilterHeap from './heap';
+import bisect from './bisect';
+import insertionsort from './insertionsort';
+import permute from './permute';
+import quicksort from './quicksort';
+import xfilterReduce from './reduce';
+import result from './result';
 
 // constants
 var REMOVED_INDEX = -1;
@@ -22,7 +21,6 @@ crossfilter.bisect = bisect;
 crossfilter.insertionsort = insertionsort;
 crossfilter.permute = permute;
 crossfilter.quicksort = quicksort;
-// crossfilter.version = version;
 export default crossfilter;
 
 function crossfilter() {
