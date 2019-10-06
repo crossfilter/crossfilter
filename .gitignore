@@ -1,2 +1,4 @@
 .DS_Store
 node_modules
+crossfilter.js
+crossfilter.min.js
