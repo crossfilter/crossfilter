@@ -68,6 +68,7 @@ suite.addBatch({
         data.typeByString = data.dimension('type');
         data.tags = data.dimension(function(d) { return d.tags; }, true);
         data.firstTag = data.dimension('tags[0]');
+        data.firstTagDot = data.dimension('tags.0');
         data.year = data.dimension('getYear');
 
       } catch (e) {
@@ -293,6 +294,11 @@ suite.addBatch({
       "stringPathAccessor": function(data) {
         assert.equal(data.firstTag.accessor({ tags: [2,4,5] }), 2);
         assert.equal(data.firstTag.accessor({ tags: [4,5] }), 4);
+      },
+
+      "stringPathDotAccessor": function(data) {
+        assert.equal(data.firstTagDot.accessor({ tags: [2,4,5] }), 2);
+        assert.equal(data.firstTagDot.accessor({ tags: [4,5] }), 4);
       },
 
       "stringFunctionCallAccessor": function(data) {
