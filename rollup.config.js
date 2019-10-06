@@ -29,7 +29,7 @@ export default [
     ...config,
     output: {
       ...config.output,
-      file: `d3-${name}.min.js`
+      file: `${name}.min.js`
     },
     plugins: [
       ...config.plugins,

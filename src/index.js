@@ -10,7 +10,7 @@ import insertionsort from './insertionsort.js';
 import permute from './permute.js';
 import quicksort from './quicksort.js';
 import xfilterReduce from './reduce.js';
-import { version } from './../package.json'; // require own package.json for the version field
+// import { version } from './../package.json'; // require own package.json for the version field
 import result from 'lodash.result';
 
 // constants
@@ -22,7 +22,7 @@ crossfilter.bisect = bisect;
 crossfilter.insertionsort = insertionsort;
 crossfilter.permute = permute;
 crossfilter.quicksort = quicksort;
-crossfilter.version = version;
+// crossfilter.version = version;
 export default crossfilter;
 
 function crossfilter() {
