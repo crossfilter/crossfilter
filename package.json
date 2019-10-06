@@ -34,7 +34,7 @@
   ],
   "homepage": "https://crossfilter.github.io/crossfilter/",
   "main": "./src/index.js",
-  "module": "./main.js",
+  "module": "main.js",
   "types": "./index.d.ts",
   "unpkg": "./crossfilter.min.js",
   "repository": {
