@@ -1,1 +1,2 @@
-module.exports = require("./src/index").crossfilter;
+// module.exports = require("./src/index").crossfilter;
+export { default } from  './src/index.js';
