@@ -41,9 +41,6 @@
     "type": "git",
     "url": "http://github.com/crossfilter/crossfilter.git"
   },
-  "dependencies": {
-    "@ranfdev/deepobj": "^1.0.2"
-  },
   "devDependencies": {
     "d3": "3.5",
     "eslint": "^6.5.1",
