@@ -7,7 +7,7 @@ import * as meta from "./package.json";
 const name = 'crossfilter'
 
 const config = {
-  input: `main.js`,
+  input: `index.js`,
   output: {
     file: `${name}.js`,
     name: name,
