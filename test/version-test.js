@@ -1,4 +1,4 @@
-import { version } from '../package.json';
+import { version } from '../crossfilter.js';
   
 var vows = require("vows"),
     assert = require("assert"),
