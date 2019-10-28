@@ -1461,6 +1461,38 @@ suite.addBatch({
         foo.filterAll();
         assert.equal(all.value(), 6);
       },
+      "tag dimension with zero keys": {
+        "three empties": function(data) {
+          var rows = [{id: 1, links: []}, {id: 2, links: []}, {id: 3, links: []}];
+          var ndx = crossfilter(rows);
+          var dimLinks = ndx.dimension(r => r.links, true);
+          dimLinks.filter("vv");
+          assert.equal(dimLinks.top(Infinity).length, 0);
+        }
+      },
+      "tag dimension with one key": {
+        "one key once": function(data) {
+          var rows = [{id: 1, links: ["vv"]}, {id: 2, links: []}];
+          var ndx = crossfilter(rows);
+          var dimLinks = ndx.dimension(r => r.links, true);
+          dimLinks.filter("vv");
+          assert.equal(dimLinks.top(Infinity).length, 1);
+        },
+        "one key doubled": function(data) {
+          var rows = [{id: 1, links: ["vv","vv"]}, {id: 2, links: []}];
+          var ndx = crossfilter(rows);
+          var dimLinks = ndx.dimension(r => r.links, true);
+          dimLinks.filter("vv");
+          assert.equal(dimLinks.top(Infinity).length, 1);
+        },
+        "one key twice": function(data) {
+          var rows = [{id: 1, links: []}, {id: 2, links: ["vv"]}, {id: 3, links: ["vv"]}];
+          var ndx = crossfilter(rows);
+          var dimLinks = ndx.dimension(r => r.links, true);
+          dimLinks.filter("vv");
+          assert.equal(dimLinks.top(Infinity).length, 2);
+        }
+      },
       "can add new groups that are before existing groups": function(data) {
         var data = crossfilter(),
             foo = data.dimension(function(d) { return +d; }),
