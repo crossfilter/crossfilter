@@ -261,27 +261,49 @@ function crossfilter() {
         newValues = permute(newValues, newIndex);
       }
 
-      if(iterable) {
-        n1 = t;
-      }
-
       // Bisect newValues to determine which new records are selected.
       var bounds = refilter(newValues), lo1 = bounds[0], hi1 = bounds[1];
-      if (refilterFunction) {
-        for (var index2 = 0; index2 < n1; ++index2) {
-          if (!refilterFunction(newValues[index2], index2)) {
-            filters[offset][newIndex[index2] + n0] |= one;
-            if(iterable) newIterablesIndexFilterStatus[index2] = 1;
+
+      var index2, index3, index4;
+      if(iterable) {
+        n1 = t;
+        if (refilterFunction) {
+          for (index2 = 0; index2 < n1; ++index2) {
+            if (!refilterFunction(newValues[index2], index2)) {
+              if(--newIterablesIndexCount[newIndex[index2]] === 0) {
+                filters[offset][newIndex[index2] + n0] |= one;
+              }
+              newIterablesIndexFilterStatus[index2] = 1;
+            }
+          }
+        } else {
+          for (index3 = 0; index3 < lo1; ++index3) {
+            if(--newIterablesIndexCount[newIndex[index3]] === 0) {
+              filters[offset][newIndex[index3] + n0] |= one;
+            }
+            newIterablesIndexFilterStatus[index3] = 1;
+          }
+          for (index4 = hi1; index4 < n1; ++index4) {
+            if(--newIterablesIndexCount[newIndex[index4]] === 0) {
+              filters[offset][newIndex[index4] + n0] |= one;
+            }
+            newIterablesIndexFilterStatus[index4] = 1;
           }
         }
       } else {
-        for (var index3 = 0; index3 < lo1; ++index3) {
-          filters[offset][newIndex[index3] + n0] |= one;
-          if(iterable) newIterablesIndexFilterStatus[index3] = 1;
-        }
-        for (var index4 = hi1; index4 < n1; ++index4) {
-          filters[offset][newIndex[index4] + n0] |= one;
-          if(iterable) newIterablesIndexFilterStatus[index4] = 1;
+        if (refilterFunction) {
+          for (index2 = 0; index2 < n1; ++index2) {
+            if (!refilterFunction(newValues[index2], index2)) {
+              filters[offset][newIndex[index2] + n0] |= one;
+            }
+          }
+        } else {
+          for (index3 = 0; index3 < lo1; ++index3) {
+            filters[offset][newIndex[index3] + n0] |= one;
+          }
+          for (index4 = hi1; index4 < n1; ++index4) {
+            filters[offset][newIndex[index4] + n0] |= one;
+          }
         }
       }
 
