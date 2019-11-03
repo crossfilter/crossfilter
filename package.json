@@ -50,7 +50,7 @@
     "package-json-versionify": "1.0.2",
     "semver": "^5.3.0",
     "sinon": "^4.0.2",
-    "uglify-js": "2.4.0",
+    "uglify-js": "3.6.7",
     "vows": "0.7.0"
   },
   "scripts": {
