@@ -1483,7 +1483,9 @@ suite.addBatch({
           var ndx = crossfilter(rows);
           var dimLinks = ndx.dimension(r => r.links, true);
           dimLinks.filter("vv");
-          assert.equal(dimLinks.top(Infinity).length, 1);
+          // doubled key in tag dimension means it shows up in dim.top() twice
+          assert.equal(dimLinks.top(Infinity).length, 2);
+          assert.equal(ndx.allFiltered().length, 1);
         },
         "one key twice": function(data) {
           var rows = [{id: 1, links: []}, {id: 2, links: ["vv"]}, {id: 3, links: ["vv"]}];
