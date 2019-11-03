@@ -167,9 +167,7 @@ function crossfilter() {
         newValues, // temporary array storing newly-added values
         newIndex, // temporary array storing newly-added index
         iterablesIndexCount,
-        newIterablesIndexCount,
         iterablesIndexFilterStatus,
-        newIterablesIndexFilterStatus,
         iterablesEmptyRows = [],
         sort = quicksort.by(function(i) { return newValues[i]; }),
         refilter = xfilterFilter.filterAll, // for recomputing filter
@@ -209,6 +207,8 @@ function crossfilter() {
     // Incorporates the specified new records into this dimension.
     // This function is responsible for updating filters, values, and index.
     function preAdd(newData, n0, n1) {
+      var newIterablesIndexCount,
+          newIterablesIndexFilterStatus;
 
       if (iterable){
         // Count all the values
