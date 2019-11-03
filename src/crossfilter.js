@@ -515,7 +515,7 @@ function crossfilter() {
         removed = newRemoved;
 
         // Now handle empty rows.
-        if(bounds[0] === 0 && bounds[1] === values.length) {
+        if(refilter === xfilterFilter.filterAll) {
           for(i = 0; i < iterablesEmptyRows.length; i++) {
             if((filters[offset][k = iterablesEmptyRows[i]] & one)) {
               // Was not in the filter, so set the filter and add
