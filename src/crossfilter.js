@@ -402,7 +402,7 @@ function crossfilter() {
             i1++;
           }
         }
-        iterablesIndexCount.length = i1;
+        iterablesIndexCount = iterablesIndexCount.slice(0, i1);
       }
       // Rewrite our index, overwriting removed values
       var n0 = values.length;
@@ -418,7 +418,7 @@ function crossfilter() {
         }
       }
       values.length = j;
-      if (iterable) iterablesIndexFilterStatus.length = j;
+      if (iterable) iterablesIndexFilterStatus = iterablesIndexFilterStatus.slice(0, j);
       while (j < n0) index[j++] = 0;
 
       // Bisect again to recompute lo0 and hi0.
