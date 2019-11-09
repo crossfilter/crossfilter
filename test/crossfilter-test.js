@@ -18,7 +18,7 @@ var testData = [
   {date: "2011-11-14T17:07:21Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,2,3]},
   {date: "2011-11-14T17:22:59Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: []},
   {date: "2011-11-14T17:25:45Z", quantity: 2, total: 200, tip: null, type: "cash", tags: [2,4,5]},
-  {date: "2011-11-14T17:29:52Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [-1, 0, 'hello', 'world']},
+  {date: "2011-11-14T17:29:52Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [-1, 0, 3, 4]},
   {date: "2011-11-14T17:33:46Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]},
   {date: "2011-11-14T17:33:59Z", quantity: 2, total: 90, tip: 0, type: "tab", tags: [1,3]},
   {date: "2011-11-14T17:38:40Z", quantity: 2, total: 200, tip: 100, type: "visa", tags: [2,4,5]},
@@ -445,7 +445,7 @@ suite.addBatch({
           ]);
           assert.deepEqual(data.date.bottom(3, 10), [
             {date: "2011-11-14T17:25:45Z", quantity: 2, total: 200, tip: null, type: "cash", tags: [2,4,5]},
-            {date: "2011-11-14T17:29:52Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [-1, 0, 'hello', 'world']},
+            {date: "2011-11-14T17:29:52Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [-1, 0, 3, 4]},
             {date: "2011-11-14T17:33:46Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]}
          ]);
         },
@@ -2255,8 +2255,8 @@ suite.addBatch({
             assert.deepEqual(data.tags.bottom(10), [
               {date: '2011-11-14T19:04:22Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [ 1, 2, 3 ]},
               {date: '2011-11-14T19:30:44Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [ 1, 3 ]},
-              {date: '2011-11-14T19:00:31Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [ 2, 3, 4 ]},
               {date: '2011-11-14T19:04:22Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [ 1, 2, 3 ]},
+              {date: '2011-11-14T19:00:31Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [ 2, 3, 4 ]},
               {date: '2011-11-14T19:00:31Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [ 2, 3, 4 ]},
               {date: '2011-11-14T19:04:22Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [ 1, 2, 3 ]},
               {date: '2011-11-14T19:30:44Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [ 1, 3 ]},
@@ -2275,11 +2275,11 @@ suite.addBatch({
             ]);
             data.type.filterExact("visa");
             assert.deepEqual(data.tags.bottom(1), [
-              {date: '2011-11-14T17:29:52Z', quantity: 1, total: 200, tip: 100, type: 'visa', tags: [ -1, 0, 'hello', 'world']}
+              {date: '2011-11-14T17:29:52Z', quantity: 1, total: 200, tip: 100, type: 'visa', tags: [ -1, 0, 3, 4]}
             ]);
             data.quantity.filterExact(2);
             assert.deepEqual(data.tags.bottom(1), [
-              {date: '2011-11-14T17:38:40Z', quantity: 2, total: 200, tip: 100, type: 'visa', tags: [ 2, 4, 5 ]}
+              {date: "2011-11-14T17:38:40Z", quantity: 2, total: 200, tip: 100, type: "visa", tags: [2,4,5]}
             ]);
           } finally {
             data.type.filterAll();
@@ -2299,8 +2299,8 @@ suite.addBatch({
           try {
             data.tip.filterExact(100);
             assert.deepEqual(data.tags.top(2), [
-              {date: '2011-11-14T22:34:28Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [ 2, 4, 5 ]},
-              {date: '2011-11-14T23:21:22Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [ 2, 4, 5 ]}
+              {date: "2011-11-14T22:34:28Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,4,5]},
+              {date: "2011-11-14T23:21:22Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,4,5]}
             ]);
           } finally {
             data.tip.filterAll();
@@ -2480,14 +2480,11 @@ suite.addBatch({
 
         "key defaults to value": function(data) {
           assert.deepEqual(data.tags.all.top(Infinity), [
-            { key: 3, value: 28 },
-            { key: 2, value: 23 },
-            { key: 4, value: 23 },
+            { key: 2, value: 33 },
+            { key: 3, value: 29 },
+            { key: 4, value: 24 },
             { key: 1, value: 18 },
             { key: 5, value: 13 },
-            { key: 2, value: 10 },
-            { key: 'world', value: 1 },
-            { key: 'hello', value: 1 },
             { key: 0, value: 1 },
             { key: -1, value: 1 }
           ]);
@@ -2546,14 +2543,14 @@ suite.addBatch({
         "size": {
           "returns the cardinality": function(data) {
             assert.equal(data.date.hours.size(), 8);
-            assert.equal(data.tags.all.size(), 10);
+            assert.equal(data.tags.all.size(), 7);
           },
           "ignores any filters": function(data) {
             try {
               data.tags.filterExact(1);
               data.quantity.filterRange([100, 200]);
               assert.equal(data.date.hours.size(), 8);
-              assert.equal(data.tags.all.size(), 10);
+              assert.equal(data.tags.all.size(), 7);
             } finally {
               data.quantity.filterAll();
               data.tags.filterAll();
@@ -2564,21 +2561,18 @@ suite.addBatch({
         "reduce": {
           "defaults to count": function(data) {
             assert.deepEqual(data.tags.all.top(1), [
-              { key: 3, value: 28 }
+              { key: 2, value: 33 }
             ]);
           },
           "determines the computed reduce value": function(data) {
             try {
               data.tags.all.reduceSum(function(d) { return d.total; });
               assert.deepEqual(data.tags.all.top(Infinity), [
-                { key: 3, value: 4029 },
-                { key: 4, value: 3661 },
-                { key: 2, value: 3631 },
+                { key: 2, value: 5241 },
+                { key: 3, value: 4229 },
+                { key: 4, value: 3861 },
                 { key: 1, value: 2709 },
                 { key: 5, value: 2341 },
-                { key: 2, value: 1610 },
-                { key: 'world', value: 200 },
-                { key: 'hello', value: 200 },
                 { key: 0, value: 200 },
                 { key: -1, value: 200 }
               ]);
@@ -2687,9 +2681,9 @@ suite.addBatch({
         "top": {
           "returns the top k groups by reduce value, in descending order": function(data) {
             assert.deepEqual(data.tags.all.top(3), [
-              { key: 3, value: 28 },
-              { key: 2, value: 23 },
-              { key: 4, value: 23 }
+              { key: 2, value: 33 },
+              { key: 3, value: 29 },
+              { key: 4, value: 24 }
             ]);
           },
           "observes the specified order": function(data) {
@@ -2698,7 +2692,7 @@ suite.addBatch({
               assert.deepEqual(data.tags.all.top(3), [
                 { key: 0, value: 1 },
                 { key: -1, value: 1 },
-                { key: 'hello', value: 1 }
+                { key: 5, value: 13 }
               ]);
             } finally {
               data.tags.all.order(function(v) { return v; });
@@ -2709,7 +2703,7 @@ suite.addBatch({
         "order": {
           "defaults to the identity function": function(data) {
             assert.deepEqual(data.tags.all.top(1), [
-              { key: 3, value: 28 }
+              { key: 2, value: 33 }
             ]);
           },
           "is useful in conjunction with a compound reduce value": function(data) {
@@ -2721,8 +2715,8 @@ suite.addBatch({
                   .order(function(v) { return v.total; });
               assert.deepEqual(data.tags.all.top(1), [
                 {
-                    key: 3,
-                    value: { count: 28, total: 4029 }
+                    key: 2,
+                    value: { count: 33, total: 5241 }
                 }
               ]);
             } finally {
