@@ -74,7 +74,7 @@ function crossfilter() {
   // removes all records matching the predicate (ignoring filters).
   function removeData(predicate) {
     var // Mapping from old record indexes to new indexes (after records removed)
-        newIndex = crossfilter_index(n, n),
+        newIndex = new Array(n),
         removed = [],
         usePred = typeof predicate === 'function',
         shouldRemove = function (i) {
