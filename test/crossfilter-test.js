@@ -325,7 +325,7 @@ suite.addBatch({
           assert.deepEqual(data.total.top(3, 1), [
             {date: "2011-11-14T20:49:07Z", quantity: 2, total: 290, tip: 200, type: "tab", tags: [2,4,5]},
             {date: "2011-11-14T21:18:48Z", quantity: 4, total: 270, tip: 0, type: "tab", tags: [1,2,3]},
-            {date: "2011-11-14T17:38:40Z", quantity: 2, total: 200, tip: 100, type: 'visa', tags: [2,4,5]}
+            {date: "2011-11-14T23:16:09Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [2,4,5]}
           ]);
           assert.deepEqual(data.date.top(3,10), [
             {date: "2011-11-14T22:30:22Z", quantity: 2, total: 89, tip: 0, type: "tab", tags: [1,3]},
@@ -373,8 +373,8 @@ suite.addBatch({
               {date: "2011-11-14T21:18:48Z", quantity: 4, total: 270, tip: 0, type: "tab", tags: [1,2,3]}
             ]);
             assert.deepEqual(data.total.top(2, 8), [
-              {date: '2011-11-14T21:26:30Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [2,4,5]},
-              {date: '2011-11-14T23:28:54Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [1,2,3]}
+              {date: "2011-11-14T22:34:28Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,4,5]},
+              {date: "2011-11-14T21:30:55Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,3,4]}
             ]);
             data.type.filterExact("visa");
             assert.deepEqual(data.total.top(1), [
@@ -2201,7 +2201,7 @@ suite.addBatch({
             data.quantity.filterAll();
             data.type.filterExact("visa");
             assert.deepEqual(data.tags.top(1), [
-              {date: "2011-11-14T16:28:54Z", quantity: 1, total: 300, tip: 200, type: "visa", tags: [2,4,5]}
+              {date: "2011-11-14T23:16:09Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [2,4,5]}
             ]);
             data.quantity.filterExact(2);
             assert.deepEqual(data.tags.top(1), [
@@ -2262,8 +2262,8 @@ suite.addBatch({
             assert.deepEqual(data.tags.bottom(10), [
               {date: '2011-11-14T19:04:22Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [ 1, 2, 3 ]},
               {date: '2011-11-14T19:30:44Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [ 1, 3 ]},
-              {date: '2011-11-14T19:04:22Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [ 1, 2, 3 ]},
               {date: '2011-11-14T19:00:31Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [ 2, 3, 4 ]},
+              {date: '2011-11-14T19:04:22Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [ 1, 2, 3 ]},
               {date: '2011-11-14T19:00:31Z', quantity: 2, total: 190, tip: 100, type: 'tab', tags: [ 2, 3, 4 ]},
               {date: '2011-11-14T19:04:22Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [ 1, 2, 3 ]},
               {date: '2011-11-14T19:30:44Z', quantity: 2, total: 90, tip: 0, type: 'tab', tags: [ 1, 3 ]},
@@ -2278,7 +2278,7 @@ suite.addBatch({
             data.type.filterExact("tab");
             assert.deepEqual(data.tags.bottom(2), [
               {date: '2011-11-14T17:22:59Z',quantity: 2,total: 90,tip: 0,type: 'tab',tags: []},
-              {date: '2011-11-14T16:20:19Z',quantity: 2,total: 190,tip: 100,type: 'tab',tags: [ 1, 3 ]}
+              {date: "2011-11-14T16:17:54Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [1,2,3]}
             ]);
             data.type.filterExact("visa");
             assert.deepEqual(data.tags.bottom(1), [
@@ -2306,8 +2306,8 @@ suite.addBatch({
           try {
             data.tip.filterExact(100);
             assert.deepEqual(data.tags.top(2), [
-              {date: "2011-11-14T22:34:28Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,4,5]},
-              {date: "2011-11-14T23:21:22Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,4,5]}
+              {date: "2011-11-14T23:21:22Z", quantity: 2, total: 190, tip: 100, type: "tab", tags: [2,4,5]},
+              {date: "2011-11-14T23:16:09Z", quantity: 1, total: 200, tip: 100, type: "visa", tags: [2,4,5]}
             ]);
           } finally {
             data.tip.filterAll();
@@ -2317,7 +2317,7 @@ suite.addBatch({
           try {
             data.tip.filterExact(null); // equivalent to 0 by natural ordering
             assert.deepEqual(data.tags.top(2), [
-              {date: '2011-11-14T17:25:45Z', quantity: 2, total: 200, tip: null, type: 'cash', tags: [ 2, 4, 5 ]},
+              {date: "2011-11-14T22:48:05Z", quantity: 2, total: 91, tip: 0, type: "tab", tags: [2,4,5]},
               {date: '2011-11-14T20:06:33Z', quantity: 1, total: 100, tip: null, type: 'cash', tags: [ 2, 4, 5 ]}
             ]);
           } finally {
