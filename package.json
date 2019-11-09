@@ -1,6 +1,6 @@
 {
   "name": "crossfilter2",
-  "version": "1.4.7",
+  "version": "1.4.8",
   "description": "Fast multidimensional filtering for coordinated views.",
   "license": "Apache-2.0",
   "keywords": [
