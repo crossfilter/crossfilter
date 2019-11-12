@@ -90,7 +90,7 @@ declare namespace crossfilter {
     ): Dimension<T, TValue>;
     groupAll<TGroupValue>(): GroupAll<T, TGroupValue>;
     size(): number;
-    all(): readonly T[];
+    all(): ReadonlyArray<T>;
     allFiltered(): T[];
     onChange(callback: (type: EventType) => void): () => void;
     isElementFiltered(index: number, ignoreDimensions?: number[]): boolean;
