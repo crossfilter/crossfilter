@@ -21,6 +21,10 @@ This package can be found under the name `crossfilter2` in npm:
 
      npm install crossfilter2
      
+(optional) if you use TypeScript:
+     
+     npm install @types/crossfilter --save-dev
+     
 ## Development
 
 Install dependencies:
