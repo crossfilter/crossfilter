@@ -1,4 +1,3 @@
-export = crossfilter;
 
 declare function crossfilter<T>(records?: T[]): crossfilter.Crossfilter<T>;
 
@@ -146,3 +145,4 @@ declare namespace crossfilter {
 
   export function permute<T>(records: T[], index: number[], deep: number): T[];
 }
+export default crossfilter;
