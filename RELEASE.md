@@ -2,6 +2,7 @@
 
 Currently this is a manual process.
 
+ 0. Are there changes to the public API? Have they been documented in [the wiki](https://github.com/crossfilter/crossfilter/wiki/API-Reference)?
  1. Increment package.json version
  2. `npm run-script test`
  3. `npm run-script clean`
