@@ -576,7 +576,7 @@ function crossfilter() {
     function filterFunction(f) {
       filterValue = f;
       filterValuePresent = true;
-      
+
       refilterFunction = f;
       refilter = xfilterFilter.filterAll;
 
@@ -681,11 +681,11 @@ function crossfilter() {
       filterListeners.forEach(function(l) { l(one, offset, added, removed); });
       triggerOnChange('filtered');
     }
-    
+
     function currentFilter() {
       return filterValue;
     }
-    
+
     function hasCurrentFilter() {
       return filterValuePresent;
     }
@@ -1019,6 +1019,7 @@ function crossfilter() {
                 ++j;
               }
             }
+            groupIndex = groupIndex.slice(0, j);
           }
 
           // Reassemble groups including only those groups that were referred
