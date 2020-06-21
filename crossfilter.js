@@ -656,7 +656,7 @@
           // newIndex should be a map of sortedValue -> crossfilterData
           newIndex = permute(unsortedIndex, sortMap);
 
-        } else{
+        } else {
           // Permute new values into natural order using a standard sorted index.
           newValues = newData.map(value);
           newIndex = sortRange(n1);
@@ -982,7 +982,7 @@
       function filterFunction(f) {
         filterValue = f;
         filterValuePresent = true;
-        
+
         refilterFunction = f;
         refilter = xfilterFilter.filterAll;
 
@@ -1087,11 +1087,11 @@
         filterListeners.forEach(function(l) { l(one, offset, added, removed); });
         triggerOnChange('filtered');
       }
-      
+
       function currentFilter() {
         return filterValue;
       }
-      
+
       function hasCurrentFilter() {
         return filterValuePresent;
       }
@@ -1260,7 +1260,7 @@
           if(iterable){
             groupIndex = k0 ? groupIndex : [];
           }
-          else{
+          else {
             groupIndex = k0 > 1 ? xfilterArray.arrayLengthen(groupIndex, n) : cr_index(n, groupCapacity);
           }
 
@@ -1303,11 +1303,11 @@
                 if(groupIndex[j]){
                   groupIndex[j].push(k);
                 }
-                else{
+                else {
                   groupIndex[j] = [k];
                 }
               }
-              else{
+              else {
                 groupIndex[j] = k;
               }
 
@@ -1350,7 +1350,7 @@
                 }
               }
             }
-            else{
+            else {
               for (i0 = 0; i0 < n0; ++i0) {
                 groupIndex[i0] = reIndex[groupIndex[i0]];
               }
@@ -1425,6 +1425,7 @@
                   ++j;
                 }
               }
+              groupIndex = groupIndex.slice(0, j);
             }
 
             // Reassemble groups including only those groups that were referred

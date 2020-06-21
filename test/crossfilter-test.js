@@ -1069,6 +1069,37 @@ suite.addBatch({
             } finally {
               data.date.hours.order(function(v) { return v; });
             }
+          },
+          "works correctly on removing and adding back data with array groups": function() {
+            var filter = crossfilter();
+            var dimension = filter.dimension('tags', true);
+            var group = dimension.group();
+            filter.add([
+              {
+                tags: ['A']
+              }, {
+                tags: ['B']
+              }
+            ]);
+            filter.remove(function(data) {
+              return data.tags.indexOf('A') !== -1;
+            });
+            filter.add([
+              {
+                tags: ['A']
+              }, {
+                tags: ['A']
+              }
+            ]);
+            assert.deepEqual(group.top(Infinity), [
+              {
+                key: 'A',
+                value: 2
+              }, {
+                key: 'B',
+                value: 1
+              }
+            ]);
           }
         },
 
@@ -1377,7 +1408,7 @@ suite.addBatch({
           data.quantity.filterExact(2);
           var raw = data.allFiltered();
           assert.equal(raw.length, 35);
-          
+
           data.total.filterRange([190, 300]);
           var raw = data.allFiltered();
           assert.equal(raw.length, 18);
@@ -2174,7 +2205,7 @@ suite.addBatch({
         "returns the top k records by value, in descending order": function(data) {
           var top = data.tags.top(3)
           assert.equal(top.length, 3)
-          
+
           assert.equal(Math.max.apply(null, top[0].tags), 5)
           assert.equal(Math.max.apply(null, top[1].tags), 5)
           assert.equal(Math.max.apply(null, top[2].tags), 5)
