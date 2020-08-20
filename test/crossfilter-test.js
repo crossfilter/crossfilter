@@ -1100,6 +1100,45 @@ suite.addBatch({
                 value: 1
               }
             ]);
+          },
+          "works correctly on removing and adding back data with array groups 2": function() {
+            var data = crossfilter();
+            const dimension = data.dimension(e => e.tags, true);
+            const group = dimension.group();
+
+            const data1 = [
+              {
+                id: '0',
+                tags: ['A', 'B'],
+              },
+              {
+                id: '1',
+                tags: ['C'],
+              }
+            ];
+            data.add(data1);
+
+            data.remove(e => e.id === '0');
+
+            const data2 = [
+              {
+                id: '0',
+                tags: ['A', 'B'],
+              }
+            ];
+            data.add(data2);
+            assert.deepEqual(group.top(Infinity), [
+              {
+                key: 'B',
+                value: 1
+              }, {
+                key: 'C',
+                value: 1
+              }, {
+                key: 'A',
+                value: 1
+              }
+            ]);
           }
         },
 
