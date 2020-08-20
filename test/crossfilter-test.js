@@ -1071,20 +1071,20 @@ suite.addBatch({
             }
           },
           "works correctly on removing and adding back data with array groups": function() {
-            var filter = crossfilter();
-            var dimension = filter.dimension('tags', true);
+            var data = crossfilter();
+            var dimension = data.dimension('tags', true);
             var group = dimension.group();
-            filter.add([
+            data.add([
               {
                 tags: ['A']
               }, {
                 tags: ['B']
               }
             ]);
-            filter.remove(function(data) {
+            data.remove(function(data) {
               return data.tags.indexOf('A') !== -1;
             });
-            filter.add([
+            data.add([
               {
                 tags: ['A']
               }, {
