@@ -3520,7 +3520,32 @@ suite.addBatch({
         }
       },
     },
+    "filter the 32nd dimension": function() {
+      var dataSet = [];
 
+      var itemBuilder = (fieldCount, value) => {
+        var item = {};
+        for (var i = 0; i < fieldCount; i++) {
+          item['f' + (i + 1)] = value;
+        }
+        return item;
+      }
+
+      dataSet.push(itemBuilder(34, 'a'));
+      dataSet.push(itemBuilder(34, 'b'));
+      var data = crossfilter(dataSet);
+
+      var dimensions = Object.keys(dataSet[0]).map(key => data.dimension(d => d[key]));
+      var groups = dimensions.map(d => d.group());
+      dimensions[31].filterExact('a');
+      // correct group value
+      var correctGroupValue = groups.map(g => g.all()[1].value);
+
+      dimensions[31].filter(null);
+      dimensions[31].filterExact('a');
+
+      assert.deepEqual(groups.map(g => g.all()[1].value), correctGroupValue);
+    },
   }
 });
 
