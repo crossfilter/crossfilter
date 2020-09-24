@@ -3539,7 +3539,7 @@ suite.addBatch({
       var groups = dimensions.map(d => d.group());
       dimensions[31].filterExact('a');
       // correct group value
-      var correctGroupValue = groups.map(g => g.all()[1].value);
+      const correctGroupValue = groups.map(g => g.all()[1].value);
 
       dimensions[31].filter(null);
       dimensions[31].filterExact('a');
