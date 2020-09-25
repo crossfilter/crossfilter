@@ -3539,7 +3539,8 @@ suite.addBatch({
       var groups = dimensions.map(d => d.group());
       dimensions[31].filterExact('a');
       // correct group value
-      const correctGroupValue = groups.map(g => g.all()[1].value);
+      const correctGroupValue = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0];
+      assert.deepEqual(groups.map(g => g.all()[1].value), correctGroupValue);
 
       dimensions[31].filter(null);
       dimensions[31].filterExact('a');
