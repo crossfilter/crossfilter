@@ -173,7 +173,7 @@ bitarray.prototype.onlyExcept = function(n, offset, zero, onlyOffset, onlyOne) {
   for (i = 0, len = this.subarrays; i < len; ++i) {
     mask = this[i][n];
     if (i === offset)
-      mask &= zero;
+      mask = (mask & zero) >>> 0;
     if (mask != (i === onlyOffset ? onlyOne : 0)) {
       return false;
     }
