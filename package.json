@@ -56,7 +56,6 @@
     "rollup-plugin-terser": "5",
     "semver": "^5.7.0",
     "sinon": "^7.5.0",
-    "uglify-js": "^3.6.7",
     "vows": "0.8.2"
   },
   "scripts": {

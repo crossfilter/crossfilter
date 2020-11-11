@@ -26,6 +26,5 @@ This package can be found under the name `crossfilter2` in npm:
 Install dependencies:
 
  * `npm install`
- * `npm install -g browserify uglify-js`
 
 Test changes with `npm test`. Build with `npm run build` for use in the browser. You may also want to benchmark your changes with `npm run benchmark`.
