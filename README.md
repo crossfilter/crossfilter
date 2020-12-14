@@ -1,6 +1,6 @@
 # Crossfilter
 
-[![Join the chat at https://gitter.im/crossfilter/crossfilter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crossfilter/crossfilter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![CDNJS](https://img.shields.io/cdnjs/v/crossfilter2.svg)](https://cdnjs.com/libraries/crossfilter2)
+[![Join the chat at https://gitter.im/crossfilter/crossfilter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crossfilter/crossfilter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![Tests](https://github.com/crossfilter/crossfilter/workflows/Tests/badge.svg) [![CDNJS](https://img.shields.io/cdnjs/v/crossfilter2.svg)](https://cdnjs.com/libraries/crossfilter2)
 
 **Crossfilter** is a JavaScript library for exploring large multivariate datasets in the browser. Crossfilter supports extremely fast (<30ms) interaction with coordinated views, even with datasets containing a million or more records.
 
