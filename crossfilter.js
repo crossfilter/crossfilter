@@ -1,4 +1,4 @@
-// https://crossfilter.github.io/crossfilter/ v1.5.4 Copyright 2020 Mike Bostock
+// https://crossfilter.github.io/crossfilter/ v1.5.4 Copyright 2022 Mike Bostock
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
@@ -656,7 +656,7 @@
           // newIndex should be a map of sortedValue -> crossfilterData
           newIndex = permute(unsortedIndex, sortMap);
 
-        } else{
+        } else {
           // Permute new values into natural order using a standard sorted index.
           newValues = newData.map(value);
           newIndex = sortRange(n1);
@@ -1260,7 +1260,7 @@
           if(iterable){
             groupIndex = k0 ? groupIndex : [];
           }
-          else{
+          else {
             groupIndex = k0 > 1 ? xfilterArray.arrayLengthen(groupIndex, n) : cr_index(n, groupCapacity);
           }
 
@@ -1303,11 +1303,11 @@
                 if(groupIndex[j]){
                   groupIndex[j].push(k);
                 }
-                else{
+                else {
                   groupIndex[j] = [k];
                 }
               }
-              else{
+              else {
                 groupIndex[j] = k;
               }
 
@@ -1350,7 +1350,7 @@
                 }
               }
             }
-            else{
+            else {
               for (i0 = 0; i0 < n0; ++i0) {
                 groupIndex[i0] = reIndex[groupIndex[i0]];
               }

@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "d3": "^3.5.17",
-    "eslint": "^6.8.0",
+    "eslint": "^8.12.0",
     "esm": "^3.2.25",
     "package-json-versionify": "1.0.2",
     "rollup": "^1.32.1",
