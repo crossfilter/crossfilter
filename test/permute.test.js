@@ -6,32 +6,32 @@ describe("permute", () => {
   const permute = crossfilter.permute;
 
   it("permutes according to the specified index", function () {
-    assert.deepEqual(permute([3, 4, 5], [2, 1, 0]), [5, 4, 3]);
-    assert.deepEqual(permute([3, 4, 5], [2, 0, 1]), [5, 3, 4]);
-    assert.deepEqual(permute([3, 4, 5], [0, 1, 2]), [3, 4, 5]);
+    assert.deepStrictEqual(permute([3, 4, 5], [2, 1, 0]), [5, 4, 3]);
+    assert.deepStrictEqual(permute([3, 4, 5], [2, 0, 1]), [5, 3, 4]);
+    assert.deepStrictEqual(permute([3, 4, 5], [0, 1, 2]), [3, 4, 5]);
   });
 
   it("does not modify the input array", function () {
     var input = [3, 4, 5];
     permute(input, [2, 1, 0]);
-    assert.deepEqual(input, [3, 4, 5]);
+    assert.deepStrictEqual(input, [3, 4, 5]);
   });
 
   it("can duplicate input values", function () {
-    assert.deepEqual(permute([3, 4, 5], [0, 1, 0]), [3, 4, 3]);
-    assert.deepEqual(permute([3, 4, 5], [2, 2, 2]), [5, 5, 5]);
-    assert.deepEqual(permute([3, 4, 5], [0, 1, 1]), [3, 4, 4]);
+    assert.deepStrictEqual(permute([3, 4, 5], [0, 1, 0]), [3, 4, 3]);
+    assert.deepStrictEqual(permute([3, 4, 5], [2, 2, 2]), [5, 5, 5]);
+    assert.deepStrictEqual(permute([3, 4, 5], [0, 1, 1]), [3, 4, 4]);
   });
 
   it("can return more elements", function () {
-    assert.deepEqual(permute([3, 4, 5], [0, 0, 1, 2]), [3, 3, 4, 5]);
-    assert.deepEqual(permute([3, 4, 5], [0, 1, 1, 1]), [3, 4, 4, 4]);
+    assert.deepStrictEqual(permute([3, 4, 5], [0, 0, 1, 2]), [3, 3, 4, 5]);
+    assert.deepStrictEqual(permute([3, 4, 5], [0, 1, 1, 1]), [3, 4, 4, 4]);
   });
 
   it("can return fewer elements", function () {
-    assert.deepEqual(permute([3, 4, 5], [0]), [3]);
-    assert.deepEqual(permute([3, 4, 5], [1, 2]), [4, 5]);
-    assert.deepEqual(permute([3, 4, 5], []), []);
+    assert.deepStrictEqual(permute([3, 4, 5], [0]), [3]);
+    assert.deepStrictEqual(permute([3, 4, 5], [1, 2]), [4, 5]);
+    assert.deepStrictEqual(permute([3, 4, 5], []), []);
   });
 
   it("can return undefined elements", function () {

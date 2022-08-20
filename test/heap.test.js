@@ -25,13 +25,13 @@ describe("heap", () => {
       var array = [1, 4, 2, 5, 8, 7, 3, 6],
         n = array.length;
       heap.sort(array, 0, n);
-      assert.deepEqual(array, [8, 7, 6, 5, 4, 3, 2, 1]);
+      assert.deepStrictEqual(array, [8, 7, 6, 5, 4, 3, 2, 1]);
     });
     it("sorts a two-element heap in descending order", function () {
       var array = [1, 4],
         n = array.length;
       heap.sort(array, 0, n);
-      assert.deepEqual(array, [4, 1]);
+      assert.deepStrictEqual(array, [4, 1]);
     });
   });
 });

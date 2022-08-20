@@ -8,32 +8,32 @@ describe("select", () => {
 
     it("can select from a small array of positive integers", function () {
       var array = [6, 5, 3, 1, 8, 7, 2, 4];
-      assert.deepEqual(select(array, 0, array.length, 1), [8]);
-      assert.deepEqual(
+      assert.deepStrictEqual(select(array, 0, array.length, 1), [8]);
+      assert.deepStrictEqual(
         select(array, 0, array.length, 2).sort(descending),
         [8, 7]
       );
-      assert.deepEqual(
+      assert.deepStrictEqual(
         select(array, 0, array.length, 3).sort(descending),
         [8, 7, 6]
       );
-      assert.deepEqual(
+      assert.deepStrictEqual(
         select(array, 0, array.length, 4).sort(descending),
         [8, 7, 6, 5]
       );
-      assert.deepEqual(
+      assert.deepStrictEqual(
         select(array, 0, array.length, 5).sort(descending),
         [8, 7, 6, 5, 4]
       );
-      assert.deepEqual(
+      assert.deepStrictEqual(
         select(array, 0, array.length, 6).sort(descending),
         [8, 7, 6, 5, 4, 3]
       );
-      assert.deepEqual(
+      assert.deepStrictEqual(
         select(array, 0, array.length, 7).sort(descending),
         [8, 7, 6, 5, 4, 3, 2]
       );
-      assert.deepEqual(
+      assert.deepStrictEqual(
         select(array, 0, array.length, 8).sort(descending),
         [8, 7, 6, 5, 4, 3, 2, 1]
       );
@@ -42,12 +42,12 @@ describe("select", () => {
     it("does not affect the original order; returns a copy", function () {
       var array = [6, 5, 3, 1, 8, 7, 2, 4];
       select(array, 0, array.length, 4);
-      assert.deepEqual(array, [6, 5, 3, 1, 8, 7, 2, 4]);
+      assert.deepStrictEqual(array, [6, 5, 3, 1, 8, 7, 2, 4]);
     });
 
     it("returns fewer than k elements when k is too big", function () {
       var array = [6, 5, 3, 1, 8, 7, 2, 4];
-      assert.deepEqual(
+      assert.deepStrictEqual(
         select(array, 0, array.length, 8).sort(descending),
         [8, 7, 6, 5, 4, 3, 2, 1]
       );
@@ -58,7 +58,7 @@ describe("select", () => {
       const select2 = select.by(function (d) {
         return d.value;
       });
-      assert.deepEqual(select2(array, 0, array.length, 1), []);
+      assert.deepStrictEqual(select2(array, 0, array.length, 1), []);
     });
 
     it("the returned array is a binary heap", function () {

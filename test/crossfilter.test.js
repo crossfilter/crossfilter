@@ -548,33 +548,33 @@ describe("crossfilter", () => {
         });
 
         it("on group creation", function () {
-          assert.deepEqual(data.groupMax.value(), data.groupSum.value());
+          assert.deepStrictEqual(data.groupMax.value(), data.groupSum.value());
         });
         it("on filtering", function () {
           data.foo.filterRange([1, 3]);
-          assert.deepEqual(data.groupMax.value(), 8);
-          assert.deepEqual(data.groupSum.value(), 4);
+          assert.deepStrictEqual(data.groupMax.value(), 8);
+          assert.deepStrictEqual(data.groupSum.value(), 4);
           data.foo.filterAll();
         });
         it("on adding data after group creation", function () {
           data.add([{ foo: 1, val: 2 }]);
-          assert.deepEqual(data.groupMax.value(), data.groupSum.value());
+          assert.deepStrictEqual(data.groupMax.value(), data.groupSum.value());
         });
         it("on adding data when a filter is in place", function () {
           data.foo.filterRange([1, 3]);
           data.add([{ foo: 3, val: 1 }]);
-          assert.deepEqual(data.groupMax.value(), 11);
-          assert.deepEqual(data.groupSum.value(), 6);
+          assert.deepStrictEqual(data.groupMax.value(), 11);
+          assert.deepStrictEqual(data.groupSum.value(), 6);
           data.foo.filterAll();
         });
         it("on removing data after group creation", function () {
           data.val.filter(1);
           data.remove();
-          assert.deepEqual(data.groupMax.value(), 10);
-          assert.deepEqual(data.groupSum.value(), 0);
+          assert.deepStrictEqual(data.groupMax.value(), 10);
+          assert.deepStrictEqual(data.groupSum.value(), 0);
 
           data.val.filterAll();
-          assert.deepEqual(data.groupMax.value(), data.groupSum.value());
+          assert.deepStrictEqual(data.groupMax.value(), data.groupSum.value());
         });
       });
     });
@@ -659,7 +659,7 @@ describe("crossfilter", () => {
 
     describe("top", () => {
       it("returns the top k records by value, in descending order", function () {
-        assert.deepEqual(data.total.top(3), [
+        assert.deepStrictEqual(data.total.top(3), [
           {
             date: "2011-11-14T16:28:54Z",
             quantity: 1,
@@ -685,7 +685,7 @@ describe("crossfilter", () => {
             tags: [1, 2, 3],
           },
         ]);
-        assert.deepEqual(data.date.top(3), [
+        assert.deepStrictEqual(data.date.top(3), [
           {
             date: "2011-11-14T23:28:54Z",
             quantity: 2,
@@ -714,7 +714,7 @@ describe("crossfilter", () => {
       });
 
       it("returns the top k records, using offset, by value, in descending order", function () {
-        assert.deepEqual(data.total.top(3, 1), [
+        assert.deepStrictEqual(data.total.top(3, 1), [
           {
             date: "2011-11-14T20:49:07Z",
             quantity: 2,
@@ -740,7 +740,7 @@ describe("crossfilter", () => {
             tags: [2, 4, 5],
           },
         ]);
-        assert.deepEqual(data.date.top(3, 10), [
+        assert.deepStrictEqual(data.date.top(3, 10), [
           {
             date: "2011-11-14T22:30:22Z",
             quantity: 2,
@@ -771,7 +771,7 @@ describe("crossfilter", () => {
       it("observes the associated dimension's filters", function () {
         try {
           data.quantity.filterExact(4);
-          assert.deepEqual(data.total.top(3), [
+          assert.deepStrictEqual(data.total.top(3), [
             {
               date: "2011-11-14T21:18:48Z",
               quantity: 4,
@@ -789,7 +789,7 @@ describe("crossfilter", () => {
             new Date(Date.UTC(2011, 10, 14, 19)),
             new Date(Date.UTC(2011, 10, 14, 20)),
           ]);
-          assert.deepEqual(data.date.top(10), [
+          assert.deepStrictEqual(data.date.top(10), [
             {
               date: "2011-11-14T19:30:44Z",
               quantity: 2,
@@ -815,7 +815,7 @@ describe("crossfilter", () => {
               tags: [2, 3, 4],
             },
           ]);
-          assert.deepEqual(data.date.top(10, 2), [
+          assert.deepStrictEqual(data.date.top(10, 2), [
             {
               date: "2011-11-14T19:00:31Z",
               quantity: 2,
@@ -829,7 +829,7 @@ describe("crossfilter", () => {
             Date.UTC(2011, 10, 14, 19),
             Date.UTC(2011, 10, 14, 20),
           ]); // also comparable
-          assert.deepEqual(data.date.top(10), [
+          assert.deepStrictEqual(data.date.top(10), [
             {
               date: "2011-11-14T19:30:44Z",
               quantity: 2,
@@ -855,7 +855,7 @@ describe("crossfilter", () => {
               tags: [2, 3, 4],
             },
           ]);
-          assert.deepEqual(data.date.top(10, 2), [
+          assert.deepStrictEqual(data.date.top(10, 2), [
             {
               date: "2011-11-14T19:00:31Z",
               quantity: 2,
@@ -873,7 +873,7 @@ describe("crossfilter", () => {
       it("observes other dimensions' filters", function () {
         try {
           data.type.filterExact("tab");
-          assert.deepEqual(data.total.top(2), [
+          assert.deepStrictEqual(data.total.top(2), [
             {
               date: "2011-11-14T20:49:07Z",
               quantity: 2,
@@ -891,7 +891,7 @@ describe("crossfilter", () => {
               tags: [1, 2, 3],
             },
           ]);
-          assert.deepEqual(data.total.top(2, 8), [
+          assert.deepStrictEqual(data.total.top(2, 8), [
             {
               date: "2011-11-14T22:34:28Z",
               quantity: 2,
@@ -910,7 +910,7 @@ describe("crossfilter", () => {
             },
           ]);
           data.type.filterExact("visa");
-          assert.deepEqual(data.total.top(1), [
+          assert.deepStrictEqual(data.total.top(1), [
             {
               date: "2011-11-14T16:28:54Z",
               quantity: 1,
@@ -921,7 +921,7 @@ describe("crossfilter", () => {
             },
           ]);
           data.quantity.filterExact(2);
-          assert.deepEqual(data.tip.top(1), [
+          assert.deepStrictEqual(data.tip.top(1), [
             {
               date: "2011-11-14T17:38:40Z",
               quantity: 2,
@@ -937,7 +937,7 @@ describe("crossfilter", () => {
         }
         try {
           data.type.filterExact("tab");
-          assert.deepEqual(data.date.top(2), [
+          assert.deepStrictEqual(data.date.top(2), [
             {
               date: "2011-11-14T23:28:54Z",
               quantity: 2,
@@ -955,7 +955,7 @@ describe("crossfilter", () => {
               tags: [2, 3, 4],
             },
           ]);
-          assert.deepEqual(data.date.top(2, 8), [
+          assert.deepStrictEqual(data.date.top(2, 8), [
             {
               date: "2011-11-14T22:30:22Z",
               quantity: 2,
@@ -974,7 +974,7 @@ describe("crossfilter", () => {
             },
           ]);
           data.type.filterExact("visa");
-          assert.deepEqual(data.date.top(1), [
+          assert.deepStrictEqual(data.date.top(1), [
             {
               date: "2011-11-14T23:16:09Z",
               quantity: 1,
@@ -985,7 +985,7 @@ describe("crossfilter", () => {
             },
           ]);
           data.quantity.filterExact(2);
-          assert.deepEqual(data.date.top(1), [
+          assert.deepStrictEqual(data.date.top(1), [
             {
               date: "2011-11-14T22:58:54Z",
               quantity: 2,
@@ -1001,28 +1001,28 @@ describe("crossfilter", () => {
         }
       });
       it("negative or zero k returns an empty array", function () {
-        assert.deepEqual(data.quantity.top(0), []);
-        assert.deepEqual(data.quantity.top(-1), []);
-        assert.deepEqual(data.quantity.top(NaN), []);
-        assert.deepEqual(data.quantity.top(-Infinity), []);
-        assert.deepEqual(data.quantity.top(0, 0), []);
-        assert.deepEqual(data.quantity.top(-1, -1), []);
-        assert.deepEqual(data.quantity.top(NaN, NaN), []);
-        assert.deepEqual(data.quantity.top(-Infinity, -Infinity), []);
-        assert.deepEqual(data.date.top(0), []);
-        assert.deepEqual(data.date.top(-1), []);
-        assert.deepEqual(data.date.top(NaN), []);
-        assert.deepEqual(data.date.top(-Infinity), []);
-        assert.deepEqual(data.date.top(0, 0), []);
-        assert.deepEqual(data.date.top(-1, -1), []);
-        assert.deepEqual(data.date.top(NaN, NaN), []);
-        assert.deepEqual(data.date.top(-Infinity, -Infinity), []);
+        assert.deepStrictEqual(data.quantity.top(0), []);
+        assert.deepStrictEqual(data.quantity.top(-1), []);
+        assert.deepStrictEqual(data.quantity.top(NaN), []);
+        assert.deepStrictEqual(data.quantity.top(-Infinity), []);
+        assert.deepStrictEqual(data.quantity.top(0, 0), []);
+        assert.deepStrictEqual(data.quantity.top(-1, -1), []);
+        assert.deepStrictEqual(data.quantity.top(NaN, NaN), []);
+        assert.deepStrictEqual(data.quantity.top(-Infinity, -Infinity), []);
+        assert.deepStrictEqual(data.date.top(0), []);
+        assert.deepStrictEqual(data.date.top(-1), []);
+        assert.deepStrictEqual(data.date.top(NaN), []);
+        assert.deepStrictEqual(data.date.top(-Infinity), []);
+        assert.deepStrictEqual(data.date.top(0, 0), []);
+        assert.deepStrictEqual(data.date.top(-1, -1), []);
+        assert.deepStrictEqual(data.date.top(NaN, NaN), []);
+        assert.deepStrictEqual(data.date.top(-Infinity, -Infinity), []);
       });
     });
 
     describe("bottom", () => {
       it("returns the bottom k records by value, in descending order", function () {
-        assert.deepEqual(data.total.bottom(3), [
+        assert.deepStrictEqual(data.total.bottom(3), [
           {
             date: "2011-11-14T22:30:22Z",
             quantity: 2,
@@ -1048,7 +1048,7 @@ describe("crossfilter", () => {
             tags: [1, 2, 3],
           },
         ]);
-        assert.deepEqual(data.date.bottom(3), [
+        assert.deepStrictEqual(data.date.bottom(3), [
           {
             date: "2011-11-14T16:17:54Z",
             quantity: 2,
@@ -1076,7 +1076,7 @@ describe("crossfilter", () => {
         ]);
       });
       it("returns the bottom k records, using offset, by value, in descending order", function () {
-        assert.deepEqual(data.total.bottom(3, 1), [
+        assert.deepStrictEqual(data.total.bottom(3, 1), [
           {
             date: "2011-11-14T16:30:43Z",
             quantity: 2,
@@ -1102,7 +1102,7 @@ describe("crossfilter", () => {
             tags: [1, 3],
           },
         ]);
-        assert.deepEqual(data.date.bottom(3, 10), [
+        assert.deepStrictEqual(data.date.bottom(3, 10), [
           {
             date: "2011-11-14T17:25:45Z",
             quantity: 2,
@@ -1132,7 +1132,7 @@ describe("crossfilter", () => {
       it("observes the associated dimension's filters", function () {
         try {
           data.quantity.filterExact(4);
-          assert.deepEqual(data.total.bottom(3), [
+          assert.deepStrictEqual(data.total.bottom(3), [
             {
               date: "2011-11-14T21:18:48Z",
               quantity: 4,
@@ -1150,7 +1150,7 @@ describe("crossfilter", () => {
             new Date(Date.UTC(2011, 10, 14, 19)),
             new Date(Date.UTC(2011, 10, 14, 20)),
           ]);
-          assert.deepEqual(data.date.bottom(10), [
+          assert.deepStrictEqual(data.date.bottom(10), [
             {
               date: "2011-11-14T19:00:31Z",
               quantity: 2,
@@ -1176,7 +1176,7 @@ describe("crossfilter", () => {
               tags: [1, 3],
             },
           ]);
-          assert.deepEqual(data.date.bottom(10, 2), [
+          assert.deepStrictEqual(data.date.bottom(10, 2), [
             {
               date: "2011-11-14T19:30:44Z",
               quantity: 2,
@@ -1190,7 +1190,7 @@ describe("crossfilter", () => {
             Date.UTC(2011, 10, 14, 19),
             Date.UTC(2011, 10, 14, 20),
           ]); // also comparable
-          assert.deepEqual(data.date.bottom(10), [
+          assert.deepStrictEqual(data.date.bottom(10), [
             {
               date: "2011-11-14T19:00:31Z",
               quantity: 2,
@@ -1223,7 +1223,7 @@ describe("crossfilter", () => {
       it("observes other dimensions' filters", function () {
         try {
           data.type.filterExact("tab");
-          assert.deepEqual(data.total.bottom(2), [
+          assert.deepStrictEqual(data.total.bottom(2), [
             {
               date: "2011-11-14T22:30:22Z",
               quantity: 2,
@@ -1242,7 +1242,7 @@ describe("crossfilter", () => {
             },
           ]);
           data.type.filterExact("tab");
-          assert.deepEqual(data.total.bottom(2, 8), [
+          assert.deepStrictEqual(data.total.bottom(2, 8), [
             {
               date: "2011-11-14T17:52:02Z",
               quantity: 2,
@@ -1261,7 +1261,7 @@ describe("crossfilter", () => {
             },
           ]);
           data.type.filterExact("visa");
-          assert.deepEqual(data.total.bottom(1), [
+          assert.deepStrictEqual(data.total.bottom(1), [
             {
               date: "2011-11-14T22:58:54Z",
               quantity: 2,
@@ -1272,7 +1272,7 @@ describe("crossfilter", () => {
             },
           ]);
           data.quantity.filterExact(2);
-          assert.deepEqual(data.tip.bottom(1), [
+          assert.deepStrictEqual(data.tip.bottom(1), [
             {
               date: "2011-11-14T22:58:54Z",
               quantity: 2,
@@ -1288,7 +1288,7 @@ describe("crossfilter", () => {
         }
         try {
           data.type.filterExact("tab");
-          assert.deepEqual(data.date.bottom(2), [
+          assert.deepStrictEqual(data.date.bottom(2), [
             {
               date: "2011-11-14T16:17:54Z",
               quantity: 2,
@@ -1306,7 +1306,7 @@ describe("crossfilter", () => {
               tags: [1, 3],
             },
           ]);
-          assert.deepEqual(data.date.bottom(2, 8), [
+          assert.deepStrictEqual(data.date.bottom(2, 8), [
             {
               date: "2011-11-14T17:33:46Z",
               quantity: 2,
@@ -1325,7 +1325,7 @@ describe("crossfilter", () => {
             },
           ]);
           data.type.filterExact("visa");
-          assert.deepEqual(data.date.bottom(1), [
+          assert.deepStrictEqual(data.date.bottom(1), [
             {
               date: "2011-11-14T16:28:54Z",
               quantity: 1,
@@ -1336,7 +1336,7 @@ describe("crossfilter", () => {
             },
           ]);
           data.quantity.filterExact(2);
-          assert.deepEqual(data.date.bottom(1), [
+          assert.deepStrictEqual(data.date.bottom(1), [
             {
               date: "2011-11-14T17:38:40Z",
               quantity: 2,
@@ -1352,22 +1352,22 @@ describe("crossfilter", () => {
         }
       });
       it("negative or zero k returns an empty array", function () {
-        assert.deepEqual(data.quantity.bottom(0), []);
-        assert.deepEqual(data.quantity.bottom(-1), []);
-        assert.deepEqual(data.quantity.bottom(NaN), []);
-        assert.deepEqual(data.quantity.bottom(-Infinity), []);
-        assert.deepEqual(data.quantity.bottom(0, 0), []);
-        assert.deepEqual(data.quantity.bottom(-1, -1), []);
-        assert.deepEqual(data.quantity.bottom(NaN, NaN), []);
-        assert.deepEqual(data.quantity.bottom(-Infinity, -Infinity), []);
-        assert.deepEqual(data.date.bottom(0), []);
-        assert.deepEqual(data.date.bottom(-1), []);
-        assert.deepEqual(data.date.bottom(NaN), []);
-        assert.deepEqual(data.date.bottom(-Infinity), []);
-        assert.deepEqual(data.date.bottom(0, 0), []);
-        assert.deepEqual(data.date.bottom(-1, -1), []);
-        assert.deepEqual(data.date.bottom(NaN, NaN), []);
-        assert.deepEqual(data.date.bottom(-Infinity, -Infinity), []);
+        assert.deepStrictEqual(data.quantity.bottom(0), []);
+        assert.deepStrictEqual(data.quantity.bottom(-1), []);
+        assert.deepStrictEqual(data.quantity.bottom(NaN), []);
+        assert.deepStrictEqual(data.quantity.bottom(-Infinity), []);
+        assert.deepStrictEqual(data.quantity.bottom(0, 0), []);
+        assert.deepStrictEqual(data.quantity.bottom(-1, -1), []);
+        assert.deepStrictEqual(data.quantity.bottom(NaN, NaN), []);
+        assert.deepStrictEqual(data.quantity.bottom(-Infinity, -Infinity), []);
+        assert.deepStrictEqual(data.date.bottom(0), []);
+        assert.deepStrictEqual(data.date.bottom(-1), []);
+        assert.deepStrictEqual(data.date.bottom(NaN), []);
+        assert.deepStrictEqual(data.date.bottom(-Infinity), []);
+        assert.deepStrictEqual(data.date.bottom(0, 0), []);
+        assert.deepStrictEqual(data.date.bottom(-1, -1), []);
+        assert.deepStrictEqual(data.date.bottom(NaN, NaN), []);
+        assert.deepStrictEqual(data.date.bottom(-Infinity, -Infinity), []);
       });
     });
 
@@ -1375,7 +1375,7 @@ describe("crossfilter", () => {
       it("selects records that match the specified value exactly", function () {
         try {
           data.tip.filterExact(100);
-          assert.deepEqual(data.date.top(2), [
+          assert.deepStrictEqual(data.date.top(2), [
             {
               date: "2011-11-14T23:28:54Z",
               quantity: 2,
@@ -1400,7 +1400,7 @@ describe("crossfilter", () => {
       it("allows the filter value to be null", function () {
         try {
           data.tip.filterExact(null); // equivalent to 0 by natural ordering
-          assert.deepEqual(data.date.top(2), [
+          assert.deepStrictEqual(data.date.top(2), [
             {
               date: "2011-11-14T22:58:54Z",
               quantity: 2,
@@ -1524,7 +1524,7 @@ describe("crossfilter", () => {
             return d % 2;
           });
           data.total.filterRange([100, 200]);
-          assert.deepEqual(data.date.top(Infinity).length, 19);
+          assert.deepStrictEqual(data.date.top(Infinity).length, 19);
         } finally {
           data.total.filterAll();
         }
@@ -1853,7 +1853,7 @@ describe("crossfilter", () => {
       });
 
       it("key defaults to value", function () {
-        assert.deepEqual(data.type.types.top(Infinity), [
+        assert.deepStrictEqual(data.type.types.top(Infinity), [
           { key: "tab", value: 32 },
           { key: "visa", value: 7 },
           { key: "cash", value: 4 },
@@ -1866,8 +1866,8 @@ describe("crossfilter", () => {
             return d;
           }),
           indexes = index.group();
-        assert.deepEqual(index.top(2), [256, 256]);
-        assert.deepEqual(indexes.top(1), [{ key: 256, value: 2 }]);
+        assert.deepStrictEqual(index.top(2), [256, 256]);
+        assert.deepStrictEqual(indexes.top(1), [{ key: 256, value: 2 }]);
         assert.equal(indexes.size(), 257);
       });
 
@@ -1877,8 +1877,8 @@ describe("crossfilter", () => {
             return d;
           }),
           indexes = index.group();
-        assert.deepEqual(index.top(2), [65536, 65536]);
-        assert.deepEqual(indexes.top(1), [{ key: 65536, value: 2 }]);
+        assert.deepStrictEqual(index.top(2), [65536, 65536]);
+        assert.deepStrictEqual(indexes.top(1), [{ key: 65536, value: 2 }]);
         assert.equal(indexes.size(), 65537);
       });
 
@@ -1926,7 +1926,7 @@ describe("crossfilter", () => {
 
       describe("reduce", () => {
         it("defaults to count", function () {
-          assert.deepEqual(data.date.hours.top(1), [
+          assert.deepStrictEqual(data.date.hours.top(1), [
             { key: new Date(Date.UTC(2011, 10, 14, 17, 0, 0)), value: 9 },
           ]);
         });
@@ -1936,7 +1936,7 @@ describe("crossfilter", () => {
             data.date.hours.reduceSum(function (d) {
               return d.total;
             });
-            assert.deepEqual(data.date.hours.top(1), [
+            assert.deepStrictEqual(data.date.hours.top(1), [
               { key: new Date(Date.UTC(2011, 10, 14, 17, 0, 0)), value: 1240 },
             ]);
           } finally {
@@ -1983,17 +1983,17 @@ describe("crossfilter", () => {
           });
 
           it("on group creation", function () {
-            assert.deepEqual(data.groupMax.all(), data.groupSum.all());
+            assert.deepStrictEqual(data.groupMax.all(), data.groupSum.all());
           });
 
           it("on filtering", function () {
             data.foo.filterRange([1, 3]);
-            assert.deepEqual(data.groupMax.all(), [
+            assert.deepStrictEqual(data.groupMax.all(), [
               { key: 1, value: 2 },
               { key: 2, value: 2 },
               { key: 3, value: 4 },
             ]);
-            assert.deepEqual(data.groupSum.all(), [
+            assert.deepStrictEqual(data.groupSum.all(), [
               { key: 1, value: 2 },
               { key: 2, value: 2 },
               { key: 3, value: 0 },
@@ -2003,18 +2003,18 @@ describe("crossfilter", () => {
 
           it("on adding data after group creation", function () {
             data.add([{ foo: 1, val: 2 }]);
-            assert.deepEqual(data.groupMax.all(), data.groupSum.all());
+            assert.deepStrictEqual(data.groupMax.all(), data.groupSum.all());
           });
 
           it("on adding data when a filter is in place", function () {
             data.foo.filterRange([1, 3]);
             data.add([{ foo: 3, val: 1 }]);
-            assert.deepEqual(data.groupMax.all(), [
+            assert.deepStrictEqual(data.groupMax.all(), [
               { key: 1, value: 4 },
               { key: 2, value: 2 },
               { key: 3, value: 5 },
             ]);
-            assert.deepEqual(data.groupSum.all(), [
+            assert.deepStrictEqual(data.groupSum.all(), [
               { key: 1, value: 4 },
               { key: 2, value: 2 },
               { key: 3, value: 0 },
@@ -2044,7 +2044,7 @@ describe("crossfilter", () => {
 
       describe("top", () => {
         it("returns the top k groups by reduce value, in descending order", function () {
-          assert.deepEqual(data.date.hours.top(3), [
+          assert.deepStrictEqual(data.date.hours.top(3), [
             { key: new Date(Date.UTC(2011, 10, 14, 17, 0, 0)), value: 9 },
             { key: new Date(Date.UTC(2011, 10, 14, 16, 0, 0)), value: 7 },
             { key: new Date(Date.UTC(2011, 10, 14, 21, 0, 0)), value: 6 },
@@ -2055,7 +2055,7 @@ describe("crossfilter", () => {
             data.date.hours.order(function (v) {
               return -v;
             });
-            assert.deepEqual(data.date.hours.top(3), [
+            assert.deepStrictEqual(data.date.hours.top(3), [
               { key: new Date(Date.UTC(2011, 10, 14, 20, 0, 0)), value: 2 },
               { key: new Date(Date.UTC(2011, 10, 14, 19, 0, 0)), value: 3 },
               { key: new Date(Date.UTC(2011, 10, 14, 18, 0, 0)), value: 5 },
@@ -2089,7 +2089,7 @@ describe("crossfilter", () => {
               tags: ["A"],
             },
           ]);
-          assert.deepEqual(group.top(Infinity), [
+          assert.deepStrictEqual(group.top(Infinity), [
             {
               key: "A",
               value: 2,
@@ -2126,7 +2126,7 @@ describe("crossfilter", () => {
             },
           ];
           data.add(data2);
-          assert.deepEqual(group.top(Infinity), [
+          assert.deepStrictEqual(group.top(Infinity), [
             {
               key: "B",
               value: 1,
@@ -2145,7 +2145,7 @@ describe("crossfilter", () => {
 
       describe("order", () => {
         it("defaults to the identity function", function () {
-          assert.deepEqual(data.date.hours.top(1), [
+          assert.deepStrictEqual(data.date.hours.top(1), [
             { key: new Date(Date.UTC(2011, 10, 14, 17, 0, 0)), value: 9 },
           ]);
         });
@@ -2170,7 +2170,7 @@ describe("crossfilter", () => {
               .order(function (v) {
                 return v.total;
               });
-            assert.deepEqual(data.date.hours.top(1), [
+            assert.deepStrictEqual(data.date.hours.top(1), [
               {
                 key: new Date(Date.UTC(2011, 10, 14, 17, 0, 0)),
                 value: { count: 9, total: 1240 },
@@ -2336,7 +2336,7 @@ describe("crossfilter", () => {
           all = g2.all();
         d1.filterRange([-1, 1]); // a filter is present when the dimension is disposed
         d1.dispose();
-        assert.deepEqual(g2.all(), [
+        assert.deepStrictEqual(g2.all(), [
           { key: 0, value: 2 },
           { key: 2, value: 2 },
         ]);
@@ -2407,33 +2407,33 @@ describe("crossfilter", () => {
         });
 
         it("on group creation", function () {
-          assert.deepEqual(data.groupMax.value(), data.groupSum.value());
+          assert.deepStrictEqual(data.groupMax.value(), data.groupSum.value());
         });
         it("on filtering", function () {
           data.foo.filterRange([1, 3]);
-          assert.deepEqual(data.groupMax.value(), 8);
-          assert.deepEqual(data.groupSum.value(), 4);
+          assert.deepStrictEqual(data.groupMax.value(), 8);
+          assert.deepStrictEqual(data.groupSum.value(), 4);
           data.foo.filterAll();
         });
         it("on adding data after group creation", function () {
           data.add([{ foo: 1, val: 2 }]);
-          assert.deepEqual(data.groupMax.value(), data.groupSum.value());
+          assert.deepStrictEqual(data.groupMax.value(), data.groupSum.value());
         });
         it("on adding data when a filter is in place", function () {
           data.foo.filterRange([1, 3]);
           data.add([{ foo: 3, val: 1 }]);
-          assert.deepEqual(data.groupMax.value(), 11);
-          assert.deepEqual(data.groupSum.value(), 6);
+          assert.deepStrictEqual(data.groupMax.value(), 11);
+          assert.deepStrictEqual(data.groupSum.value(), 6);
           data.foo.filterAll();
         });
         it("on removing data after group creation", function () {
           data.val.filter(1);
           data.remove();
-          assert.deepEqual(data.groupMax.value(), 10);
-          assert.deepEqual(data.groupSum.value(), 0);
+          assert.deepStrictEqual(data.groupMax.value(), 10);
+          assert.deepStrictEqual(data.groupSum.value(), 0);
 
           data.val.filterAll();
-          assert.deepEqual(data.groupMax.value(), data.groupSum.value());
+          assert.deepStrictEqual(data.groupMax.value(), data.groupSum.value());
         });
       });
     });
@@ -2630,33 +2630,33 @@ describe("crossfilter", () => {
         bar = data.dimension(function (d) {
           return -d;
         });
-      assert.deepEqual(foo.top(Infinity), []);
+      assert.deepStrictEqual(foo.top(Infinity), []);
       foo.filterExact(42);
       data.add([43, 42, 41]);
-      assert.deepEqual(foo.top(Infinity), [42]);
-      assert.deepEqual(bar.top(Infinity), [42]);
+      assert.deepStrictEqual(foo.top(Infinity), [42]);
+      assert.deepStrictEqual(bar.top(Infinity), [42]);
       data.add([43, 42]);
-      assert.deepEqual(foo.top(Infinity), [42, 42]);
-      assert.deepEqual(bar.top(Infinity), [42, 42]);
+      assert.deepStrictEqual(foo.top(Infinity), [42, 42]);
+      assert.deepStrictEqual(bar.top(Infinity), [42, 42]);
       foo.filterRange([42, 44]);
       data.add([43]);
-      assert.deepEqual(foo.top(Infinity), [43, 43, 43, 42, 42]);
-      assert.deepEqual(bar.top(Infinity), [42, 42, 43, 43, 43]);
+      assert.deepStrictEqual(foo.top(Infinity), [43, 43, 43, 42, 42]);
+      assert.deepStrictEqual(bar.top(Infinity), [42, 42, 43, 43, 43]);
       foo.filterFunction(function (d) {
         return d % 2 === 1;
       });
       data.add([44, 44, 45]);
-      assert.deepEqual(foo.top(Infinity), [45, 43, 43, 43, 41]);
-      assert.deepEqual(bar.top(Infinity), [41, 43, 43, 43, 45]);
+      assert.deepStrictEqual(foo.top(Infinity), [45, 43, 43, 43, 41]);
+      assert.deepStrictEqual(bar.top(Infinity), [41, 43, 43, 43, 45]);
       bar.filterExact([-43]);
-      assert.deepEqual(bar.top(Infinity), [43, 43, 43]);
+      assert.deepStrictEqual(bar.top(Infinity), [43, 43, 43]);
       data.add([43]);
-      assert.deepEqual(bar.top(Infinity), [43, 43, 43, 43]);
+      assert.deepStrictEqual(bar.top(Infinity), [43, 43, 43, 43]);
       bar.filterAll();
       data.add([0]);
-      assert.deepEqual(bar.top(Infinity), [41, 43, 43, 43, 43, 45]);
+      assert.deepStrictEqual(bar.top(Infinity), [41, 43, 43, 43, 43, 45]);
       foo.filterAll();
-      assert.deepEqual(
+      assert.deepStrictEqual(
         bar.top(Infinity),
         [0, 41, 42, 42, 43, 43, 43, 43, 44, 44, 45]
       );
@@ -2672,32 +2672,32 @@ describe("crossfilter", () => {
         foos = foo.group(),
         all = data.groupAll();
       assert.equal(all.value(), 0);
-      assert.deepEqual(foos.all(), []);
+      assert.deepStrictEqual(foos.all(), []);
       foo.filterExact(42);
       data.add([43, 42, 41]);
       assert.equal(all.value(), 1);
-      assert.deepEqual(foos.all(), [
+      assert.deepStrictEqual(foos.all(), [
         { key: 41, value: 1 },
         { key: 42, value: 1 },
         { key: 43, value: 1 },
       ]);
       bar.filterExact(-42);
       assert.equal(all.value(), 1);
-      assert.deepEqual(foos.all(), [
+      assert.deepStrictEqual(foos.all(), [
         { key: 41, value: 0 },
         { key: 42, value: 1 },
         { key: 43, value: 0 },
       ]);
       data.add([43, 42, 41]);
       assert.equal(all.value(), 2);
-      assert.deepEqual(foos.all(), [
+      assert.deepStrictEqual(foos.all(), [
         { key: 41, value: 0 },
         { key: 42, value: 2 },
         { key: 43, value: 0 },
       ]);
       bar.filterAll();
       assert.equal(all.value(), 2);
-      assert.deepEqual(foos.all(), [
+      assert.deepStrictEqual(foos.all(), [
         { key: 41, value: 2 },
         { key: 42, value: 2 },
         { key: 43, value: 2 },
@@ -2760,7 +2760,7 @@ describe("crossfilter", () => {
         }),
         foos = foo.group().reduce(add, remove, initial).order(order);
       data.add([2]).add([1, 1, 1]);
-      assert.deepEqual(foos.top(2), [
+      assert.deepStrictEqual(foos.top(2), [
         { key: 1, value: { foo: 3 } },
         { key: 2, value: { foo: 1 } },
       ]);
@@ -2789,7 +2789,7 @@ describe("crossfilter", () => {
         }),
         foos = foo.group();
       data.add(d3.range(0, 256));
-      assert.deepEqual(
+      assert.deepStrictEqual(
         foos.all().map(function (d) {
           return d.key;
         }),
@@ -2801,16 +2801,16 @@ describe("crossfilter", () => {
         })
       );
       data.add([128]);
-      assert.deepEqual(foos.top(1), [{ key: 128, value: 2 }]);
+      assert.deepStrictEqual(foos.top(1), [{ key: 128, value: 2 }]);
       bar.filterExact(0);
       data.add(d3.range(-256, 0));
-      assert.deepEqual(
+      assert.deepStrictEqual(
         foos.all().map(function (d) {
           return d.key;
         }),
         d3.range(-256, 256)
       );
-      assert.deepEqual(foos.top(1), [{ key: 0, value: 1 }]);
+      assert.deepStrictEqual(foos.top(1), [{ key: 0, value: 1 }]);
     });
     it("can add lots of groups in reverse order", function () {
       var data = crossfilter(),
@@ -2831,7 +2831,7 @@ describe("crossfilter", () => {
           })
         );
       }
-      assert.deepEqual(foos.top(1), [{ key: -998, value: 8977.5 }]);
+      assert.deepStrictEqual(foos.top(1), [{ key: -998, value: 8977.5 }]);
     });
     it("can add a record that matches the tag filter", function () {
       var data2 = crossfilter();
@@ -2858,12 +2858,12 @@ describe("crossfilter", () => {
       var barGroup = barDim.group();
 
       assert.equal(allBarSum.value(), 7);
-      assert.deepEqual(fooGroup.all(), [
+      assert.deepStrictEqual(fooGroup.all(), [
         { key: 1, value: 2 },
         { key: 2, value: 3 },
         { key: 3, value: 2 },
       ]);
-      assert.deepEqual(fooBarSum.all(), [
+      assert.deepStrictEqual(fooBarSum.all(), [
         { key: 1, value: 3 },
         { key: 2, value: 7 },
         { key: 3, value: 5 },
@@ -2880,12 +2880,12 @@ describe("crossfilter", () => {
       assert.equal(data2.allFiltered().length, 3); // fails: 2
 
       // fooGroup and fooBarSum do not observe tag filter
-      assert.deepEqual(fooGroup.all(), [
+      assert.deepStrictEqual(fooGroup.all(), [
         { key: 1, value: 3 },
         { key: 2, value: 3 },
         { key: 3, value: 3 },
       ]);
-      assert.deepEqual(fooBarSum.all(), [
+      assert.deepStrictEqual(fooBarSum.all(), [
         { key: 1, value: 11 },
         { key: 2, value: 7 },
         { key: 3, value: 13 },
@@ -2907,7 +2907,7 @@ describe("crossfilter", () => {
       data2.remove(function () {
         return true;
       });
-      assert.deepEqual(fooDimension.top(Infinity), []);
+      assert.deepStrictEqual(fooDimension.top(Infinity), []);
     });
     it("can add a record that matches the tag filter function", function () {
       var data2 = crossfilter();
@@ -2934,12 +2934,12 @@ describe("crossfilter", () => {
       var barGroup = barDim.group();
 
       assert.equal(allBarSum.value(), 7);
-      assert.deepEqual(fooGroup.all(), [
+      assert.deepStrictEqual(fooGroup.all(), [
         { key: 1, value: 2 },
         { key: 2, value: 3 },
         { key: 3, value: 2 },
       ]);
-      assert.deepEqual(fooBarSum.all(), [
+      assert.deepStrictEqual(fooBarSum.all(), [
         { key: 1, value: 3 },
         { key: 2, value: 7 },
         { key: 3, value: 5 },
@@ -2956,12 +2956,12 @@ describe("crossfilter", () => {
       assert.equal(data2.allFiltered().length, 3); // fails: 2
 
       // fooGroup and fooBarSum do not observe tag filter
-      assert.deepEqual(fooGroup.all(), [
+      assert.deepStrictEqual(fooGroup.all(), [
         { key: 1, value: 3 },
         { key: 2, value: 3 },
         { key: 3, value: 3 },
       ]);
-      assert.deepEqual(fooBarSum.all(), [
+      assert.deepStrictEqual(fooBarSum.all(), [
         { key: 1, value: 11 },
         { key: 2, value: 7 },
         { key: 3, value: 13 },
@@ -2983,7 +2983,7 @@ describe("crossfilter", () => {
       data2.remove(function () {
         return true;
       });
-      assert.deepEqual(fooDimension.top(Infinity), []);
+      assert.deepStrictEqual(fooDimension.top(Infinity), []);
     });
     it("can add a record that doesn't match the tag filter", function () {
       var data2 = crossfilter();
@@ -3010,12 +3010,12 @@ describe("crossfilter", () => {
       var barGroup = barDim.group();
 
       assert.equal(allBarSum.value(), 7);
-      assert.deepEqual(fooGroup.all(), [
+      assert.deepStrictEqual(fooGroup.all(), [
         { key: 1, value: 2 },
         { key: 2, value: 3 },
         { key: 3, value: 2 },
       ]);
-      assert.deepEqual(fooBarSum.all(), [
+      assert.deepStrictEqual(fooBarSum.all(), [
         { key: 1, value: 3 },
         { key: 2, value: 7 },
         { key: 3, value: 5 },
@@ -3032,12 +3032,12 @@ describe("crossfilter", () => {
       assert.equal(data2.allFiltered().length, 2);
 
       // fooGroup and fooBarSum do not observe tag filter
-      assert.deepEqual(fooGroup.all(), [
+      assert.deepStrictEqual(fooGroup.all(), [
         { key: 1, value: 2 },
         { key: 2, value: 4 },
         { key: 3, value: 2 },
       ]);
-      assert.deepEqual(fooBarSum.all(), [
+      assert.deepStrictEqual(fooBarSum.all(), [
         { key: 1, value: 3 },
         { key: 2, value: 15 },
         { key: 3, value: 5 },
@@ -3059,7 +3059,7 @@ describe("crossfilter", () => {
       data2.remove(function () {
         return true;
       });
-      assert.deepEqual(fooDimension.top(Infinity), []);
+      assert.deepStrictEqual(fooDimension.top(Infinity), []);
     });
     it("can add a record that doesn't match the tag filter function", function () {
       var data2 = crossfilter();
@@ -3086,12 +3086,12 @@ describe("crossfilter", () => {
       var barGroup = barDim.group();
 
       assert.equal(allBarSum.value(), 7);
-      assert.deepEqual(fooGroup.all(), [
+      assert.deepStrictEqual(fooGroup.all(), [
         { key: 1, value: 2 },
         { key: 2, value: 3 },
         { key: 3, value: 2 },
       ]);
-      assert.deepEqual(fooBarSum.all(), [
+      assert.deepStrictEqual(fooBarSum.all(), [
         { key: 1, value: 3 },
         { key: 2, value: 7 },
         { key: 3, value: 5 },
@@ -3108,12 +3108,12 @@ describe("crossfilter", () => {
       assert.equal(data2.allFiltered().length, 2);
 
       // fooGroup and fooBarSum do not observe tag filter
-      assert.deepEqual(fooGroup.all(), [
+      assert.deepStrictEqual(fooGroup.all(), [
         { key: 1, value: 2 },
         { key: 2, value: 4 },
         { key: 3, value: 2 },
       ]);
-      assert.deepEqual(fooBarSum.all(), [
+      assert.deepStrictEqual(fooBarSum.all(), [
         { key: 1, value: 3 },
         { key: 2, value: 15 },
         { key: 3, value: 5 },
@@ -3135,7 +3135,7 @@ describe("crossfilter", () => {
       data2.remove(function () {
         return true;
       });
-      assert.deepEqual(fooDimension.top(Infinity), []);
+      assert.deepStrictEqual(fooDimension.top(Infinity), []);
     });
   });
 
@@ -3157,56 +3157,56 @@ describe("crossfilter", () => {
       data.remove();
       data.foo.filterAll();
       data.remove();
-      assert.deepEqual(data.foo.top(Infinity), []);
+      assert.deepStrictEqual(data.foo.top(Infinity), []);
     });
     it("removing a record works for another group with cardinality one", function () {
       data.add([{ foo: 0 }, { foo: -1 }]);
-      assert.deepEqual(data.foo.positive.all(), [{ key: 0, value: 2 }]);
+      assert.deepStrictEqual(data.foo.positive.all(), [{ key: 0, value: 2 }]);
       data.foo.filter(0);
       data.remove();
-      assert.deepEqual(data.foo.positive.all(), [{ key: 0, value: 1 }]);
+      assert.deepStrictEqual(data.foo.positive.all(), [{ key: 0, value: 1 }]);
       data.foo.filterAll();
-      assert.deepEqual(data.foo.top(Infinity), [{ foo: -1 }]);
+      assert.deepStrictEqual(data.foo.top(Infinity), [{ foo: -1 }]);
       data.remove();
-      assert.deepEqual(data.foo.top(Infinity), []);
+      assert.deepStrictEqual(data.foo.top(Infinity), []);
     });
     it("removing a record updates dimension", function () {
       data.add([{ foo: 1 }, { foo: 2 }]);
       data.foo.filterExact(1);
       data.remove();
       data.foo.filterAll();
-      assert.deepEqual(data.foo.top(Infinity), [{ foo: 2 }]);
+      assert.deepStrictEqual(data.foo.top(Infinity), [{ foo: 2 }]);
       data.remove();
-      assert.deepEqual(data.foo.top(Infinity), []);
+      assert.deepStrictEqual(data.foo.top(Infinity), []);
     });
     it("removing records updates group", function () {
       data.add([{ foo: 1 }, { foo: 2 }, { foo: 3 }]);
-      assert.deepEqual(data.foo.top(Infinity), [
+      assert.deepStrictEqual(data.foo.top(Infinity), [
         { foo: 3 },
         { foo: 2 },
         { foo: 1 },
       ]);
-      assert.deepEqual(data.foo.div2.all(), [
+      assert.deepStrictEqual(data.foo.div2.all(), [
         { key: 0, value: 1 },
         { key: 1, value: 2 },
       ]);
       data.foo.filterRange([1, 3]);
       data.remove();
       data.foo.filterAll();
-      assert.deepEqual(data.foo.top(Infinity), [{ foo: 3 }]);
-      assert.deepEqual(data.foo.div2.all(), [{ key: 1, value: 1 }]);
+      assert.deepStrictEqual(data.foo.top(Infinity), [{ foo: 3 }]);
+      assert.deepStrictEqual(data.foo.div2.all(), [{ key: 1, value: 1 }]);
       data.remove();
-      assert.deepEqual(data.foo.top(Infinity), []);
-      assert.deepEqual(data.foo.div2.all(), []);
+      assert.deepStrictEqual(data.foo.top(Infinity), []);
+      assert.deepStrictEqual(data.foo.div2.all(), []);
     });
     it("filtering works correctly after removing a record", function () {
       data.add([{ foo: 1 }, { foo: 2 }, { foo: 3 }]);
       data.foo.filter(2);
       data.remove();
       data.foo.filterAll();
-      assert.deepEqual(data.foo.top(Infinity), [{ foo: 3 }, { foo: 1 }]);
+      assert.deepStrictEqual(data.foo.top(Infinity), [{ foo: 3 }, { foo: 1 }]);
       data.remove();
-      assert.deepEqual(data.foo.top(Infinity), []);
+      assert.deepStrictEqual(data.foo.top(Infinity), []);
     });
   });
 
@@ -3230,63 +3230,63 @@ describe("crossfilter", () => {
       data.remove(function (d) {
         return d.foo === 1.1;
       });
-      assert.deepEqual(data.all(), [{ foo: 1 }, { foo: 1.2 }]);
+      assert.deepStrictEqual(data.all(), [{ foo: 1 }, { foo: 1.2 }]);
       data.remove(function () {
         return true;
       });
-      assert.deepEqual(data.foo.top(Infinity), []);
+      assert.deepStrictEqual(data.foo.top(Infinity), []);
     });
     it("removing a record works for another group with cardinality one", function () {
       data.add([{ foo: 0 }, { foo: -1 }]);
-      assert.deepEqual(data.foo.positive.all(), [{ key: 0, value: 2 }]);
+      assert.deepStrictEqual(data.foo.positive.all(), [{ key: 0, value: 2 }]);
       data.remove(function (d, i) {
         return d.foo === 0;
       });
-      assert.deepEqual(data.foo.positive.all(), [{ key: 0, value: 1 }]);
-      assert.deepEqual(data.foo.top(Infinity), [{ foo: -1 }]);
+      assert.deepStrictEqual(data.foo.positive.all(), [{ key: 0, value: 1 }]);
+      assert.deepStrictEqual(data.foo.top(Infinity), [{ foo: -1 }]);
       data.remove(function () {
         return true;
       });
-      assert.deepEqual(data.foo.top(Infinity), []);
+      assert.deepStrictEqual(data.foo.top(Infinity), []);
     });
     it("removing a record updates dimension", function () {
       data.add([{ foo: 1 }, { foo: 2 }]);
       data.remove(function (d) {
         return d.foo === 1;
       });
-      assert.deepEqual(data.foo.top(Infinity), [{ foo: 2 }]);
+      assert.deepStrictEqual(data.foo.top(Infinity), [{ foo: 2 }]);
       data.remove(function () {
         return true;
       });
-      assert.deepEqual(data.foo.top(Infinity), []);
+      assert.deepStrictEqual(data.foo.top(Infinity), []);
     });
     it("removing records updates group", function () {
       data.add([{ foo: 1 }, { foo: 2 }, { foo: 3 }]);
-      assert.deepEqual(data.foo.top(Infinity), [
+      assert.deepStrictEqual(data.foo.top(Infinity), [
         { foo: 3 },
         { foo: 2 },
         { foo: 1 },
       ]);
-      assert.deepEqual(data.foo.div2.all(), [
+      assert.deepStrictEqual(data.foo.div2.all(), [
         { key: 0, value: 1 },
         { key: 1, value: 2 },
       ]);
       data.remove(function (d) {
         return d.foo < 3;
       });
-      assert.deepEqual(data.foo.top(Infinity), [{ foo: 3 }]);
-      assert.deepEqual(data.foo.div2.all(), [{ key: 1, value: 1 }]);
+      assert.deepStrictEqual(data.foo.top(Infinity), [{ foo: 3 }]);
+      assert.deepStrictEqual(data.foo.div2.all(), [{ key: 1, value: 1 }]);
       data.remove(function () {
         return true;
       });
-      assert.deepEqual(data.foo.top(Infinity), []);
-      assert.deepEqual(data.foo.div2.all(), []);
+      assert.deepStrictEqual(data.foo.top(Infinity), []);
+      assert.deepStrictEqual(data.foo.div2.all(), []);
     });
     it("can remove records while filtering", function () {
       data.add([{ foo: 1 }, { foo: 2 }, { foo: 3 }]);
 
       assert.equal(data.allSum.value(), 6);
-      assert.deepEqual(data.foo.positive.all(), [{ key: 1, value: 3 }]);
+      assert.deepStrictEqual(data.foo.positive.all(), [{ key: 1, value: 3 }]);
 
       data.foo.filter(2);
       assert.equal(data.allSum.value(), 2);
@@ -3295,7 +3295,7 @@ describe("crossfilter", () => {
         return d.foo === 3;
       });
       assert.equal(data.allSum.value(), 2);
-      assert.deepEqual(data.foo.positive.all(), [{ key: 1, value: 2 }]);
+      assert.deepStrictEqual(data.foo.positive.all(), [{ key: 1, value: 2 }]);
 
       data.remove(function (d) {
         return d.foo === 2;
@@ -3308,7 +3308,7 @@ describe("crossfilter", () => {
       data.remove(function () {
         return true;
       });
-      assert.deepEqual(data.foo.top(Infinity), []);
+      assert.deepStrictEqual(data.foo.top(Infinity), []);
     });
     it("can remove records using predicate function while filtering on iterable dimension", function () {
       var data2 = crossfilter();
@@ -3329,12 +3329,12 @@ describe("crossfilter", () => {
       });
 
       assert.equal(allBarSum.value(), 7);
-      assert.deepEqual(fooGroup.all(), [
+      assert.deepStrictEqual(fooGroup.all(), [
         { key: 1, value: 2 },
         { key: 2, value: 3 },
         { key: 3, value: 2 },
       ]);
-      assert.deepEqual(fooBarSum.all(), [
+      assert.deepStrictEqual(fooBarSum.all(), [
         { key: 1, value: 3 },
         { key: 2, value: 7 },
         { key: 3, value: 5 },
@@ -3347,11 +3347,11 @@ describe("crossfilter", () => {
         return d.foo.indexOf(1) >= 0;
       });
       assert.equal(allBarSum.value(), 4);
-      assert.deepEqual(fooGroup.all(), [
+      assert.deepStrictEqual(fooGroup.all(), [
         { key: 2, value: 1 },
         { key: 3, value: 1 },
       ]);
-      assert.deepEqual(fooBarSum.all(), [
+      assert.deepStrictEqual(fooBarSum.all(), [
         { key: 2, value: 4 },
         { key: 3, value: 4 },
       ]);
@@ -3362,7 +3362,7 @@ describe("crossfilter", () => {
       data2.remove(function () {
         return true;
       });
-      assert.deepEqual(fooDimension.top(Infinity), []);
+      assert.deepStrictEqual(fooDimension.top(Infinity), []);
     });
   });
 
@@ -3489,7 +3489,7 @@ describe("crossfilter", () => {
 
     describe("top", () => {
       it("returns the top k records by value, placing non-empty row on top", function () {
-        assert.deepEqual(data.labels.top(5), [
+        assert.deepStrictEqual(data.labels.top(5), [
           { name: "echo", labels: ["courageous"] },
           { name: "apha", labels: [] },
           { name: "bravo", labels: [] },
@@ -3498,7 +3498,7 @@ describe("crossfilter", () => {
         ]);
       });
       it("returns the top k records, using offset, by value", function () {
-        assert.deepEqual(data.labels.top(3, 2), [
+        assert.deepStrictEqual(data.labels.top(3, 2), [
           { name: "bravo", labels: [] },
           { name: "charle", labels: [] },
           { name: "delta", labels: [] },
@@ -3507,7 +3507,7 @@ describe("crossfilter", () => {
     });
     describe("bottom", () => {
       it("returns the bottom k records by value, placing non-empty row on bottom", function () {
-        assert.deepEqual(data.labels.bottom(5), [
+        assert.deepStrictEqual(data.labels.bottom(5), [
           { name: "apha", labels: [] },
           { name: "bravo", labels: [] },
           { name: "charle", labels: [] },
@@ -3516,7 +3516,7 @@ describe("crossfilter", () => {
         ]);
       });
       it("returns the bottom k records, using offset, by value, in descending order", function () {
-        assert.deepEqual(data.labels.bottom(3, 2), [
+        assert.deepStrictEqual(data.labels.bottom(3, 2), [
           { name: "charle", labels: [] },
           { name: "delta", labels: [] },
           { name: "echo", labels: ["courageous"] },
@@ -3550,7 +3550,7 @@ describe("crossfilter", () => {
       it("observes other dimensions' filters", function () {
         try {
           data.quantity.filterExact(4);
-          assert.deepEqual(data.tags.top(1), [
+          assert.deepStrictEqual(data.tags.top(1), [
             {
               date: "2011-11-14T21:18:48Z",
               quantity: 4,
@@ -3562,7 +3562,7 @@ describe("crossfilter", () => {
           ]);
           data.quantity.filterAll();
           data.type.filterExact("visa");
-          assert.deepEqual(data.tags.top(1), [
+          assert.deepStrictEqual(data.tags.top(1), [
             {
               date: "2011-11-14T23:16:09Z",
               quantity: 1,
@@ -3573,7 +3573,7 @@ describe("crossfilter", () => {
             },
           ]);
           data.quantity.filterExact(2);
-          assert.deepEqual(data.tags.top(1), [
+          assert.deepStrictEqual(data.tags.top(1), [
             {
               date: "2011-11-14T17:38:40Z",
               quantity: 2,
@@ -3589,7 +3589,7 @@ describe("crossfilter", () => {
         }
         try {
           data.type.filterExact("tab");
-          assert.deepEqual(data.date.top(2), [
+          assert.deepStrictEqual(data.date.top(2), [
             {
               date: "2011-11-14T23:28:54Z",
               quantity: 2,
@@ -3608,7 +3608,7 @@ describe("crossfilter", () => {
             },
           ]);
           data.type.filterExact("visa");
-          assert.deepEqual(data.date.top(1), [
+          assert.deepStrictEqual(data.date.top(1), [
             {
               date: "2011-11-14T23:16:09Z",
               quantity: 1,
@@ -3619,7 +3619,7 @@ describe("crossfilter", () => {
             },
           ]);
           data.quantity.filterExact(2);
-          assert.deepEqual(data.date.top(1), [
+          assert.deepStrictEqual(data.date.top(1), [
             {
               date: "2011-11-14T22:58:54Z",
               quantity: 2,
@@ -3635,10 +3635,10 @@ describe("crossfilter", () => {
         }
       });
       it("negative or zero k returns an empty array", function () {
-        assert.deepEqual(data.tags.top(0), []);
-        assert.deepEqual(data.tags.top(-1), []);
-        assert.deepEqual(data.tags.top(NaN), []);
-        assert.deepEqual(data.tags.top(-Infinity), []);
+        assert.deepStrictEqual(data.tags.top(0), []);
+        assert.deepStrictEqual(data.tags.top(-1), []);
+        assert.deepStrictEqual(data.tags.top(NaN), []);
+        assert.deepStrictEqual(data.tags.top(-Infinity), []);
       });
     });
 
@@ -3653,7 +3653,7 @@ describe("crossfilter", () => {
       it("observes the associated dimension's filters", function () {
         try {
           data.quantity.filterExact(4);
-          assert.deepEqual(data.tags.bottom(3), [
+          assert.deepStrictEqual(data.tags.bottom(3), [
             {
               date: "2011-11-14T21:18:48Z",
               quantity: 4,
@@ -3687,7 +3687,7 @@ describe("crossfilter", () => {
             new Date(Date.UTC(2011, 10, 14, 19)),
             new Date(Date.UTC(2011, 10, 14, 20)),
           ]);
-          assert.deepEqual(data.tags.bottom(10), [
+          assert.deepStrictEqual(data.tags.bottom(10), [
             {
               date: "2011-11-14T19:04:22Z",
               quantity: 2,
@@ -3760,7 +3760,7 @@ describe("crossfilter", () => {
       it("observes other dimensions' filters", function () {
         try {
           data.type.filterExact("tab");
-          assert.deepEqual(data.tags.bottom(2), [
+          assert.deepStrictEqual(data.tags.bottom(2), [
             {
               date: "2011-11-14T17:22:59Z",
               quantity: 2,
@@ -3779,7 +3779,7 @@ describe("crossfilter", () => {
             },
           ]);
           data.type.filterExact("visa");
-          assert.deepEqual(data.tags.bottom(1), [
+          assert.deepStrictEqual(data.tags.bottom(1), [
             {
               date: "2011-11-14T17:29:52Z",
               quantity: 1,
@@ -3790,7 +3790,7 @@ describe("crossfilter", () => {
             },
           ]);
           data.quantity.filterExact(2);
-          assert.deepEqual(data.tags.bottom(1), [
+          assert.deepStrictEqual(data.tags.bottom(1), [
             {
               date: "2011-11-14T17:38:40Z",
               quantity: 2,
@@ -3806,10 +3806,10 @@ describe("crossfilter", () => {
         }
       });
       it("negative or zero k returns an empty array", function () {
-        assert.deepEqual(data.tags.bottom(0), []);
-        assert.deepEqual(data.tags.bottom(-1), []);
-        assert.deepEqual(data.tags.bottom(NaN), []);
-        assert.deepEqual(data.tags.bottom(-Infinity), []);
+        assert.deepStrictEqual(data.tags.bottom(0), []);
+        assert.deepStrictEqual(data.tags.bottom(-1), []);
+        assert.deepStrictEqual(data.tags.bottom(NaN), []);
+        assert.deepStrictEqual(data.tags.bottom(-Infinity), []);
       });
     });
 
@@ -3817,7 +3817,7 @@ describe("crossfilter", () => {
       it("selects records that match the specified value exactly", function () {
         try {
           data.tip.filterExact(100);
-          assert.deepEqual(data.tags.top(2), [
+          assert.deepStrictEqual(data.tags.top(2), [
             {
               date: "2011-11-14T23:21:22Z",
               quantity: 2,
@@ -3842,7 +3842,7 @@ describe("crossfilter", () => {
       it("allows the filter value to be null", function () {
         try {
           data.tip.filterExact(null); // equivalent to 0 by natural ordering
-          assert.deepEqual(data.tags.top(2), [
+          assert.deepStrictEqual(data.tags.top(2), [
             {
               date: "2011-11-14T22:48:05Z",
               quantity: 2,
@@ -3966,7 +3966,7 @@ describe("crossfilter", () => {
             return d % 2;
           });
           data.total.filterRange([100, 200]);
-          assert.deepEqual(data.tags.top(Infinity).length, 54);
+          assert.deepStrictEqual(data.tags.top(Infinity).length, 54);
         } finally {
           data.total.filterAll();
         }
@@ -4087,7 +4087,7 @@ describe("crossfilter", () => {
       });
 
       it("key defaults to value", function () {
-        assert.deepEqual(data.tags.all.top(Infinity), [
+        assert.deepStrictEqual(data.tags.all.top(Infinity), [
           { key: 2, value: 33 },
           { key: 3, value: 29 },
           { key: 4, value: 24 },
@@ -4111,11 +4111,11 @@ describe("crossfilter", () => {
             return d.tags;
           }, true),
           indexes = index.group();
-        assert.deepEqual(index.top(2), [
+        assert.deepStrictEqual(index.top(2), [
           { tags: [256, 257, 258] },
           { tags: [256, 257, 258] },
         ]);
-        assert.deepEqual(indexes.top(1), [{ key: 256, value: 4 }]);
+        assert.deepStrictEqual(indexes.top(1), [{ key: 256, value: 4 }]);
         assert.equal(indexes.size(), 259);
       });
 
@@ -4132,11 +4132,11 @@ describe("crossfilter", () => {
             return d.tags;
           }, true),
           indexes = index.group();
-        assert.deepEqual(index.top(2), [
+        assert.deepStrictEqual(index.top(2), [
           { tags: [65536, 65537, 65538] },
           { tags: [65536, 65537, 65538] },
         ]);
-        assert.deepEqual(indexes.top(1), [{ key: 65536, value: 4 }]);
+        assert.deepStrictEqual(indexes.top(1), [{ key: 65536, value: 4 }]);
         assert.equal(indexes.size(), 65539);
       });
 
@@ -4184,14 +4184,14 @@ describe("crossfilter", () => {
 
       describe("reduce", () => {
         it("defaults to count", function () {
-          assert.deepEqual(data.tags.all.top(1), [{ key: 2, value: 33 }]);
+          assert.deepStrictEqual(data.tags.all.top(1), [{ key: 2, value: 33 }]);
         });
         it("determines the computed reduce value", function () {
           try {
             data.tags.all.reduceSum(function (d) {
               return d.total;
             });
-            assert.deepEqual(data.tags.all.top(Infinity), [
+            assert.deepStrictEqual(data.tags.all.top(Infinity), [
               { key: 2, value: 5241 },
               { key: 3, value: 4229 },
               { key: 4, value: 3861 },
@@ -4243,21 +4243,21 @@ describe("crossfilter", () => {
           });
 
           it("on group creation", function () {
-            assert.deepEqual(
+            assert.deepStrictEqual(
               data.val.groupSumLength.all(),
               data.val.groupSumEach.all()
             );
           });
           it("on filtering", function () {
             data.foo.filterRange([1, 2]);
-            assert.deepEqual(data.val.groupSumLength.all(), [
+            assert.deepStrictEqual(data.val.groupSumLength.all(), [
               { key: 1, value: 6 },
               { key: 2, value: 6 },
               { key: 3, value: 3 },
               { key: 4, value: 3 },
               { key: 5, value: 3 },
             ]);
-            assert.deepEqual(data.val.groupSumEach.all(), [
+            assert.deepStrictEqual(data.val.groupSumEach.all(), [
               { key: 1, value: 2 },
               { key: 2, value: 2 },
               { key: 3, value: 0 },
@@ -4268,7 +4268,7 @@ describe("crossfilter", () => {
           });
           it("on adding data after group creation", function () {
             data.add([{ foo: 1, val: [5, 6, 7] }]);
-            assert.deepEqual(
+            assert.deepStrictEqual(
               data.val.groupSumLength.all(),
               data.val.groupSumEach.all()
             );
@@ -4276,7 +4276,7 @@ describe("crossfilter", () => {
           it("on adding data when a filter is in place", function () {
             data.foo.filterRange([1, 3]);
             data.add([{ foo: 3, val: [6] }]);
-            assert.deepEqual(data.val.groupSumLength.all(), [
+            assert.deepStrictEqual(data.val.groupSumLength.all(), [
               { key: 1, value: 6 },
               { key: 2, value: 6 },
               { key: 3, value: 3 },
@@ -4285,7 +4285,7 @@ describe("crossfilter", () => {
               { key: 6, value: 4 },
               { key: 7, value: 3 },
             ]);
-            assert.deepEqual(data.val.groupSumEach.all(), [
+            assert.deepStrictEqual(data.val.groupSumEach.all(), [
               { key: 1, value: 4 },
               { key: 2, value: 4 },
               { key: 3, value: 0 },
@@ -4299,14 +4299,14 @@ describe("crossfilter", () => {
           it("on removing data after group creation", function () {
             data.val.filter(2);
             data.remove();
-            assert.deepEqual(data.val.groupSumLength.all(), [
+            assert.deepStrictEqual(data.val.groupSumLength.all(), [
               { key: 3, value: 3 },
               { key: 4, value: 3 },
               { key: 5, value: 6 },
               { key: 6, value: 4 },
               { key: 7, value: 3 },
             ]);
-            assert.deepEqual(data.val.groupSumEach.all(), [
+            assert.deepStrictEqual(data.val.groupSumEach.all(), [
               { key: 3, value: 3 },
               { key: 4, value: 3 },
               { key: 5, value: 6 },
@@ -4315,7 +4315,7 @@ describe("crossfilter", () => {
             ]);
 
             data.val.filterAll();
-            assert.deepEqual(
+            assert.deepStrictEqual(
               data.val.groupSumLength.all(),
               data.val.groupSumEach.all()
             );
@@ -4325,7 +4325,7 @@ describe("crossfilter", () => {
 
       describe("top", () => {
         it("returns the top k groups by reduce value, in descending order", function () {
-          assert.deepEqual(data.tags.all.top(3), [
+          assert.deepStrictEqual(data.tags.all.top(3), [
             { key: 2, value: 33 },
             { key: 3, value: 29 },
             { key: 4, value: 24 },
@@ -4336,7 +4336,7 @@ describe("crossfilter", () => {
             data.tags.all.order(function (v) {
               return -v;
             });
-            assert.deepEqual(data.tags.all.top(3), [
+            assert.deepStrictEqual(data.tags.all.top(3), [
               { key: 0, value: 1 },
               { key: -1, value: 1 },
               { key: 5, value: 13 },
@@ -4351,7 +4351,7 @@ describe("crossfilter", () => {
 
       describe("order", () => {
         it("defaults to the identity function", function () {
-          assert.deepEqual(data.tags.all.top(1), [{ key: 2, value: 33 }]);
+          assert.deepStrictEqual(data.tags.all.top(1), [{ key: 2, value: 33 }]);
         });
         it("is useful in conjunction with a compound reduce value", function () {
           try {
@@ -4374,7 +4374,7 @@ describe("crossfilter", () => {
               .order(function (v) {
                 return v.total;
               });
-            assert.deepEqual(data.tags.all.top(1), [
+            assert.deepStrictEqual(data.tags.all.top(1), [
               {
                 key: 2,
                 value: { count: 33, total: 5241 },
@@ -4657,7 +4657,7 @@ describe("crossfilter", () => {
         }, true);
         data.tagGroup = data.tags.group();
         data.add(set);
-        assert.deepEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
+        assert.deepStrictEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
       });
       it("one tag then add empty", function () {
         var firstSet = [{ name: "alpha", quantity: 2, tags: [1] }];
@@ -4672,7 +4672,7 @@ describe("crossfilter", () => {
         data.tagGroup = data.tags.group();
         data.add(firstSet);
         data.add(secondSet);
-        assert.deepEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
+        assert.deepStrictEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
       });
       it("empty tag then add one tag", function () {
         var firstSet = [{ name: "alpha", quantity: 2, tags: [] }];
@@ -4687,7 +4687,7 @@ describe("crossfilter", () => {
         data.tagGroup = data.tags.group();
         data.add(firstSet);
         data.add(secondSet);
-        assert.deepEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
+        assert.deepStrictEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
       });
       it("one tag then add one more tag", function () {
         var firstSet = [{ name: "alpha", quantity: 2, tags: [1] }];
@@ -4702,7 +4702,7 @@ describe("crossfilter", () => {
         data.tagGroup = data.tags.group();
         data.add(firstSet);
         data.add(secondSet);
-        assert.deepEqual(data.tagGroup.all(), [
+        assert.deepStrictEqual(data.tagGroup.all(), [
           { key: 1, value: 1 },
           { key: 2, value: 1 },
         ]);
@@ -4832,7 +4832,7 @@ describe("crossfilter", () => {
         });
         data.remove();
         data.tags.filterAll();
-        assert.deepEqual(data.tags.top(3), [
+        assert.deepStrictEqual(data.tags.top(3), [
           { name: "echo", quantity: 2, tags: [4] },
           { name: "foxtrot", quantity: 1, tags: [] },
         ]);
@@ -4864,7 +4864,7 @@ describe("crossfilter", () => {
         data.remove();
         data.tags.filterAll();
         data.add(secondSet);
-        assert.deepEqual(data.tags.top(3), [
+        assert.deepStrictEqual(data.tags.top(3), [
           { name: "echo", quantity: 2, tags: [4] },
           { name: "golf", quantity: 3, tags: [1] },
           { name: "foxtrot", quantity: 1, tags: [] },
@@ -4886,7 +4886,7 @@ describe("crossfilter", () => {
         data.quantity.filterExact(1);
         data.remove();
         data.quantity.filterAll();
-        assert.deepEqual(data.tags.top(2), [
+        assert.deepStrictEqual(data.tags.top(2), [
           { name: "alpha", quantity: 2, tags: [1] },
         ]);
       });
@@ -4906,7 +4906,7 @@ describe("crossfilter", () => {
         data.quantity.filterExact(2);
         data.remove();
         data.quantity.filterAll();
-        assert.deepEqual(data.tags.top(2), [
+        assert.deepStrictEqual(data.tags.top(2), [
           { name: "bravo", quantity: 1, tags: [] },
         ]);
       });
@@ -4929,7 +4929,7 @@ describe("crossfilter", () => {
         data.quantity.filterAll();
         data.add(secondSet);
         data.tags.filterExact(1);
-        assert.deepEqual(data.quantity.top(2), [
+        assert.deepStrictEqual(data.quantity.top(2), [
           { name: "alpha", quantity: 2, tags: [1] },
         ]);
       });
@@ -4957,7 +4957,7 @@ describe("crossfilter", () => {
         var top2 = data.tagGroup.top(5);
         data.remove();
         data.quantity.filterAll();
-        assert.deepEqual(data.tagGroup.all(), [
+        assert.deepStrictEqual(data.tagGroup.all(), [
           { key: 1, value: 2 },
           { key: 3, value: 2 },
           { key: 4, value: 1 },
@@ -4981,7 +4981,7 @@ describe("crossfilter", () => {
         data.tags.filterExact(2);
         data.remove();
         data.tags.filterAll();
-        assert.deepEqual(data.tagGroup.all(), [
+        assert.deepStrictEqual(data.tagGroup.all(), [
           { key: 1, value: 2 },
           { key: 3, value: 2 },
           { key: 4, value: 1 },
@@ -5007,7 +5007,7 @@ describe("crossfilter", () => {
         });
         data.remove();
         data.tags.filterAll();
-        assert.deepEqual(data.tagGroup.all(), [
+        assert.deepStrictEqual(data.tagGroup.all(), [
           { key: 1, value: 2 },
           { key: 3, value: 2 },
           { key: 4, value: 1 },
@@ -5039,7 +5039,7 @@ describe("crossfilter", () => {
         });
         data.remove();
         data.tags.filterAll();
-        assert.deepEqual(data.tagGroup.all(), [{ key: 4, value: 1 }]);
+        assert.deepStrictEqual(data.tagGroup.all(), [{ key: 4, value: 1 }]);
       });
       it("filter then remove to one tag with one empty", function () {
         var set = [
@@ -5059,7 +5059,7 @@ describe("crossfilter", () => {
         data.quantity.filterExact(0);
         data.remove();
         data.quantity.filterAll();
-        assert.deepEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
+        assert.deepStrictEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
       });
       it("filter then remove empty tag to only one tag", function () {
         var set = [
@@ -5078,7 +5078,7 @@ describe("crossfilter", () => {
         data.quantity.filterExact(1);
         data.remove();
         data.quantity.filterAll();
-        assert.deepEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
+        assert.deepStrictEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
       });
       it("filter then remove one tag to only empty tag", function () {
         var set = [
@@ -5097,7 +5097,7 @@ describe("crossfilter", () => {
         data.quantity.filterExact(2);
         data.remove();
         data.quantity.filterAll();
-        assert.deepEqual(data.tagGroup.all(), []);
+        assert.deepStrictEqual(data.tagGroup.all(), []);
       });
       it("remove then add one tag back", function () {
         var firstSet = [
@@ -5118,7 +5118,7 @@ describe("crossfilter", () => {
         data.remove();
         data.quantity.filterAll();
         data.add(secondSet);
-        assert.deepEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
+        assert.deepStrictEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
       });
       it("remove then add empty tag back", function () {
         var firstSet = [
@@ -5139,7 +5139,7 @@ describe("crossfilter", () => {
         data.remove();
         data.quantity.filterAll();
         data.add(secondSet);
-        assert.deepEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
+        assert.deepStrictEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
       });
     });
   });
@@ -5219,7 +5219,7 @@ describe("crossfilter", () => {
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 1, 0, 0,
     ];
-    assert.deepEqual(
+    assert.deepStrictEqual(
       groups.map((g) => g.all()[1].value),
       correctGroupValue
     );
@@ -5227,7 +5227,7 @@ describe("crossfilter", () => {
     dimensions[31].filter(null);
     dimensions[31].filterExact("a");
 
-    assert.deepEqual(
+    assert.deepStrictEqual(
       groups.map((g) => g.all()[1].value),
       correctGroupValue
     );
