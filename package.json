@@ -41,13 +41,13 @@
     "type": "git",
     "url": "http://github.com/crossfilter/crossfilter.git"
   },
+  "type": "module",
   "dependencies": {
     "@ranfdev/deepobj": "1.0.2"
   },
   "devDependencies": {
     "d3": "^3.5.17",
     "eslint": "^8.12.0",
-    "esm": "^3.2.25",
     "package-json-versionify": "1.0.2",
     "rollup": "^1.32.1",
     "rollup-plugin-commonjs": "^10.1.0",
@@ -59,7 +59,7 @@
     "vitest": "^0.22.1"
   },
   "scripts": {
-    "benchmark": "node -r esm test/benchmark.js",
+    "benchmark": "node test/benchmark.js",
     "build": "rollup -c rollup.config.js",
     "clean": "rm -f crossfilter.js crossfilter.min.js",
     "test": "vitest && eslint src/"

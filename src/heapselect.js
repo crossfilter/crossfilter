@@ -1,5 +1,5 @@
-import identity from './identity';
-import xFilterHeap from './heap';
+import identity from './identity.js';
+import xFilterHeap from './heap.js';
 
 function heapselect_by(f) {
   var heap = xFilterHeap.by(f);
