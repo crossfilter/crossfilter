@@ -56,13 +56,13 @@
     "rollup-plugin-terser": "^7.0.2",
     "semver": "^5.7.0",
     "sinon": "^7.5.0",
-    "vows": "^0.8.3"
+    "vitest": "^0.22.1"
   },
   "scripts": {
     "benchmark": "node -r esm test/benchmark.js",
     "build": "rollup -c rollup.config.js",
     "clean": "rm -f crossfilter.js crossfilter.min.js",
-    "test": "node -r esm  ./node_modules/.bin/vows --verbose && eslint src/"
+    "test": "vitest && eslint src/"
   },
   "files": [
     "index.js",
