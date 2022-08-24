@@ -2,8 +2,8 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.crossfilter = factory());
-}(this, (function () { 'use strict';
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.crossfilter = factory());
+})(this, (function () { 'use strict';
 
   let array8 = arrayUntyped,
       array16 = arrayUntyped,
@@ -276,11 +276,11 @@
     return heap;
   }
 
-  const h = heap_by(cr_identity);
-  h.by = heap_by;
+  const h$1 = heap_by(cr_identity);
+  h$1.by = heap_by;
 
   function heapselect_by(f) {
-    var heap = h.by(f);
+    var heap = h$1.by(f);
 
     // Returns a new array containing the top k elements in the array a[lo:hi].
     // The returned array is not sorted, but maintains the heap property. If k is
@@ -312,8 +312,8 @@
   }
 
 
-  const h$1 = heapselect_by(cr_identity);
-  h$1.by = heapselect_by; // assign the raw function to the export as well
+  const h = heapselect_by(cr_identity);
+  h.by = heapselect_by; // assign the raw function to the export as well
 
   function bisect_by(f) {
 
@@ -420,8 +420,8 @@
   // constants
   var REMOVED_INDEX = -1;
 
-  crossfilter.heap = h;
-  crossfilter.heapselect = h$1;
+  crossfilter.heap = h$1;
+  crossfilter.heapselect = h;
   crossfilter.bisect = bisect;
   crossfilter.permute = permute;
 
@@ -1647,8 +1647,8 @@
 
         // Sets the reduce order, using the specified accessor.
         function order(value) {
-          select = h$1.by(valueOf);
-          heap = h.by(valueOf);
+          select = h.by(valueOf);
+          heap = h$1.by(valueOf);
           function valueOf(d) { return value(d.value); }
           return group;
         }
@@ -1910,4 +1910,4 @@
 
   return crossfilter;
 
-})));
+}));
