@@ -1,5 +1,5 @@
-import identity from './identity.js';
-import xFilterHeap from './heap.js';
+import identity from "./identity.js";
+import xFilterHeap from "./heap.js";
 
 function heapselect_by(f) {
   var heap = xFilterHeap.by(f);
@@ -9,10 +9,10 @@ function heapselect_by(f) {
   // greater than hi - lo, then fewer than k elements will be returned. The
   // order of elements in a is unchanged by this operation.
   function heapselect(a, lo, hi, k) {
-    var queue = new Array(k = Math.min(hi - lo, k)),
-        min,
-        i,
-        d;
+    var queue = new Array((k = Math.min(hi - lo, k))),
+      min,
+      i,
+      d;
 
     for (i = 0; i < k; ++i) queue[i] = a[lo++];
     heap(queue, 0, k);
@@ -20,7 +20,7 @@ function heapselect_by(f) {
     if (lo < hi) {
       min = f(queue[0]);
       do {
-        if (f(d = a[lo]) > min) {
+        if (f((d = a[lo])) > min) {
           queue[0] = d;
           min = f(heap(queue, 0, k)[0]);
         }
@@ -32,7 +32,6 @@ function heapselect_by(f) {
 
   return heapselect;
 }
-
 
 const h = heapselect_by(identity);
 h.by = heapselect_by; // assign the raw function to the export as well

@@ -479,10 +479,10 @@ describe("crossfilter", () => {
       });
 
       describe("groupAll (custom reduce)", () => {
-        function add(p, v) {
+        function add(p) {
           return p + 1;
         }
-        function remove(p, v) {
+        function remove(p) {
           return p - 1;
         }
         function initial() {
@@ -629,11 +629,11 @@ describe("crossfilter", () => {
       };
     };
 
-    for (var i = 0; i < 50; i++) {
+    for (let i = 0; i < 50; i++) {
       dims[i] = data.dimension(dimfunc(i));
     }
 
-    for (var i = 0; i < 50; i++) {
+    for (let i = 0; i < 50; i++) {
       dims[i].filter(1);
       data.remove();
       dims[i].filterAll();
@@ -1512,11 +1512,11 @@ describe("crossfilter", () => {
         try {
           var group = data.quantity.groupAll().reduceCount();
           data.total.filterRange([200, Infinity]);
-          data.total.filterFunction(function (d) {
+          data.total.filterFunction(function () {
             return "0";
           });
           assert.equal(group.value(), 43);
-          data.total.filterFunction(function (d) {
+          data.total.filterFunction(function () {
             return "";
           });
           assert.equal(group.value(), 0);
@@ -1918,11 +1918,11 @@ describe("crossfilter", () => {
           data.quantity.filter(1);
           // Group only adds
           var addGroup = data.type.group().reduce(
-            function (p, v) {
+            function (p) {
               ++p;
               return p;
             },
-            function (p, v) {
+            function (p) {
               return p;
             },
             function () {
@@ -2290,8 +2290,7 @@ describe("crossfilter", () => {
             }),
             group = dimension.group(function (d) {
               return d;
-            }),
-            originalGroupDispose = group.dispose;
+            });
 
           sinon.spy(group, "dispose");
 
@@ -2382,8 +2381,7 @@ describe("crossfilter", () => {
           }),
           g2 = d2.group(function (d) {
             return Math.round(d / 2) * 2;
-          }),
-          all = g2.all();
+          });
         d1.filterRange([-1, 1]); // a filter is present when the dimension is disposed
         d1.dispose();
         assert.deepStrictEqual(g2.all(), [
@@ -2648,15 +2646,15 @@ describe("crossfilter", () => {
     it("is affected by all dimension filters", function () {
       try {
         data.quantity.filterExact(4);
-        var raw = data.allFiltered();
+        let raw = data.allFiltered();
         assert.equal(raw.length, 1);
 
         data.quantity.filterExact(2);
-        var raw = data.allFiltered();
+        raw = data.allFiltered();
         assert.equal(raw.length, 35);
 
         data.total.filterRange([190, 300]);
-        var raw = data.allFiltered();
+        raw = data.allFiltered();
         assert.equal(raw.length, 18);
       } finally {
         data.quantity.filterAll();
@@ -2844,11 +2842,11 @@ describe("crossfilter", () => {
       function order(p) {
         return p.foo;
       }
-      function add(p, v) {
+      function add(p) {
         ++p.foo;
         return p;
       }
-      function remove(p, v) {
+      function remove(p) {
         --p.foo;
         return p;
       }
@@ -3334,7 +3332,7 @@ describe("crossfilter", () => {
     it("removing a record works for another group with cardinality one", function () {
       data.add([{ foo: 0 }, { foo: -1 }]);
       assert.deepStrictEqual(data.foo.positive.all(), [{ key: 0, value: 2 }]);
-      data.remove(function (d, i) {
+      data.remove(function (d) {
         return d.foo === 0;
       });
       assert.deepStrictEqual(data.foo.positive.all(), [{ key: 0, value: 1 }]);
@@ -3478,7 +3476,7 @@ describe("crossfilter", () => {
 
     it("sends the eventName with the callback", function () {
       var name;
-      var cb = data.onChange(function (n) {
+      data.onChange(function (n) {
         name = n;
       });
       data.add([1]);
@@ -3487,7 +3485,7 @@ describe("crossfilter", () => {
 
     it("callback gets called when adding data", function () {
       var pass = false;
-      var cb = data.onChange(function () {
+      data.onChange(function () {
         pass = true;
       });
       data.add([1]);
@@ -3496,7 +3494,7 @@ describe("crossfilter", () => {
 
     it("callback gets called when removing all data", () => {
       var pass = false;
-      var cb = data.onChange(function () {
+      data.onChange(function () {
         pass = true;
       });
       data.remove();
@@ -3505,7 +3503,7 @@ describe("crossfilter", () => {
 
     it("callback gets called when removing some data", function () {
       var num = 0;
-      var cb = data.onChange(function () {
+      data.onChange(function () {
         num++;
       });
       var dateDim = data.dimension(function (d) {
@@ -3518,7 +3516,7 @@ describe("crossfilter", () => {
 
     it("callback gets called when filtering data various ways", function () {
       var num = 0;
-      var cb = data.onChange(function () {
+      data.onChange(function () {
         num++;
       });
       var totalDim = data.dimension(function (d) {
@@ -3540,16 +3538,16 @@ describe("crossfilter", () => {
         pass3,
         pass4,
         num = 0;
-      var cb1 = data.onChange(function () {
+      data.onChange(function () {
         pass1 = ++num;
       });
-      var cb2 = data.onChange(function () {
+      data.onChange(function () {
         pass2 = ++num;
       });
-      var cb3 = data.onChange(function () {
+      data.onChange(function () {
         pass3 = ++num;
       });
-      var cb4 = data.onChange(function () {
+      data.onChange(function () {
         pass4 = ++num;
       });
       var totalDim = data.dimension(function (d) {
@@ -4059,11 +4057,11 @@ describe("crossfilter", () => {
         try {
           var group = data.tags.groupAll().reduceCount();
           data.total.filterRange([200, Infinity]);
-          data.total.filterFunction(function (d) {
+          data.total.filterFunction(function () {
             return "0";
           });
           assert.equal(group.value(), 119);
-          data.total.filterFunction(function (d) {
+          data.total.filterFunction(function () {
             return "";
           });
           assert.equal(group.value(), 0);
@@ -4279,11 +4277,11 @@ describe("crossfilter", () => {
           data.quantity.filter(1);
           // Group only adds
           var addGroup = data.tags.group().reduce(
-            function (p, v) {
+            function (p) {
               ++p;
               return p;
             },
-            function (p, v) {
+            function (p) {
               return p;
             },
             function () {
@@ -5138,7 +5136,6 @@ describe("crossfilter", () => {
         data.tagGroup = data.tags.group();
         data.add(set);
         data.quantity.filterExact(3);
-        var top2 = data.tagGroup.top(5);
         data.remove();
         data.quantity.filterAll();
         assert.deepStrictEqual(data.tagGroup.all(), [

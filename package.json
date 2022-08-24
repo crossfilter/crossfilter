@@ -49,6 +49,7 @@
     "d3": "^3.5.17",
     "eslint": "^8.12.0",
     "package-json-versionify": "1.0.2",
+    "prettier": "2.7.1",
     "rollup": "^2.78.1",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-json": "4",
@@ -62,7 +63,8 @@
     "benchmark": "node test/benchmark.js",
     "build": "rollup -c rollup.config.js",
     "clean": "rm -f crossfilter.js crossfilter.min.js",
-    "test": "vitest && eslint src/"
+    "test": "vitest && eslint src/",
+    "format": "npx prettier --write ."
   },
   "files": [
     "index.js",

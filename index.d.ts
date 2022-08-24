@@ -14,9 +14,10 @@ declare namespace crossfilter {
   export type Predicate<T> = (record: T) => boolean;
 
   export type TSelectorValue = NaturallyOrderedValue | NaturallyOrderedValue[];
-  export type OrderedValueSelector<TRecord, TValue extends TSelectorValue = NaturallyOrderedValue> = (
-    record: TRecord,
-  ) => TValue;
+  export type OrderedValueSelector<
+    TRecord,
+    TValue extends TSelectorValue = NaturallyOrderedValue
+  > = (record: TRecord) => TValue;
 
   export type FilterValue =
     | NaturallyOrderedValue
@@ -34,11 +35,15 @@ declare namespace crossfilter {
     reduce(
       add: (p: TValue, v: TRecord, nf: boolean) => TValue,
       remove: (p: TValue, v: TRecord, nf: boolean) => TValue,
-      initial: () => TValue,
+      initial: () => TValue
     ): Group<TRecord, TKey, TValue>;
     reduceCount(): Group<TRecord, TKey, TValue>;
-    reduceSum(selector: (record: TRecord) => number): Group<TRecord, TKey, TValue>;
-    order(selector: (value: TValue) => NaturallyOrderedValue): Group<TRecord, TKey, TValue>;
+    reduceSum(
+      selector: (record: TRecord) => number
+    ): Group<TRecord, TKey, TValue>;
+    order(
+      selector: (value: TValue) => NaturallyOrderedValue
+    ): Group<TRecord, TKey, TValue>;
     orderNatural(): Group<TRecord, TKey, TValue>;
     size(): number;
     dispose(): Group<TRecord, TKey, TValue>;
@@ -48,7 +53,7 @@ declare namespace crossfilter {
     reduce(
       add: (p: TValue, v: TRecord, nf: boolean) => TValue,
       remove: (p: TValue, v: TRecord, nf: boolean) => TValue,
-      initial: () => TValue,
+      initial: () => TValue
     ): GroupAll<TRecord, TValue>;
     reduceCount(): GroupAll<TRecord, TValue>;
     reduceSum(selector: (record: TRecord) => number): GroupAll<TRecord, TValue>;
@@ -67,7 +72,7 @@ declare namespace crossfilter {
     top(k: number, offset?: number): TRecord[];
     bottom(k: number, offset?: number): TRecord[];
     group<TKey extends NaturallyOrderedValue, TGroupValue>(
-      groupValue?: (value: TValue) => TKey,
+      groupValue?: (value: TValue) => TKey
     ): Group<TRecord, TKey, TGroupValue>;
     groupAll<TGroupValue>(): GroupAll<TRecord, TGroupValue>;
     dispose(): Dimension<TRecord, TValue>;
@@ -76,9 +81,9 @@ declare namespace crossfilter {
   }
 
   export enum EventType {
-    DATA_ADDED = 'dataAdded',
-    DATA_REMOVED = 'dataRemoved',
-    FILTERED = 'filtered',
+    DATA_ADDED = "dataAdded",
+    DATA_REMOVED = "dataRemoved",
+    FILTERED = "filtered",
   }
 
   export interface Crossfilter<T> {
@@ -86,7 +91,7 @@ declare namespace crossfilter {
     remove(predicate?: Predicate<T>): void;
     dimension<TValue extends NaturallyOrderedValue>(
       selector: OrderedValueSelector<T, TValue | TValue[]>,
-      isArray?: boolean,
+      isArray?: boolean
     ): Dimension<T, TValue>;
     groupAll<TGroupValue>(): GroupAll<T, TGroupValue>;
     size(): number;
@@ -96,7 +101,12 @@ declare namespace crossfilter {
     isElementFiltered(index: number, ignoreDimensions?: number[]): boolean;
   }
 
-  export type HeapSelector<T> = (records: T[], lo: number, hi: number, k: number) => T[];
+  export type HeapSelector<T> = (
+    records: T[],
+    lo: number,
+    hi: number,
+    k: number
+  ) => T[];
 
   export interface Heap<T> {
     (records: T[], lo: number, hi: number): T[];
@@ -105,7 +115,12 @@ declare namespace crossfilter {
 
   export type Sorter<T> = (records: T[], lo: number, hi: number) => T[];
 
-  export type Bisection<T> = (records: T[], record: T, lo: number, hi: number) => number;
+  export type Bisection<T> = (
+    records: T[],
+    record: T,
+    lo: number,
+    hi: number
+  ) => number;
 
   export interface Bisector<T> extends Bisection<T> {
     left: Bisection<T>;
@@ -124,13 +139,23 @@ declare namespace crossfilter {
     export function by<T>(selector: OrderedValueSelector<T>): HeapSelector<T>;
   }
 
-  export function heapselect<T>(records: T[], lo: number, hi: number, k: number): T[];
+  export function heapselect<T>(
+    records: T[],
+    lo: number,
+    hi: number,
+    k: number
+  ): T[];
 
   namespace bisect {
     export function by<T>(selector: OrderedValueSelector<T>): Bisector<T>;
   }
 
-  export function bisect<T>(records: T[], record: T, lo: number, hi: number): number;
+  export function bisect<T>(
+    records: T[],
+    record: T,
+    lo: number,
+    hi: number
+  ): number;
 
   export function permute<T>(records: T[], index: number[], deep: number): T[];
 }

@@ -1,26 +1,26 @@
-const reduceIncrement = p => {
+const reduceIncrement = (p) => {
   return p + 1;
-}
+};
 
-const reduceDecrement = p => {
+const reduceDecrement = (p) => {
   return p - 1;
-}
+};
 
-const reduceAdd = f => {
-  return function(p, v) {
+const reduceAdd = (f) => {
+  return function (p, v) {
     return p + +f(v);
   };
-}
+};
 
-const reduceSubtract = f => {
-  return function(p, v) {
+const reduceSubtract = (f) => {
+  return function (p, v) {
     return p - f(v);
   };
-}
+};
 
 export default {
   reduceIncrement,
   reduceDecrement,
   reduceAdd,
-  reduceSubtract
+  reduceSubtract,
 };

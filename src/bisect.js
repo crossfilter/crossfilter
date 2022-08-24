@@ -1,7 +1,6 @@
-import identity from './identity.js';
+import identity from "./identity.js";
 
 function bisect_by(f) {
-
   // Locate the insertion point for x in a to maintain sorted order. The
   // arguments lo and hi may be used to specify a subset of the array which
   // should be considered; by default the entire array is used. If x is already
@@ -14,7 +13,7 @@ function bisect_by(f) {
   // a[i:hi] for the right side.
   function bisectLeft(a, x, lo, hi) {
     while (lo < hi) {
-      var mid = lo + hi >>> 1;
+      var mid = (lo + hi) >>> 1;
       if (f(a[mid]) < x) lo = mid + 1;
       else hi = mid;
     }
@@ -29,7 +28,7 @@ function bisect_by(f) {
   // a[i:hi] for the right side.
   function bisectRight(a, x, lo, hi) {
     while (lo < hi) {
-      var mid = lo + hi >>> 1;
+      var mid = (lo + hi) >>> 1;
       if (x < f(a[mid])) hi = mid;
       else lo = mid + 1;
     }
@@ -45,4 +44,3 @@ const bisect = bisect_by(identity);
 bisect.by = bisect_by; // assign the raw function to the export as well
 
 export default bisect;
-

@@ -14,19 +14,19 @@ Want to learn more? [See the wiki.](https://github.com/crossfilter/crossfilter/w
 
 ## Gallery of Community Examples
 
-* [Configurable Chart Collection (C3) - World Bank Example](http://drarmstr.github.io/chartcollection/examples/#worldbank) - ([Source](http://drarmstr.github.io/chartcollection/examples/#worldbank/source), [HTML](http://drarmstr.github.io/chartcollection/examples/#worldbank/html))
-* [Dimensional Charting JavaScript Library (dc.js)](https://dc-js.github.io/dc.js/) - ([Source](https://dc-js.github.io/dc.js/docs/stock.html))
+- [Configurable Chart Collection (C3) - World Bank Example](http://drarmstr.github.io/chartcollection/examples/#worldbank) - ([Source](http://drarmstr.github.io/chartcollection/examples/#worldbank/source), [HTML](http://drarmstr.github.io/chartcollection/examples/#worldbank/html))
+- [Dimensional Charting JavaScript Library (dc.js)](https://dc-js.github.io/dc.js/) - ([Source](https://dc-js.github.io/dc.js/docs/stock.html))
 
 ## Installation
 
 This package can be found under the name `crossfilter2` in npm:
 
      npm install crossfilter2
-     
+
 ## Development
 
 Install dependencies:
 
- * `npm install`
+- `npm install`
 
 Test changes with `npm test`. Build with `npm run build` for use in the browser. You may also want to benchmark your changes with `npm run benchmark`.

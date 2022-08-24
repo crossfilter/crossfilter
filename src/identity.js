@@ -1,3 +1,3 @@
-export default d => {
+export default (d) => {
   return d;
 };
