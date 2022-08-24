@@ -510,64 +510,77 @@ describe("crossfilter", () => {
       });
 
       describe("groupAll (custom reduce information lifecycle)", () => {
-        const data = crossfilter();
-        data.add([
-          { foo: 1, val: 2 },
-          { foo: 2, val: 2 },
-          { foo: 3, val: 2 },
-          { foo: 3, val: 2 },
-        ]);
-        data.foo = data.dimension(function (d) {
-          return d.foo;
-        });
-        data.bar = data.dimension(function (d) {
-          return d.foo;
-        });
-        data.val = data.dimension(function (d) {
-          return d.val;
-        });
-        data.groupMax = data.bar.groupAll().reduce(
-          function (p, v, n) {
-            if (n) {
-              p += v.val;
+        let data;
+
+        beforeEach(() => {
+          data = crossfilter();
+          data.add([
+            { foo: 1, val: 2 },
+            { foo: 2, val: 2 },
+            { foo: 3, val: 2 },
+            { foo: 3, val: 2 },
+          ]);
+          data.foo = data.dimension(function (d) {
+            return d.foo;
+          });
+          data.bar = data.dimension(function (d) {
+            return d.foo;
+          });
+          data.val = data.dimension(function (d) {
+            return d.val;
+          });
+          data.groupMax = data.bar.groupAll().reduce(
+            function (p, v, n) {
+              if (n) {
+                p += v.val;
+              }
+              return p;
+            },
+            function (p, v, n) {
+              if (n) {
+                p -= v.val;
+              }
+              return p;
+            },
+            function () {
+              return 0;
             }
-            return p;
-          },
-          function (p, v, n) {
-            if (n) {
-              p -= v.val;
-            }
-            return p;
-          },
-          function () {
-            return 0;
-          }
-        );
-        data.groupSum = data.bar.groupAll().reduceSum(function (d) {
-          return d.val;
+          );
+          data.groupSum = data.bar.groupAll().reduceSum(function (d) {
+            return d.val;
+          });
         });
 
         it("on group creation", function () {
           assert.deepStrictEqual(data.groupMax.value(), data.groupSum.value());
         });
+
         it("on filtering", function () {
           data.foo.filterRange([1, 3]);
           assert.deepStrictEqual(data.groupMax.value(), 8);
           assert.deepStrictEqual(data.groupSum.value(), 4);
           data.foo.filterAll();
         });
+
         it("on adding data after group creation", function () {
           data.add([{ foo: 1, val: 2 }]);
           assert.deepStrictEqual(data.groupMax.value(), data.groupSum.value());
         });
+
         it("on adding data when a filter is in place", function () {
+          data.add([{ foo: 1, val: 2 }]);
           data.foo.filterRange([1, 3]);
           data.add([{ foo: 3, val: 1 }]);
           assert.deepStrictEqual(data.groupMax.value(), 11);
           assert.deepStrictEqual(data.groupSum.value(), 6);
           data.foo.filterAll();
         });
+
         it("on removing data after group creation", function () {
+          data.add([{ foo: 1, val: 2 }]);
+          data.foo.filterRange([1, 3]);
+          data.add([{ foo: 3, val: 1 }]);
+          data.foo.filterAll();
           data.val.filter(1);
           data.remove();
           assert.deepStrictEqual(data.groupMax.value(), 10);
@@ -1000,6 +1013,7 @@ describe("crossfilter", () => {
           data.quantity.filterAll();
         }
       });
+
       it("negative or zero k returns an empty array", function () {
         assert.deepStrictEqual(data.quantity.top(0), []);
         assert.deepStrictEqual(data.quantity.top(-1), []);
@@ -1075,6 +1089,7 @@ describe("crossfilter", () => {
           },
         ]);
       });
+
       it("returns the bottom k records, using offset, by value, in descending order", function () {
         assert.deepStrictEqual(data.total.bottom(3, 1), [
           {
@@ -1129,6 +1144,7 @@ describe("crossfilter", () => {
           },
         ]);
       });
+
       it("observes the associated dimension's filters", function () {
         try {
           data.quantity.filterExact(4);
@@ -1220,6 +1236,7 @@ describe("crossfilter", () => {
           data.date.filterAll();
         }
       });
+
       it("observes other dimensions' filters", function () {
         try {
           data.type.filterExact("tab");
@@ -1351,6 +1368,7 @@ describe("crossfilter", () => {
           data.quantity.filterAll();
         }
       });
+
       it("negative or zero k returns an empty array", function () {
         assert.deepStrictEqual(data.quantity.bottom(0), []);
         assert.deepStrictEqual(data.quantity.bottom(-1), []);
@@ -1397,6 +1415,7 @@ describe("crossfilter", () => {
           data.tip.filterAll();
         }
       });
+
       it("allows the filter value to be null", function () {
         try {
           data.tip.filterExact(null); // equivalent to 0 by natural ordering
@@ -1443,6 +1462,7 @@ describe("crossfilter", () => {
           data.total.filterAll();
         }
       });
+
       it("selects records less than the exclusive lower bound", function () {
         try {
           data.total.filterRange([100, 200]);
@@ -1487,6 +1507,7 @@ describe("crossfilter", () => {
           data.total.filterAll();
         }
       });
+
       it("respects truthy values", function () {
         try {
           var group = data.quantity.groupAll().reduceCount();
@@ -1503,6 +1524,7 @@ describe("crossfilter", () => {
           data.total.filterAll();
         }
       });
+
       it("groups on the first dimension are updated correctly", function () {
         try {
           var group = data.date.groupAll().reduceCount();
@@ -1518,6 +1540,7 @@ describe("crossfilter", () => {
           data.total.filterAll();
         }
       });
+
       it("followed by filterRange", function () {
         try {
           data.total.filterFunction(function (d) {
@@ -1544,6 +1567,7 @@ describe("crossfilter", () => {
           data.total.filter(null);
         }
       });
+
       it("is equivalent to filterExact when passed a single value", function () {
         try {
           data.total.filter(100);
@@ -1556,6 +1580,7 @@ describe("crossfilter", () => {
           data.total.filter(null);
         }
       });
+
       it("is equivalent to filterFunction when passed a function", function () {
         try {
           data.total.filter(function (d) {
@@ -1570,6 +1595,7 @@ describe("crossfilter", () => {
           data.total.filter(null);
         }
       });
+
       it("is equivalent to filterAll when passed null", function () {
         data.total.filter([100, 200]);
         expect(data.date.top(Infinity).length).toBeLessThan(43);
@@ -1707,6 +1733,7 @@ describe("crossfilter", () => {
         it("returns the count of matching records", function () {
           assert.strictEqual(data.quantity.count.value(), 43);
         });
+
         it("does not observe the associated dimension's filters", function () {
           try {
             data.quantity.filterRange([100, 200]);
@@ -1715,6 +1742,7 @@ describe("crossfilter", () => {
             data.quantity.filterAll();
           }
         });
+
         it("observes other dimensions' filters", function () {
           try {
             data.type.filterExact("tab");
@@ -1755,6 +1783,7 @@ describe("crossfilter", () => {
           other.filterRange([1, 2]);
           expect(callback).toBe(false);
         });
+
         it("detaches from add listeners", function () {
           var data = crossfilter([0, 1, 2]),
             callback, // indicates data has been added and triggered a reduce
@@ -1818,6 +1847,7 @@ describe("crossfilter", () => {
         it("returns the sum total of matching records", function () {
           assert.strictEqual(data.quantity.total.value(), 6660);
         });
+
         it("does not observe the associated dimension's filters", function () {
           try {
             data.quantity.filterRange([100, 200]);
@@ -1826,6 +1856,7 @@ describe("crossfilter", () => {
             data.quantity.filterAll();
           }
         });
+
         it("observes other dimensions' filters", function () {
           try {
             data.type.filterExact("tab");
@@ -1911,6 +1942,7 @@ describe("crossfilter", () => {
           assert.equal(data.date.hours.size(), 8);
           assert.equal(data.type.types.size(), 3);
         });
+
         it("ignores any filters", function () {
           try {
             data.type.filterExact("tab");
@@ -1945,41 +1977,45 @@ describe("crossfilter", () => {
         });
 
         describe("gives reduce functions information on lifecycle of data element", () => {
-          let data = crossfilter();
-          data.add([
-            { foo: 1, val: 2 },
-            { foo: 2, val: 2 },
-            { foo: 3, val: 2 },
-            { foo: 3, val: 2 },
-          ]);
-          data.foo = data.dimension(function (d) {
-            return d.foo;
-          });
-          data.bar = data.dimension(function (d) {
-            return d.foo;
-          });
-          data.val = data.dimension(function (d) {
-            return d.val;
-          });
-          data.groupMax = data.bar.group().reduce(
-            function (p, v, n) {
-              if (n) {
-                p += v.val;
+          let data;
+
+          beforeEach(() => {
+            data = crossfilter();
+            data.add([
+              { foo: 1, val: 2 },
+              { foo: 2, val: 2 },
+              { foo: 3, val: 2 },
+              { foo: 3, val: 2 },
+            ]);
+            data.foo = data.dimension(function (d) {
+              return d.foo;
+            });
+            data.bar = data.dimension(function (d) {
+              return d.foo;
+            });
+            data.val = data.dimension(function (d) {
+              return d.val;
+            });
+            data.groupMax = data.bar.group().reduce(
+              function (p, v, n) {
+                if (n) {
+                  p += v.val;
+                }
+                return p;
+              },
+              function (p, v, n) {
+                if (n) {
+                  p -= v.val;
+                }
+                return p;
+              },
+              function () {
+                return 0;
               }
-              return p;
-            },
-            function (p, v, n) {
-              if (n) {
-                p -= v.val;
-              }
-              return p;
-            },
-            function () {
-              return 0;
-            }
-          );
-          data.groupSum = data.bar.group().reduceSum(function (d) {
-            return d.val;
+            );
+            data.groupSum = data.bar.group().reduceSum(function (d) {
+              return d.val;
+            });
           });
 
           it("on group creation", function () {
@@ -2007,6 +2043,7 @@ describe("crossfilter", () => {
           });
 
           it("on adding data when a filter is in place", function () {
+            data.add([{ foo: 1, val: 2 }]);
             data.foo.filterRange([1, 3]);
             data.add([{ foo: 3, val: 1 }]);
             assert.deepStrictEqual(data.groupMax.all(), [
@@ -2023,6 +2060,10 @@ describe("crossfilter", () => {
           });
 
           it("on removing data after group creation", function () {
+            data.add([{ foo: 1, val: 2 }]);
+            data.foo.filterRange([1, 3]);
+            data.add([{ foo: 3, val: 1 }]);
+            data.foo.filterAll();
             data.val.filter(1);
             data.remove();
             assert.deepStrictEqual(data.groupMax.all(), [
@@ -2050,6 +2091,7 @@ describe("crossfilter", () => {
             { key: new Date(Date.UTC(2011, 10, 14, 21, 0, 0)), value: 6 },
           ]);
         });
+
         it("observes the specified order", function () {
           try {
             data.date.hours.order(function (v) {
@@ -2066,6 +2108,7 @@ describe("crossfilter", () => {
             });
           }
         });
+
         it("works correctly on removing and adding back data with array groups", function () {
           var data = crossfilter();
           var dimension = data.dimension("tags", true);
@@ -2100,6 +2143,7 @@ describe("crossfilter", () => {
             },
           ]);
         });
+
         it("works correctly on removing and adding back data with array groups 2", function () {
           var data = crossfilter();
           const dimension = data.dimension((e) => e.tags, true);
@@ -2149,6 +2193,7 @@ describe("crossfilter", () => {
             { key: new Date(Date.UTC(2011, 10, 14, 17, 0, 0)), value: 9 },
           ]);
         });
+
         it("is useful in conjunction with a compound reduce value", function () {
           try {
             data.date.hours
@@ -2211,6 +2256,7 @@ describe("crossfilter", () => {
           other.filterRange([1, 2]);
           expect(callback).toBe(false);
         });
+
         it("detaches from add listeners", function () {
           var data = crossfilter([0, 1, 2]),
             callback, // indicates data has been added and the group has been reduced
@@ -2236,6 +2282,7 @@ describe("crossfilter", () => {
           data.add([3, 4, 5]);
           expect(callback).toBe(false);
         });
+
         it("removes reference to group from dimension", function () {
           var data = crossfilter([0, 1, 2]),
             dimension = data.dimension(function (d) {
@@ -2269,6 +2316,7 @@ describe("crossfilter", () => {
         data.add([3, 4, 5]);
         expect(callback).toBe(false);
       });
+
       it("detaches groups from reduce listeners", function () {
         var data = crossfilter([0, 1, 2]),
           callback, // indicates a reduce has occurred in this group
@@ -2297,6 +2345,7 @@ describe("crossfilter", () => {
         other.filterRange([1, 2]);
         expect(callback).toBe(false);
       });
+
       it("detaches groups from add listeners", function () {
         var data = crossfilter([0, 1, 2]),
           callback, // indicates data has been added and the group has been reduced
@@ -2322,6 +2371,7 @@ describe("crossfilter", () => {
         data.add([3, 4, 5]);
         expect(callback).toBe(false);
       });
+
       it("clears dimension filters from groups", function () {
         var data = crossfilter([0, 0, 2, 2]),
           d1 = data.dimension(function (d) {
@@ -2369,64 +2419,76 @@ describe("crossfilter", () => {
       });
 
       describe("gives reduce functions information on lifecycle of data element", () => {
-        const data = crossfilter();
-        data.add([
-          { foo: 1, val: 2 },
-          { foo: 2, val: 2 },
-          { foo: 3, val: 2 },
-          { foo: 3, val: 2 },
-        ]);
-        data.foo = data.dimension(function (d) {
-          return d.foo;
-        });
-        data.bar = data.dimension(function (d) {
-          return d.foo;
-        });
-        data.val = data.dimension(function (d) {
-          return d.val;
-        });
-        data.groupMax = data.groupAll().reduce(
-          function (p, v, n) {
-            if (n) {
-              p += v.val;
+        let data;
+        beforeEach(() => {
+          data = crossfilter();
+          data.add([
+            { foo: 1, val: 2 },
+            { foo: 2, val: 2 },
+            { foo: 3, val: 2 },
+            { foo: 3, val: 2 },
+          ]);
+          data.foo = data.dimension(function (d) {
+            return d.foo;
+          });
+          data.bar = data.dimension(function (d) {
+            return d.foo;
+          });
+          data.val = data.dimension(function (d) {
+            return d.val;
+          });
+          data.groupMax = data.groupAll().reduce(
+            function (p, v, n) {
+              if (n) {
+                p += v.val;
+              }
+              return p;
+            },
+            function (p, v, n) {
+              if (n) {
+                p -= v.val;
+              }
+              return p;
+            },
+            function () {
+              return 0;
             }
-            return p;
-          },
-          function (p, v, n) {
-            if (n) {
-              p -= v.val;
-            }
-            return p;
-          },
-          function () {
-            return 0;
-          }
-        );
-        data.groupSum = data.groupAll().reduceSum(function (d) {
-          return d.val;
+          );
+          data.groupSum = data.groupAll().reduceSum(function (d) {
+            return d.val;
+          });
         });
 
         it("on group creation", function () {
           assert.deepStrictEqual(data.groupMax.value(), data.groupSum.value());
         });
+
         it("on filtering", function () {
           data.foo.filterRange([1, 3]);
           assert.deepStrictEqual(data.groupMax.value(), 8);
           assert.deepStrictEqual(data.groupSum.value(), 4);
           data.foo.filterAll();
         });
+
         it("on adding data after group creation", function () {
           data.add([{ foo: 1, val: 2 }]);
           assert.deepStrictEqual(data.groupMax.value(), data.groupSum.value());
         });
+
         it("on adding data when a filter is in place", function () {
+          data.add([{ foo: 1, val: 2 }]);
           data.foo.filterRange([1, 3]);
           data.add([{ foo: 3, val: 1 }]);
           assert.deepStrictEqual(data.groupMax.value(), 11);
           assert.deepStrictEqual(data.groupSum.value(), 6);
           data.foo.filterAll();
         });
+
         it("on removing data after group creation", function () {
+          data.add([{ foo: 1, val: 2 }]);
+          data.foo.filterRange([1, 3]);
+          data.add([{ foo: 3, val: 1 }]);
+          data.foo.filterAll();
           data.val.filter(1);
           data.remove();
           assert.deepStrictEqual(data.groupMax.value(), 10);
@@ -2442,6 +2504,7 @@ describe("crossfilter", () => {
       it("returns the sum total of matching records", function () {
         assert.strictEqual(data.allGrouped.value(), 6660);
       });
+
       it("observes all dimension's filters", function () {
         try {
           data.type.filterExact("tab");
@@ -2479,6 +2542,7 @@ describe("crossfilter", () => {
         other.filterRange([1, 2]);
         expect(callback).toBe(false);
       });
+
       it("detaches from add listeners", function () {
         var data = crossfilter([0, 1, 2]),
           callback, // indicates data has been added and triggered a reduce
@@ -2497,6 +2561,7 @@ describe("crossfilter", () => {
         data.add([3, 4, 5]);
         expect(callback).toBe(false);
       });
+
       it("does not detach other reduce listeners", function () {
         var data = crossfilter([0, 1, 2]),
           callback, // indicates a reduce has occurred in this group
@@ -2519,6 +2584,7 @@ describe("crossfilter", () => {
         other.filterRange([1, 2]);
         assert.ok(callback);
       });
+
       it("does not detach other add listeners", function () {
         var data = crossfilter([0, 1, 2]),
           callback, // indicates data has been added and triggered a reduce
@@ -2545,6 +2611,7 @@ describe("crossfilter", () => {
     it("returns the total number of elements", function () {
       assert.equal(data.size(), 43);
     });
+
     it("is not affected by any dimension filters", function () {
       try {
         data.quantity.filterExact(4);
@@ -2560,6 +2627,7 @@ describe("crossfilter", () => {
       var raw = data.all();
       assert.equal(raw.length, 43);
     });
+
     it("is not affected by any dimension filters", function () {
       try {
         data.quantity.filterExact(4);
@@ -2576,6 +2644,7 @@ describe("crossfilter", () => {
       var raw = data.allFiltered();
       assert.equal(raw.length, 43);
     });
+
     it("is affected by all dimension filters", function () {
       try {
         data.quantity.filterExact(4);
@@ -2594,6 +2663,7 @@ describe("crossfilter", () => {
         data.total.filterAll();
       }
     });
+
     it("is affected by all dimensions filters, except those in ignore_dimensions", function () {
       try {
         data.quantity.filterExact(2);
@@ -2622,6 +2692,7 @@ describe("crossfilter", () => {
       data.add([]);
       assert.equal(data.size(), 10);
     });
+
     it("existing filters are consistent with new records", function () {
       var data = crossfilter([]),
         foo = data.dimension(function (d) {
@@ -2661,6 +2732,7 @@ describe("crossfilter", () => {
         [0, 41, 42, 42, 43, 43, 43, 43, 44, 44, 45]
       );
     });
+
     it("existing groups are consistent with new records", function () {
       var data = crossfilter([]),
         foo = data.dimension(function (d) {
@@ -2705,6 +2777,7 @@ describe("crossfilter", () => {
       foo.filterAll();
       assert.equal(all.value(), 6);
     });
+
     describe("tag dimension with zero keys", () => {
       it("three empties", function () {
         var rows = [
@@ -2718,6 +2791,7 @@ describe("crossfilter", () => {
         assert.equal(dimLinks.top(Infinity).length, 0);
       });
     });
+
     describe("tag dimension with one key", () => {
       it("one key once", function () {
         var rows = [
@@ -2729,6 +2803,7 @@ describe("crossfilter", () => {
         dimLinks.filter("vv");
         assert.equal(dimLinks.top(Infinity).length, 1);
       });
+
       it("one key doubled", function () {
         var rows = [
           { id: 1, links: ["vv", "vv"] },
@@ -2741,6 +2816,7 @@ describe("crossfilter", () => {
         assert.equal(dimLinks.top(Infinity).length, 2);
         assert.equal(ndx.allFiltered().length, 1);
       });
+
       it("one key twice", function () {
         var rows = [
           { id: 1, links: [] },
@@ -2753,6 +2829,7 @@ describe("crossfilter", () => {
         assert.equal(dimLinks.top(Infinity).length, 2);
       });
     });
+
     it("can add new groups that are before existing groups", function () {
       var data = crossfilter(),
         foo = data.dimension(function (d) {
@@ -2779,6 +2856,7 @@ describe("crossfilter", () => {
         return { foo: 0 };
       }
     });
+
     it("can add more than 256 groups", function () {
       var data = crossfilter(),
         foo = data.dimension(function (d) {
@@ -2812,6 +2890,7 @@ describe("crossfilter", () => {
       );
       assert.deepStrictEqual(foos.top(1), [{ key: 0, value: 1 }]);
     });
+
     it("can add lots of groups in reverse order", function () {
       var data = crossfilter(),
         foo = data.dimension(function (d) {
@@ -2833,6 +2912,7 @@ describe("crossfilter", () => {
       }
       assert.deepStrictEqual(foos.top(1), [{ key: -998, value: 8977.5 }]);
     });
+
     it("can add a record that matches the tag filter", function () {
       var data2 = crossfilter();
       var fooDimension = data2.dimension(function (d) {
@@ -2909,6 +2989,7 @@ describe("crossfilter", () => {
       });
       assert.deepStrictEqual(fooDimension.top(Infinity), []);
     });
+
     it("can add a record that matches the tag filter function", function () {
       var data2 = crossfilter();
       var fooDimension = data2.dimension(function (d) {
@@ -2985,6 +3066,7 @@ describe("crossfilter", () => {
       });
       assert.deepStrictEqual(fooDimension.top(Infinity), []);
     });
+
     it("can add a record that doesn't match the tag filter", function () {
       var data2 = crossfilter();
       var fooDimension = data2.dimension(function (d) {
@@ -3061,6 +3143,7 @@ describe("crossfilter", () => {
       });
       assert.deepStrictEqual(fooDimension.top(Infinity), []);
     });
+
     it("can add a record that doesn't match the tag filter function", function () {
       var data2 = crossfilter();
       var fooDimension = data2.dimension(function (d) {
@@ -3140,15 +3223,18 @@ describe("crossfilter", () => {
   });
 
   describe("remove", () => {
-    const data = crossfilter();
-    data.foo = data.dimension(function (d) {
-      return d.foo;
-    });
-    data.foo.div2 = data.foo.group(function (value) {
-      return Math.floor(value / 2);
-    });
-    data.foo.positive = data.foo.group(function (value) {
-      return (value > 0) | 0;
+    let data;
+    beforeEach(() => {
+      data = crossfilter();
+      data.foo = data.dimension(function (d) {
+        return d.foo;
+      });
+      data.foo.div2 = data.foo.group(function (value) {
+        return Math.floor(value / 2);
+      });
+      data.foo.positive = data.foo.group(function (value) {
+        return (value > 0) | 0;
+      });
     });
 
     it("removing a record works for a group with cardinality one", function () {
@@ -3159,6 +3245,7 @@ describe("crossfilter", () => {
       data.remove();
       assert.deepStrictEqual(data.foo.top(Infinity), []);
     });
+
     it("removing a record works for another group with cardinality one", function () {
       data.add([{ foo: 0 }, { foo: -1 }]);
       assert.deepStrictEqual(data.foo.positive.all(), [{ key: 0, value: 2 }]);
@@ -3170,6 +3257,7 @@ describe("crossfilter", () => {
       data.remove();
       assert.deepStrictEqual(data.foo.top(Infinity), []);
     });
+
     it("removing a record updates dimension", function () {
       data.add([{ foo: 1 }, { foo: 2 }]);
       data.foo.filterExact(1);
@@ -3179,6 +3267,7 @@ describe("crossfilter", () => {
       data.remove();
       assert.deepStrictEqual(data.foo.top(Infinity), []);
     });
+
     it("removing records updates group", function () {
       data.add([{ foo: 1 }, { foo: 2 }, { foo: 3 }]);
       assert.deepStrictEqual(data.foo.top(Infinity), [
@@ -3199,6 +3288,7 @@ describe("crossfilter", () => {
       assert.deepStrictEqual(data.foo.top(Infinity), []);
       assert.deepStrictEqual(data.foo.div2.all(), []);
     });
+
     it("filtering works correctly after removing a record", function () {
       data.add([{ foo: 1 }, { foo: 2 }, { foo: 3 }]);
       data.foo.filter(2);
@@ -3211,18 +3301,22 @@ describe("crossfilter", () => {
   });
 
   describe("remove with predicate", () => {
-    const data = crossfilter();
-    data.foo = data.dimension(function (d) {
-      return d.foo;
-    });
-    data.foo.div2 = data.foo.group(function (value) {
-      return Math.floor(value / 2);
-    });
-    data.foo.positive = data.foo.group(function (value) {
-      return (value > 0) | 0;
-    });
-    data.allSum = data.groupAll().reduceSum(function (d) {
-      return d.foo;
+    let data;
+
+    beforeEach(() => {
+      data = crossfilter();
+      data.foo = data.dimension(function (d) {
+        return d.foo;
+      });
+      data.foo.div2 = data.foo.group(function (value) {
+        return Math.floor(value / 2);
+      });
+      data.foo.positive = data.foo.group(function (value) {
+        return (value > 0) | 0;
+      });
+      data.allSum = data.groupAll().reduceSum(function (d) {
+        return d.foo;
+      });
     });
 
     it("removing a record works for a group with cardinality one", function () {
@@ -3236,6 +3330,7 @@ describe("crossfilter", () => {
       });
       assert.deepStrictEqual(data.foo.top(Infinity), []);
     });
+
     it("removing a record works for another group with cardinality one", function () {
       data.add([{ foo: 0 }, { foo: -1 }]);
       assert.deepStrictEqual(data.foo.positive.all(), [{ key: 0, value: 2 }]);
@@ -3249,6 +3344,7 @@ describe("crossfilter", () => {
       });
       assert.deepStrictEqual(data.foo.top(Infinity), []);
     });
+
     it("removing a record updates dimension", function () {
       data.add([{ foo: 1 }, { foo: 2 }]);
       data.remove(function (d) {
@@ -3260,6 +3356,7 @@ describe("crossfilter", () => {
       });
       assert.deepStrictEqual(data.foo.top(Infinity), []);
     });
+
     it("removing records updates group", function () {
       data.add([{ foo: 1 }, { foo: 2 }, { foo: 3 }]);
       assert.deepStrictEqual(data.foo.top(Infinity), [
@@ -3282,6 +3379,7 @@ describe("crossfilter", () => {
       assert.deepStrictEqual(data.foo.top(Infinity), []);
       assert.deepStrictEqual(data.foo.div2.all(), []);
     });
+
     it("can remove records while filtering", function () {
       data.add([{ foo: 1 }, { foo: 2 }, { foo: 3 }]);
 
@@ -3310,6 +3408,7 @@ describe("crossfilter", () => {
       });
       assert.deepStrictEqual(data.foo.top(Infinity), []);
     });
+
     it("can remove records using predicate function while filtering on iterable dimension", function () {
       var data2 = crossfilter();
       var fooDimension = data2.dimension(function (d) {
@@ -3367,11 +3466,16 @@ describe("crossfilter", () => {
   });
 
   describe("onChange", () => {
-    const data = crossfilter(testData);
+    let data;
+    beforeEach(() => {
+      data = crossfilter(testData);
+    });
+
     it("returns a callback function", function () {
       var cb = data.onChange(function () {});
       assert.equal(typeof cb, "function");
     });
+
     it("sends the eventName with the callback", function () {
       var name;
       var cb = data.onChange(function (n) {
@@ -3380,6 +3484,7 @@ describe("crossfilter", () => {
       data.add([1]);
       assert.equal(name, "dataAdded");
     });
+
     it("callback gets called when adding data", function () {
       var pass = false;
       var cb = data.onChange(function () {
@@ -3388,6 +3493,7 @@ describe("crossfilter", () => {
       data.add([1]);
       assert.equal(pass, true);
     });
+
     it("callback gets called when removing all data", () => {
       var pass = false;
       var cb = data.onChange(function () {
@@ -3396,6 +3502,7 @@ describe("crossfilter", () => {
       data.remove();
       assert.equal(pass, true);
     });
+
     it("callback gets called when removing some data", function () {
       var num = 0;
       var cb = data.onChange(function () {
@@ -3408,6 +3515,7 @@ describe("crossfilter", () => {
       data.remove();
       assert.equal(num, 2);
     });
+
     it("callback gets called when filtering data various ways", function () {
       var num = 0;
       var cb = data.onChange(function () {
@@ -3425,6 +3533,7 @@ describe("crossfilter", () => {
 
       assert.equal(num, 4);
     });
+
     it("multiple callbacks gets called in sequence of registration", function () {
       var pass1,
         pass2,
@@ -3454,6 +3563,7 @@ describe("crossfilter", () => {
       assert.equal(pass3, 3);
       assert.equal(pass4, 4);
     });
+
     it("callback is removed when the returned function called", function () {
       var num = 0;
       var cb = data.onChange(function () {
@@ -3475,17 +3585,21 @@ describe("crossfilter", () => {
   });
 
   describe("iterablesEmptyRows", () => {
-    const emptyRowsTestData = [
-      { name: "apha", labels: [] },
-      { name: "bravo", labels: [] },
-      { name: "charle", labels: [] },
-      { name: "delta", labels: [] },
-      { name: "echo", labels: ["courageous"] },
-    ];
-    const data = crossfilter(emptyRowsTestData);
-    data.labels = data.dimension(function (d) {
-      return d.labels;
-    }, true);
+    let data;
+
+    beforeEach(() => {
+      const emptyRowsTestData = [
+        { name: "apha", labels: [] },
+        { name: "bravo", labels: [] },
+        { name: "charle", labels: [] },
+        { name: "delta", labels: [] },
+        { name: "echo", labels: ["courageous"] },
+      ];
+      data = crossfilter(emptyRowsTestData);
+      data.labels = data.dimension(function (d) {
+        return d.labels;
+      }, true);
+    });
 
     describe("top", () => {
       it("returns the top k records by value, placing non-empty row on top", function () {
@@ -3497,6 +3611,7 @@ describe("crossfilter", () => {
           { name: "delta", labels: [] },
         ]);
       });
+
       it("returns the top k records, using offset, by value", function () {
         assert.deepStrictEqual(data.labels.top(3, 2), [
           { name: "bravo", labels: [] },
@@ -3505,6 +3620,7 @@ describe("crossfilter", () => {
         ]);
       });
     });
+
     describe("bottom", () => {
       it("returns the bottom k records by value, placing non-empty row on bottom", function () {
         assert.deepStrictEqual(data.labels.bottom(5), [
@@ -3515,6 +3631,7 @@ describe("crossfilter", () => {
           { name: "echo", labels: ["courageous"] },
         ]);
       });
+
       it("returns the bottom k records, using offset, by value, in descending order", function () {
         assert.deepStrictEqual(data.labels.bottom(3, 2), [
           { name: "charle", labels: [] },
@@ -3535,6 +3652,7 @@ describe("crossfilter", () => {
         assert.equal(Math.max.apply(null, top[1].tags), 5);
         assert.equal(Math.max.apply(null, top[2].tags), 5);
       });
+
       it("observes the associated dimension's filters", function () {
         try {
           data.tags.filterExact(1);
@@ -3547,6 +3665,7 @@ describe("crossfilter", () => {
           data.tags.filterAll();
         }
       });
+
       it("observes other dimensions' filters", function () {
         try {
           data.quantity.filterExact(4);
@@ -3634,6 +3753,7 @@ describe("crossfilter", () => {
           data.quantity.filterAll();
         }
       });
+
       it("negative or zero k returns an empty array", function () {
         assert.deepStrictEqual(data.tags.top(0), []);
         assert.deepStrictEqual(data.tags.top(-1), []);
@@ -3650,6 +3770,7 @@ describe("crossfilter", () => {
         assert.equal(bottom[1].tags[0], -1);
         assert.equal(bottom[2].tags[1], 0);
       });
+
       it("observes the associated dimension's filters", function () {
         try {
           data.quantity.filterExact(4);
@@ -3757,6 +3878,7 @@ describe("crossfilter", () => {
           data.date.filterAll();
         }
       });
+
       it("observes other dimensions' filters", function () {
         try {
           data.type.filterExact("tab");
@@ -3805,6 +3927,7 @@ describe("crossfilter", () => {
           data.quantity.filterAll();
         }
       });
+
       it("negative or zero k returns an empty array", function () {
         assert.deepStrictEqual(data.tags.bottom(0), []);
         assert.deepStrictEqual(data.tags.bottom(-1), []);
@@ -3839,6 +3962,7 @@ describe("crossfilter", () => {
           data.tip.filterAll();
         }
       });
+
       it("allows the filter value to be null", function () {
         try {
           data.tip.filterExact(null); // equivalent to 0 by natural ordering
@@ -3885,6 +4009,7 @@ describe("crossfilter", () => {
           data.total.filterAll();
         }
       });
+
       it("selects records less than the exclusive lower bound", function () {
         try {
           data.total.filterRange([100, 200]);
@@ -3929,6 +4054,7 @@ describe("crossfilter", () => {
           data.total.filterAll();
         }
       });
+
       it("respects truthy values", function () {
         try {
           var group = data.tags.groupAll().reduceCount();
@@ -3945,6 +4071,7 @@ describe("crossfilter", () => {
           data.total.filterAll();
         }
       });
+
       it("groups on the first dimension are updated correctly", function () {
         try {
           var group = data.tags.groupAll().reduceCount();
@@ -3960,6 +4087,7 @@ describe("crossfilter", () => {
           data.total.filterAll();
         }
       });
+
       it("followed by filterRange", function () {
         try {
           data.total.filterFunction(function (d) {
@@ -3971,6 +4099,7 @@ describe("crossfilter", () => {
           data.total.filterAll();
         }
       });
+
       it("group values with multiple filters on and off on standard dimension", function () {
         try {
           var group = data.tags.group();
@@ -3989,6 +4118,7 @@ describe("crossfilter", () => {
           data.total.filterAll();
         }
       });
+
       it("group values with multiple filters on and off on iterable dimension", function () {
         try {
           var group = data.total.groupAll().reduceCount();
@@ -4009,6 +4139,7 @@ describe("crossfilter", () => {
           data.tags.filterAll();
         }
       });
+
       it("group values with multiple overlapping filters", function () {
         try {
           var group = data.total.groupAll().reduceCount();
@@ -4042,6 +4173,7 @@ describe("crossfilter", () => {
           data.total.filter(null);
         }
       });
+
       it("is equivalent to filterExact when passed a single value", function () {
         try {
           data.total.filter(100);
@@ -4054,6 +4186,7 @@ describe("crossfilter", () => {
           data.total.filter(null);
         }
       });
+
       it("is equivalent to filterFunction when passed a function", function () {
         try {
           data.total.filter(function (d) {
@@ -4068,6 +4201,7 @@ describe("crossfilter", () => {
           data.total.filter(null);
         }
       });
+
       it("is equivalent to filterAll when passed null", function () {
         data.total.filter([100, 200]);
         expect(data.tags.top(Infinity).length).toBeLessThan(120);
@@ -4169,6 +4303,7 @@ describe("crossfilter", () => {
           assert.equal(data.date.hours.size(), 8);
           assert.equal(data.tags.all.size(), 7);
         });
+
         it("ignores any filters", function () {
           try {
             data.tags.filterExact(1);
@@ -4186,6 +4321,7 @@ describe("crossfilter", () => {
         it("defaults to count", function () {
           assert.deepStrictEqual(data.tags.all.top(1), [{ key: 2, value: 33 }]);
         });
+
         it("determines the computed reduce value", function () {
           try {
             data.tags.all.reduceSum(function (d) {
@@ -4204,42 +4340,46 @@ describe("crossfilter", () => {
             data.tags.all.reduceCount();
           }
         });
+
         describe("gives reduce functions information on lifecycle of data element", () => {
-          const data = crossfilter();
-          data.add([
-            { foo: 1, val: [1, 2] },
-            { foo: 2, val: [1, 2] },
-            { foo: 3, val: [3, 4, 5] },
-            { foo: 3, val: [1, 2] },
-          ]);
-          data.foo = data.dimension(function (d) {
-            return d.foo;
-          });
-          data.bar = data.dimension(function (d) {
-            return d.foo;
-          });
-          data.val = data.dimension(function (d) {
-            return d.val;
-          }, true);
-          data.val.groupSumLength = data.val.group().reduce(
-            function (p, v, n) {
-              if (n) {
-                p += v.val.length;
+          let data;
+          beforeEach(() => {
+            data = crossfilter();
+            data.add([
+              { foo: 1, val: [1, 2] },
+              { foo: 2, val: [1, 2] },
+              { foo: 3, val: [3, 4, 5] },
+              { foo: 3, val: [1, 2] },
+            ]);
+            data.foo = data.dimension(function (d) {
+              return d.foo;
+            });
+            data.bar = data.dimension(function (d) {
+              return d.foo;
+            });
+            data.val = data.dimension(function (d) {
+              return d.val;
+            }, true);
+            data.val.groupSumLength = data.val.group().reduce(
+              function (p, v, n) {
+                if (n) {
+                  p += v.val.length;
+                }
+                return p;
+              },
+              function (p, v, n) {
+                if (n) {
+                  p -= v.val.length;
+                }
+                return p;
+              },
+              function () {
+                return 0;
               }
-              return p;
-            },
-            function (p, v, n) {
-              if (n) {
-                p -= v.val.length;
-              }
-              return p;
-            },
-            function () {
-              return 0;
-            }
-          );
-          data.val.groupSumEach = data.val.group().reduceSum(function (d) {
-            return d.val.length;
+            );
+            data.val.groupSumEach = data.val.group().reduceSum(function (d) {
+              return d.val.length;
+            });
           });
 
           it("on group creation", function () {
@@ -4248,6 +4388,7 @@ describe("crossfilter", () => {
               data.val.groupSumEach.all()
             );
           });
+
           it("on filtering", function () {
             data.foo.filterRange([1, 2]);
             assert.deepStrictEqual(data.val.groupSumLength.all(), [
@@ -4266,6 +4407,7 @@ describe("crossfilter", () => {
             ]);
             data.foo.filterAll();
           });
+
           it("on adding data after group creation", function () {
             data.add([{ foo: 1, val: [5, 6, 7] }]);
             assert.deepStrictEqual(
@@ -4273,7 +4415,9 @@ describe("crossfilter", () => {
               data.val.groupSumEach.all()
             );
           });
+
           it("on adding data when a filter is in place", function () {
+            data.add([{ foo: 1, val: [5, 6, 7] }]);
             data.foo.filterRange([1, 3]);
             data.add([{ foo: 3, val: [6] }]);
             assert.deepStrictEqual(data.val.groupSumLength.all(), [
@@ -4296,7 +4440,12 @@ describe("crossfilter", () => {
             ]);
             data.foo.filterAll();
           });
+
           it("on removing data after group creation", function () {
+            data.add([{ foo: 1, val: [5, 6, 7] }]);
+            data.foo.filterRange([1, 3]);
+            data.add([{ foo: 3, val: [6] }]);
+            data.foo.filterAll();
             data.val.filter(2);
             data.remove();
             assert.deepStrictEqual(data.val.groupSumLength.all(), [
@@ -4331,6 +4480,7 @@ describe("crossfilter", () => {
             { key: 4, value: 24 },
           ]);
         });
+
         it("observes the specified order", function () {
           try {
             data.tags.all.order(function (v) {
@@ -4353,6 +4503,7 @@ describe("crossfilter", () => {
         it("defaults to the identity function", function () {
           assert.deepStrictEqual(data.tags.all.top(1), [{ key: 2, value: 33 }]);
         });
+
         it("is useful in conjunction with a compound reduce value", function () {
           try {
             data.tags.all
@@ -4436,6 +4587,7 @@ describe("crossfilter", () => {
           other.filterRange([1, 2]);
           expect(callback).toBe(false);
         });
+
         it("detaches from add listeners", function () {
           var data = crossfilter([
               { tags: [1, 2, 3] },
@@ -4470,24 +4622,28 @@ describe("crossfilter", () => {
   });
 
   describe("iterable add", () => {
-    var firstSet = [
-      { name: "alpha", quantity: 1, tags: [1, 2] },
-      { name: "bravo", quantity: 2, tags: [1] },
-      { name: "charlie", quantity: 1, tags: [] },
-    ];
-    var secondSet = [
-      { name: "delta", quantity: 0, tags: [2] },
-      { name: "echo", quantity: 3, tags: [] },
-    ];
-    var data = crossfilter();
-    data.tags = data.dimension(function (d) {
-      return d.tags;
-    }, true);
-    data.quantity = data.dimension(function (d) {
-      return d.quantity;
+    let data;
+
+    beforeEach(() => {
+      var firstSet = [
+        { name: "alpha", quantity: 1, tags: [1, 2] },
+        { name: "bravo", quantity: 2, tags: [1] },
+        { name: "charlie", quantity: 1, tags: [] },
+      ];
+      var secondSet = [
+        { name: "delta", quantity: 0, tags: [2] },
+        { name: "echo", quantity: 3, tags: [] },
+      ];
+      data = crossfilter();
+      data.tags = data.dimension(function (d) {
+        return d.tags;
+      }, true);
+      data.quantity = data.dimension(function (d) {
+        return d.quantity;
+      });
+      data.add(firstSet);
+      data.add(secondSet);
     });
-    data.add(firstSet);
-    data.add(secondSet);
 
     describe("top", () => {
       it("returns the top k records by value, in descending order", function () {
@@ -4500,6 +4656,7 @@ describe("crossfilter", () => {
         assert.equal(top[4].tags.length, 0);
         assert.equal(top[5].tags.length, 0);
       });
+
       it("observes the associated dimension's filters", function () {
         try {
           data.tags.filterExact(2);
@@ -4512,6 +4669,7 @@ describe("crossfilter", () => {
           data.tags.filterAll();
         }
       });
+
       it("others observe the associated dimension's filters", function () {
         try {
           data.tags.filterExact(2);
@@ -4524,6 +4682,7 @@ describe("crossfilter", () => {
           data.tags.filterAll();
         }
       });
+
       it("observes other dimensions' filters", function () {
         try {
           data.quantity.filterExact(1);
@@ -4538,6 +4697,7 @@ describe("crossfilter", () => {
         }
       });
     });
+
     describe("bottom", () => {
       it("returns the bottom k records by value, in descending order", function () {
         var bottom = data.tags.bottom(7);
@@ -4550,25 +4710,30 @@ describe("crossfilter", () => {
         assert.equal(Math.max.apply(null, bottom[5].tags), 2);
       });
     });
+
     describe("force order when adding", () => {
-      var firstSet = [
-        { name: "alpha", quantity: 1, tags: [1, 2] },
-        { name: "bravo", quantity: 2, tags: [] },
-      ];
-      var secondSet = [
-        { name: "charlie", quantity: 0, tags: [3, 4] },
-        { name: "delta", quantity: 0, tags: [2, 3] },
-        { name: "echo", quantity: 3, tags: [4, 5] },
-      ];
-      var data = crossfilter();
-      data.tags = data.dimension(function (d) {
-        return d.tags;
-      }, true);
-      data.quantity = data.dimension(function (d) {
-        return d.quantity;
+      let data;
+
+      beforeEach(() => {
+        var firstSet = [
+          { name: "alpha", quantity: 1, tags: [1, 2] },
+          { name: "bravo", quantity: 2, tags: [] },
+        ];
+        var secondSet = [
+          { name: "charlie", quantity: 0, tags: [3, 4] },
+          { name: "delta", quantity: 0, tags: [2, 3] },
+          { name: "echo", quantity: 3, tags: [4, 5] },
+        ];
+        data = crossfilter();
+        data.tags = data.dimension(function (d) {
+          return d.tags;
+        }, true);
+        data.quantity = data.dimension(function (d) {
+          return d.quantity;
+        });
+        data.add(firstSet);
+        data.add(secondSet);
       });
-      data.add(firstSet);
-      data.add(secondSet);
 
       it("others observe the associated dimension's filters", function () {
         try {
@@ -4583,6 +4748,7 @@ describe("crossfilter", () => {
           data.tags.filterAll();
         }
       });
+
       it("observes other dimensions' filters", function () {
         try {
           data.quantity.filterFunction(function (d) {
@@ -4598,26 +4764,31 @@ describe("crossfilter", () => {
         }
       });
     });
+
     describe("group", () => {
-      var firstSet = [
-        { name: "alpha", quantity: 1, tags: [1, 3] },
-        { name: "bravo", quantity: 0, tags: [1, 3] },
-      ];
-      var secondSet = [
-        { name: "charlie", quantity: 0, tags: [2] },
-        { name: "delta", quantity: 2, tags: [2, 3] },
-        { name: "echo", quantity: 2, tags: [4] },
-      ];
-      var data = crossfilter();
-      data.tags = data.dimension(function (d) {
-        return d.tags;
-      }, true);
-      data.quantity = data.dimension(function (d) {
-        return d.quantity;
+      let data;
+
+      beforeEach(() => {
+        var firstSet = [
+          { name: "alpha", quantity: 1, tags: [1, 3] },
+          { name: "bravo", quantity: 0, tags: [1, 3] },
+        ];
+        var secondSet = [
+          { name: "charlie", quantity: 0, tags: [2] },
+          { name: "delta", quantity: 2, tags: [2, 3] },
+          { name: "echo", quantity: 2, tags: [4] },
+        ];
+        data = crossfilter();
+        data.tags = data.dimension(function (d) {
+          return d.tags;
+        }, true);
+        data.quantity = data.dimension(function (d) {
+          return d.quantity;
+        });
+        data.tagGroup = data.tags.group();
+        data.add(firstSet);
+        data.add(secondSet);
       });
-      data.tagGroup = data.tags.group();
-      data.add(firstSet);
-      data.add(secondSet);
 
       it("records added correctly", function () {
         var top = data.tagGroup.top(5);
@@ -4629,6 +4800,7 @@ describe("crossfilter", () => {
         assert.equal(top[0].key, 3);
         assert.equal(top[3].key, 4);
       });
+
       it("observes other dimensions' filters", function () {
         try {
           data.quantity.filterFunction(function (d) {
@@ -4646,6 +4818,7 @@ describe("crossfilter", () => {
           data.quantity.filterAll();
         }
       });
+
       it("one tag with one empty", function () {
         var set = [
           { name: "alpha", quantity: 2, tags: [1] },
@@ -4659,6 +4832,7 @@ describe("crossfilter", () => {
         data.add(set);
         assert.deepStrictEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
       });
+
       it("one tag then add empty", function () {
         var firstSet = [{ name: "alpha", quantity: 2, tags: [1] }];
         var secondSet = [{ name: "bravo", quantity: 1, tags: [] }];
@@ -4674,6 +4848,7 @@ describe("crossfilter", () => {
         data.add(secondSet);
         assert.deepStrictEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
       });
+
       it("empty tag then add one tag", function () {
         var firstSet = [{ name: "alpha", quantity: 2, tags: [] }];
         var secondSet = [{ name: "bravo", quantity: 1, tags: [1] }];
@@ -4689,6 +4864,7 @@ describe("crossfilter", () => {
         data.add(secondSet);
         assert.deepStrictEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
       });
+
       it("one tag then add one more tag", function () {
         var firstSet = [{ name: "alpha", quantity: 2, tags: [1] }];
         var secondSet = [{ name: "bravo", quantity: 1, tags: [2] }];
@@ -4745,6 +4921,7 @@ describe("crossfilter", () => {
         assert.equal(Math.min.apply(null, top[4].tags), 1);
         assert.equal(top[5].tags.length, 0);
       });
+
       it("self filterExact remove", function () {
         var set = [
           { name: "alpha", quantity: 1, tags: [1, 3] },
@@ -4775,6 +4952,7 @@ describe("crossfilter", () => {
         assert.equal(Math.min.apply(null, top[4].tags), 1);
         assert.equal(top[5].tags.length, 0);
       });
+
       it("self filterFunction remove", function () {
         var set = [
           { name: "alpha", quantity: 1, tags: [1, 3] },
@@ -4807,6 +4985,7 @@ describe("crossfilter", () => {
         assert.equal(Math.min.apply(null, top[4].tags), 1);
         assert.equal(top[5].tags.length, 0);
       });
+
       it("other dimension filtered then self filterFunction remove", function () {
         var set = [
           { name: "alpha", quantity: 1, tags: [1, 3] },
@@ -4837,6 +5016,7 @@ describe("crossfilter", () => {
           { name: "foxtrot", quantity: 1, tags: [] },
         ]);
       });
+
       it("remove then add", function () {
         var firstSet = [
           { name: "alpha", quantity: 1, tags: [1, 3] },
@@ -4870,6 +5050,7 @@ describe("crossfilter", () => {
           { name: "foxtrot", quantity: 1, tags: [] },
         ]);
       });
+
       it("filter then remove empty tag to only one tag", function () {
         var set = [
           { name: "alpha", quantity: 2, tags: [1] },
@@ -4890,6 +5071,7 @@ describe("crossfilter", () => {
           { name: "alpha", quantity: 2, tags: [1] },
         ]);
       });
+
       it("filter remove one tag to only empty tag", function () {
         var set = [
           { name: "alpha", quantity: 2, tags: [1] },
@@ -4910,6 +5092,7 @@ describe("crossfilter", () => {
           { name: "bravo", quantity: 1, tags: [] },
         ]);
       });
+
       it("remove multiple tag, add single tag, others observer filter", function () {
         var firstSet = [
           { name: "alpha", quantity: 2, tags: [1] },
@@ -4934,6 +5117,7 @@ describe("crossfilter", () => {
         ]);
       });
     });
+
     describe("group", () => {
       it("other dimension filtered remove", function () {
         var set = [
@@ -4963,6 +5147,7 @@ describe("crossfilter", () => {
           { key: 4, value: 1 },
         ]);
       });
+
       it("self filterExact remove", function () {
         var set = [
           { name: "alpha", quantity: 1, tags: [1, 3] },
@@ -4987,6 +5172,7 @@ describe("crossfilter", () => {
           { key: 4, value: 1 },
         ]);
       });
+
       it("self filterFunction remove", function () {
         var set = [
           { name: "alpha", quantity: 1, tags: [1, 3] },
@@ -5013,6 +5199,7 @@ describe("crossfilter", () => {
           { key: 4, value: 1 },
         ]);
       });
+
       it("other dimension filtered then self filterFunction remove", function () {
         var set = [
           { name: "alpha", quantity: 1, tags: [1, 3] },
@@ -5041,6 +5228,7 @@ describe("crossfilter", () => {
         data.tags.filterAll();
         assert.deepStrictEqual(data.tagGroup.all(), [{ key: 4, value: 1 }]);
       });
+
       it("filter then remove to one tag with one empty", function () {
         var set = [
           { name: "alpha", quantity: 2, tags: [1] },
@@ -5061,6 +5249,7 @@ describe("crossfilter", () => {
         data.quantity.filterAll();
         assert.deepStrictEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
       });
+
       it("filter then remove empty tag to only one tag", function () {
         var set = [
           { name: "alpha", quantity: 2, tags: [1] },
@@ -5080,6 +5269,7 @@ describe("crossfilter", () => {
         data.quantity.filterAll();
         assert.deepStrictEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
       });
+
       it("filter then remove one tag to only empty tag", function () {
         var set = [
           { name: "alpha", quantity: 2, tags: [1] },
@@ -5099,6 +5289,7 @@ describe("crossfilter", () => {
         data.quantity.filterAll();
         assert.deepStrictEqual(data.tagGroup.all(), []);
       });
+
       it("remove then add one tag back", function () {
         var firstSet = [
           { name: "alpha", quantity: 2, tags: [1] },
@@ -5120,6 +5311,7 @@ describe("crossfilter", () => {
         data.add(secondSet);
         assert.deepStrictEqual(data.tagGroup.all(), [{ key: 1, value: 1 }]);
       });
+
       it("remove then add empty tag back", function () {
         var firstSet = [
           { name: "alpha", quantity: 2, tags: [1] },
