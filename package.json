@@ -63,8 +63,9 @@
     "benchmark": "node test/benchmark.js",
     "build": "rollup -c rollup.config.js",
     "clean": "rm -f crossfilter.js crossfilter.min.js",
-    "test": "vitest && eslint src/",
-    "format": "npx prettier --write ."
+    "test": "vitest",
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
   "files": [
     "index.js",
